@@ -40,18 +40,32 @@ export default function OrgPage() {
           grants: org.grant_recommendations
         });
 
+        if (!org.grant_recommendations?.length) {
+          console.log("No grants available for analysis");
+          setError("No grants available for analysis");
+          setLoading(false);
+          return;
+        }
+
         const analysis = await rankGrants(org, org.grant_recommendations);
         console.log("Analysis result:", {
-          success: !!analysis,
-          topGrantsCount: analysis?.top_grants?.length,
+          success: analysis.success,
+          topGrantsCount: analysis.top_grants?.length,
+          totalAnalyzed: analysis.total_analyzed,
+          successfulAnalyses: analysis.successful_analyses,
           result: analysis
         });
+
+        if (!analysis.success || !analysis.top_grants?.length) {
+          throw new Error("Failed to rank grants. Please try again.");
+        }
 
         setRankedGrants(analysis);
         setError(null);
       } catch (err) {
         console.error("Error analyzing grants:", err);
-        setError(err.message);
+        setError(err.message || "Failed to analyze grants. Please try again.");
+        setRankedGrants(null);
       } finally {
         setLoading(false);
       }
@@ -66,8 +80,9 @@ export default function OrgPage() {
     hasOrg: !!org,
     orgName: org?.organization,
     grantsCount: org?.grant_recommendations?.length,
-    hasRankedGrants: !!rankedGrants,
+    hasRankedGrants: !!rankedGrants?.top_grants,
     rankedGrantsCount: rankedGrants?.top_grants?.length,
+    successfulAnalyses: rankedGrants?.successful_analyses,
     isLoading: loading,
     error
   });

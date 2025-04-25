@@ -39,7 +39,7 @@ const updateCache = (cacheKey, analysisData) => {
 
 const callVercelFunction = async (prompt) => {
   try {
-    console.log('Calling Vercel function with prompt length:', prompt.length);
+    console.log('Calling backend with prompt:', prompt.substring(0, 100) + '...');
 
     const response = await fetch('https://kindkite-backend.onrender.com/analyze-grant', {
       method: 'POST',
@@ -49,25 +49,31 @@ const callVercelFunction = async (prompt) => {
       body: JSON.stringify({ prompt })
     });
 
-    console.log('Vercel function response status:', response.status);
+    console.log('Backend response status:', response.status);
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error('Vercel function error:', error);
-      throw new Error(`Analysis failed: ${error}`);
+      const errorText = await response.text();
+      console.error('Backend error response:', errorText);
+      throw new Error(`Analysis failed: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('Vercel function raw response:', data);
+    console.log('Backend raw response:', data);
     
     if (!data.choices?.[0]?.message?.content) {
+      console.error('Invalid API response format:', data);
       throw new Error('Invalid API response format');
     }
 
-    const parsedContent = JSON.parse(data.choices[0].message.content);
-    console.log('Parsed API response:', parsedContent);
-    
-    return parsedContent;
+    try {
+      const parsedContent = JSON.parse(data.choices[0].message.content);
+      console.log('Parsed API response:', parsedContent);
+      return parsedContent;
+    } catch (parseError) {
+      console.error('Error parsing API response:', parseError);
+      console.error('Raw content that failed to parse:', data.choices[0].message.content);
+      throw new Error('Failed to parse API response');
+    }
   } catch (error) {
     console.error('Error in callVercelFunction:', error);
     throw error;
@@ -81,21 +87,11 @@ export async function analyzeGrantFit(organization, grant) {
   });
 
   try {
-    // Create a unique cache key for this org-grant pair
-    const cacheKey = `${organization.organization}_${grant.title}`;
-    
-    // Check cache first
-    const cache = getCache();
-    if (cache[cacheKey]) {
-      console.log('Using cached analysis for:', grant.title);
-      return cache[cacheKey];
-    }
-
-    console.log('Generating new analysis for:', grant.title);
-
     if (!organization || !grant) {
       throw new Error('Missing required parameters: organization and grant are required');
     }
+
+    console.log('Generating new analysis for:', grant.title);
 
     const prompt = `
     Organization Information:
@@ -138,7 +134,9 @@ export async function analyzeGrantFit(organization, grant) {
       }
     }`;
 
+    console.log('Calling API for grant analysis...');
     const result = await callVercelFunction(prompt);
+    console.log('API response for grant:', grant.title, result);
     
     // Validate the response structure
     const requiredFields = ['alignment_score', 'likelihood', 'effort_level', 'key_strengths', 'action_items', 'why_apply'];
@@ -148,34 +146,10 @@ export async function analyzeGrantFit(organization, grant) {
       throw new Error(`Invalid API response: missing fields: ${missingFields.join(', ')}`);
     }
 
-    // Save to cache
-    console.log('Caching analysis for:', grant.title);
-    updateCache(cacheKey, result);
-    
     return result;
   } catch (error) {
     console.error('Error in analyzeGrantFit:', error);
-    // Return a more structured error response
-    return {
-      error: true,
-      message: error.message,
-      alignment_score: 0,
-      likelihood: 0,
-      effort_level: {
-        rating: 'Unknown',
-        hours_estimate: 'Unknown'
-      },
-      key_strengths: {
-        points: ['Error analyzing grant fit']
-      },
-      action_items: {
-        immediate: ['Review error and try again'],
-        preparation: []
-      },
-      why_apply: {
-        main_reasons: ['Analysis failed']
-      }
-    };
+    throw error; // Let rankGrants handle the error
   }
 }
 
@@ -190,38 +164,43 @@ export async function rankGrants(organization, grants) {
       throw new Error('Invalid parameters: organization and grants array are required');
     }
 
-    // Create a unique cache key for this org's grant rankings
-    const cacheKey = `${organization.organization}_rankings`;
-    
-    // Check cache first
-    const cache = getCache();
-    if (cache[cacheKey]) {
-      console.log('Using cached rankings for:', organization.organization);
-      return cache[cacheKey];
-    }
+    console.log('Analyzing all grants for:', organization.organization);
 
-    console.log('Generating new rankings for:', organization.organization);
-
-    // For each grant, get its analysis (which will use cache if available)
+    // Analyze each grant without using cache
     const analyses = await Promise.all(
       grants.map(async (grant) => {
-        const analysis = await analyzeGrantFit(organization, grant);
-        return {
-          grant_title: grant.title,
-          analysis
-        };
+        try {
+          console.log('Starting analysis for grant:', grant.title);
+          const analysis = await analyzeGrantFit(organization, grant);
+          console.log('Analysis completed for grant:', grant.title, analysis);
+          return {
+            grant_title: grant.title,
+            analysis
+          };
+        } catch (error) {
+          console.error('Error analyzing grant:', grant.title, error);
+          return {
+            grant_title: grant.title,
+            error: true,
+            errorMessage: error.message
+          };
+        }
       })
     );
 
-    console.log('Analyses completed:', analyses.map(a => ({
-      title: a.grant_title,
-      hasError: a.analysis.error,
-      score: a.analysis.error ? 0 : (a.analysis.alignment_score + a.analysis.likelihood) / 2
-    })));
+    console.log('All analyses completed. Raw results:', analyses);
+
+    // Filter out failed analyses and sort by score
+    const successfulAnalyses = analyses.filter(item => !item.error);
+    console.log('Successful analyses:', successfulAnalyses.length);
+
+    if (successfulAnalyses.length === 0) {
+      console.error('No successful grant analyses');
+      throw new Error('Failed to analyze any grants successfully. Please try again.');
+    }
 
     // Sort grants by their scores
-    const rankedGrants = analyses
-      .filter(item => !item.analysis.error) // Remove any failed analyses
+    const rankedGrants = successfulAnalyses
       .sort((a, b) => {
         const scoreA = (a.analysis.alignment_score + a.analysis.likelihood) / 2;
         const scoreB = (b.analysis.alignment_score + b.analysis.likelihood) / 2;
@@ -238,35 +217,14 @@ export async function rankGrants(organization, grants) {
 
     console.log('Final ranked grants:', rankedGrants);
 
-    const result = { 
+    return { 
+      success: true,
       top_grants: rankedGrants,
       total_analyzed: analyses.length,
-      successful_analyses: analyses.filter(a => !a.analysis.error).length
+      successful_analyses: successfulAnalyses.length
     };
-
-    // Only cache if we have successful rankings
-    if (rankedGrants.length > 0) {
-      console.log('Caching rankings for:', organization.organization);
-      updateCache(cacheKey, result);
-    } else {
-      console.warn('No successful analyses to cache');
-    }
-    
-    return result;
   } catch (error) {
     console.error('Error ranking grants:', error);
-    return {
-      error: true,
-      message: error.message,
-      top_grants: grants.slice(0, 3).map(grant => ({
-        grant_title: grant.title,
-        rank: 0,
-        score: 0,
-        key_factors: ['Error in analysis'],
-        why_ranked_here: 'Error occurred during analysis'
-      })),
-      total_analyzed: grants.length,
-      successful_analyses: 0
-    };
+    throw error;
   }
 }
