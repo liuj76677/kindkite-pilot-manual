@@ -1,5 +1,12 @@
+import OpenAI from 'openai';
+
 const CACHE_KEY = 'kindkite_grant_links';
 const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true
+});
 
 function getCache() {
   try {
@@ -46,28 +53,27 @@ export async function findGrantLink(grantTitle, funder, grantId) {
       return cache[grantId];
     }
     
-    // If not in cache, search for the link
-    const searchQuery = `${funder} ${grantTitle} grant application apply`;
+    // If not in cache, use OpenAI to find the most likely URL
+    const prompt = `Find the most likely application URL for this grant:
+    Grant Title: ${grantTitle}
+    Funder: ${funder}
     
-    const response = await fetch('/api/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: searchQuery,
-        filter: funder.toLowerCase()
-      })
+    Return only a JSON object in this format:
+    {
+      "url": "the most likely URL for the grant application"
+    }`;
+
+    const completion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: prompt }],
+      model: "gpt-4-turbo-preview",
+      response_format: { type: "json_object" },
+      temperature: 0.7,
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to search for grant link');
-    }
-
-    const data = await response.json();
+    const result = JSON.parse(completion.choices[0].message.content);
     
     const linkData = {
-      url: data.url || '#',
+      url: result.url || '#',
       error: null,
       timestamp: Date.now()
     };
