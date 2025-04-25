@@ -6,24 +6,76 @@ import { rankGrants } from '../services/grantAnalysis';
 
 export default function OrgPage() {
   const { orgId } = useParams();
-  const org = data.find((o) => o.id === orgId);
+  const [org, setOrg] = useState(null);
   const [rankedGrants, setRankedGrants] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Debug logs for initial data
+  console.log('Available data:', {
+    orgId,
+    allOrgs: data,
+    availableOrgIds: data.map(o => o.id)
+  });
+
+  useEffect(() => {
+    console.log("Looking for org:", orgId);
+    console.log("Available orgs:", data.map(o => o.id));
+    
+    const foundOrg = data.find((o) => o.id === orgId);
+    console.log("Matched org:", foundOrg);
+    console.log("Grant recommendations:", foundOrg?.grant_recommendations);
+    
+    setOrg(foundOrg);
+  }, [orgId]);
 
   useEffect(() => {
     async function analyzeGrants() {
-      if (org) {
+      if (!org) return;
+
+      try {
+        console.log("Starting grant analysis for:", {
+          orgName: org.organization,
+          grantsCount: org.grant_recommendations?.length,
+          grants: org.grant_recommendations
+        });
+
         const analysis = await rankGrants(org, org.grant_recommendations);
+        console.log("Analysis result:", {
+          success: !!analysis,
+          topGrantsCount: analysis?.top_grants?.length,
+          result: analysis
+        });
+
         setRankedGrants(analysis);
+        setError(null);
+      } catch (err) {
+        console.error("Error analyzing grants:", err);
+        setError(err.message);
+      } finally {
         setLoading(false);
       }
     }
+    
+    setLoading(true);
     analyzeGrants();
   }, [org]);
 
+  // Debug log before render
+  console.log("Render state:", {
+    hasOrg: !!org,
+    orgName: org?.organization,
+    grantsCount: org?.grant_recommendations?.length,
+    hasRankedGrants: !!rankedGrants,
+    rankedGrantsCount: rankedGrants?.top_grants?.length,
+    isLoading: loading,
+    error
+  });
+
   if (!org) return (
     <div className="p-6">
-      <p className="text-red-600">Organization not found.</p>
+      <p className="text-red-600">Organization not found: {orgId}</p>
+      <p className="text-sm text-gray-500 mt-2">Available organizations: {data.map(o => o.id).join(', ')}</p>
     </div>
   );
 
@@ -47,15 +99,46 @@ export default function OrgPage() {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-semibold text-gray-900">Top Grant Recommendations</h2>
           {loading && (
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500 animate-pulse">
               Analyzing best matches...
             </div>
           )}
         </div>
 
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-600">{error}</p>
+          </div>
+        )}
+
+        {!loading && !error && (!rankedGrants?.top_grants || rankedGrants.top_grants.length === 0) && (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+            <p className="text-sm text-gray-500 italic">
+              No grant recommendations available at the moment.
+              {org.grant_recommendations?.length > 0 ? 
+                " Analysis is still processing..." : 
+                " No grants found for analysis."}
+            </p>
+          </div>
+        )}
+
+        {/* Debug info */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <p className="text-sm font-mono">
+            Debug Info:<br />
+            Grants available: {org.grant_recommendations?.length || 0}<br />
+            Ranked grants: {rankedGrants?.top_grants?.length || 0}<br />
+            Loading: {loading ? 'Yes' : 'No'}<br />
+            Error: {error || 'None'}
+          </p>
+        </div>
+
         {rankedGrants?.top_grants?.map((rankedGrant, index) => {
-          const grant = org.grant_recommendations.find(g => g.title === rankedGrant.grant_title);
-          if (!grant) return null;
+          const grant = org.grant_recommendations?.find(g => g.title === rankedGrant.grant_title);
+          if (!grant) {
+            console.warn(`Grant not found: ${rankedGrant.grant_title}`);
+            return null;
+          }
 
           return (
             <div key={index} className="mb-8">
@@ -74,13 +157,25 @@ export default function OrgPage() {
               />
             </div>
           );
-        }) || org.grant_recommendations.map((grant, index) => (
-          <GrantCard 
-            key={index} 
-            grant={grant} 
-            organization={org}
-          />
-        ))}
+        })}
+
+        {/* Fallback to unranked grants if ranking fails */}
+        {!rankedGrants?.top_grants && !loading && org.grant_recommendations?.length > 0 && (
+          <>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-yellow-600">
+                Showing unranked grant recommendations while analysis completes...
+              </p>
+            </div>
+            {org.grant_recommendations.map((grant, index) => (
+              <GrantCard 
+                key={index} 
+                grant={grant} 
+                organization={org}
+              />
+            ))}
+          </>
+        )}
       </section>
     </div>
   );
