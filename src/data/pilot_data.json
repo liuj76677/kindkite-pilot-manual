@@ -1,0 +1,45 @@
+[
+  {
+    "id": "tembo",
+    "organization": "Tembo Education",
+    "contact": {
+      "name": "Phil Michaels",
+      "email": "phil.michaels@temboeducation.com",
+      "website": "www.TemboEducation.com"
+    },
+    "mission": "Maximize human potential via children's education.",
+    "country": "United States",
+    "grant_recommendations": [
+        {
+          "title": "D-Prize – Distribution of Proven Interventions",
+          "funder": "D-Prize Foundation",
+          "url": "https://d-prize.org/#application-process",
+          "deadline": "May 18, 2025 (early), June 29 (final)",
+          "summary": "Funds scalable poverty solutions like Tembo's SMS/WhatsApp early childhood curriculum. Competitive but highly aligned.",
+          "effort": "Light",
+          "chance_of_success": "Moderate",
+          "why": "Tembo's mobile early childhood curriculum fits perfectly into D-Prize's education-focused distribution model. Although D-Prize is competitive, the light effort and global eligibility make it a strong fit for piloting in new markets."
+        },
+        {
+          "title": "Roddenberry Foundation Catalyst Fund",
+          "funder": "Roddenberry Foundation",
+          "url": "https://apply.roddenberryfoundation.org/app/main/register/096B3E8FC7C03D844F7922C7FA2EF64695300ED49329FA653523A0DB38C26E85",
+          "deadline": "Rolling",
+          "summary": "Provides $2,500–$15,000 seed grants for innovative, bold social impact projects like Tembo's mobile education model.",
+          "effort": "Light",
+          "chance_of_success": "Moderate",
+          "why": "The Catalyst Fund favors bold, tech-driven solutions. Tembo's phone-based approach to education aligns well with their mission and the light application process makes this low-risk, high-reward."
+        },
+        {
+          "title": "DRK Venture Philanthropy Fellowship",
+          "funder": "Draper Richards Kaplan Foundation",
+          "url": "https://www.drkfoundation.org/apply-for-funding/submit-an-application/?gad_source=1&gbraid=0AAAAABxLNx3nzHbZ1htGV4iqEDamtWrP0&gclid=CjwKCAjwn6LABhBSEiwAsNJrjiRSBBL6B4fWIB8mdob2u2Q1ZVtNyXvS5zIco-cc0biYBRsTOjqfxxoCFtAQAvD_BwE",
+          "deadline": "Rolling",
+          "summary": "Prestigious 3-year fellowship ($300K) for scalable ventures. DRK mentors and funds mission-aligned early-stage orgs.",
+          "effort": "Moderate",
+          "chance_of_success": "Low",
+          "why": "Although highly competitive, DRK's backing could be transformational. Tembo's global traction and 30u30 recognition offer credibility and mission alignment DRK looks for in high-growth, early-stage ventures."
+        }
+      ]
+  }
+]
