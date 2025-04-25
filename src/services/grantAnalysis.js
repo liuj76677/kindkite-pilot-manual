@@ -40,8 +40,8 @@ const updateCache = (cacheKey, analysisData) => {
 const callVercelFunction = async (prompt) => {
   try {
     console.log('Calling Vercel function with prompt length:', prompt.length);
-    
-    const response = await fetch('/api/analyze-grant', {
+
+    const response = await fetch('https://kindkite-backend.onrender.com/analyze-grant', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -46,7 +46,7 @@ export async function findGrantLink(grantTitle, funder, grantId) {
     }
 
     // Call Vercel backend function instead of OpenAI directly
-    const response = await fetch('/api/find-grant-link', {
+    const response = await fetch('https://kindkite-backend.onrender.com/find-grant-link', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ grantTitle, funder }),
