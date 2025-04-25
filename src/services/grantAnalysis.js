@@ -1,14 +1,6 @@
-import OpenAI from 'openai';
+import { CACHE_KEY, CACHE_EXPIRY } from './constants';
 
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-});
-
-const CACHE_KEY = 'kindkite_grant_analysis';
-const CACHE_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
-
-function getCache() {
+const getCache = () => {
   try {
     const cache = localStorage.getItem(CACHE_KEY);
     if (!cache) return {};
@@ -28,7 +20,7 @@ function getCache() {
   }
 }
 
-function updateCache(cacheKey, analysisData) {
+const updateCache = (cacheKey, analysisData) => {
   try {
     const existingCache = getCache();
     const newCache = {
@@ -43,6 +35,23 @@ function updateCache(cacheKey, analysisData) {
   } catch (error) {
     console.error('Error updating cache:', error);
   }
+}
+
+const callOpenAI = async (prompt) => {
+  const response = await fetch('/api/analyze-grant', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ prompt })
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to analyze grant');
+  }
+
+  const data = await response.json();
+  return JSON.parse(data.choices[0].message.content);
 }
 
 export async function analyzeGrantFit(organization, grant) {
@@ -61,10 +70,6 @@ export async function analyzeGrantFit(organization, grant) {
 
     if (!organization || !grant) {
       throw new Error('Missing required parameters: organization and grant are required');
-    }
-
-    if (!import.meta.env.VITE_OPENAI_API_KEY) {
-      throw new Error('OpenAI API key is not configured');
     }
 
     const prompt = `
@@ -108,14 +113,7 @@ export async function analyzeGrantFit(organization, grant) {
       }
     }`;
 
-    const completion = await openai.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
-      model: "gpt-4-turbo-preview",
-      response_format: { type: "json_object" },
-      temperature: 0.7,
-    });
-
-    const result = JSON.parse(completion.choices[0].message.content);
+    const result = await callOpenAI(prompt);
     
     // Validate the response structure
     const requiredFields = ['alignment_score', 'likelihood', 'effort_level', 'key_strengths', 'action_items', 'why_apply'];

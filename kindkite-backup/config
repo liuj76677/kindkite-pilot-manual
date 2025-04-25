@@ -1,0 +1,10 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "origin"]
+	url = https://github.com/liuj76677/kindkite-pilot-manual.git
+	fetch = +refs/*:refs/*
+	mirror = true
