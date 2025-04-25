@@ -37,8 +37,8 @@ const updateCache = (cacheKey, analysisData) => {
   }
 }
 
-const callOpenAI = async (prompt) => {
-  const response = await fetch('/.netlify/functions/analyze-grant', {
+const callVercelFunction = async (prompt) => {
+  const response = await fetch('/api/analyze-grant', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const callOpenAI = async (prompt) => {
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`Failed to analyze grant: ${error}`);
+    throw new Error(`Analysis failed: ${error}`);
   }
 
   const data = await response.json();
@@ -114,7 +114,7 @@ export async function analyzeGrantFit(organization, grant) {
       }
     }`;
 
-    const result = await callOpenAI(prompt);
+    const result = await callVercelFunction(prompt);
     
     // Validate the response structure
     const requiredFields = ['alignment_score', 'likelihood', 'effort_level', 'key_strengths', 'action_items', 'why_apply'];
