@@ -4,8 +4,7 @@ const CACHE_KEY = 'kindkite_grant_links';
 const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY
 });
 
 function getCache() {
@@ -62,6 +61,7 @@ export async function findGrantLink(grantTitle, funder, grantId) {
     {
       "url": "the most likely URL for the grant application"
     }`;
+    console.log('OpenAI key loaded in browser:', import.meta.env.VITE_OPENAI_API_KEY);
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
