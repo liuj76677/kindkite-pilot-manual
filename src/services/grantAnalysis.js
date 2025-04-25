@@ -38,24 +38,48 @@ const updateCache = (cacheKey, analysisData) => {
 }
 
 const callVercelFunction = async (prompt) => {
-  const response = await fetch('/api/analyze-grant', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ prompt })
-  });
+  try {
+    console.log('Calling Vercel function with prompt length:', prompt.length);
+    
+    const response = await fetch('/api/analyze-grant', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt })
+    });
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Analysis failed: ${error}`);
+    console.log('Vercel function response status:', response.status);
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Vercel function error:', error);
+      throw new Error(`Analysis failed: ${error}`);
+    }
+
+    const data = await response.json();
+    console.log('Vercel function raw response:', data);
+    
+    if (!data.choices?.[0]?.message?.content) {
+      throw new Error('Invalid API response format');
+    }
+
+    const parsedContent = JSON.parse(data.choices[0].message.content);
+    console.log('Parsed API response:', parsedContent);
+    
+    return parsedContent;
+  } catch (error) {
+    console.error('Error in callVercelFunction:', error);
+    throw error;
   }
-
-  const data = await response.json();
-  return JSON.parse(data.choices[0].message.content);
 }
 
 export async function analyzeGrantFit(organization, grant) {
+  console.log('Starting analyzeGrantFit for:', {
+    organization: organization?.organization,
+    grant: grant?.title
+  });
+
   try {
     // Create a unique cache key for this org-grant pair
     const cacheKey = `${organization.organization}_${grant.title}`;
@@ -118,10 +142,10 @@ export async function analyzeGrantFit(organization, grant) {
     
     // Validate the response structure
     const requiredFields = ['alignment_score', 'likelihood', 'effort_level', 'key_strengths', 'action_items', 'why_apply'];
-    for (const field of requiredFields) {
-      if (!result[field]) {
-        throw new Error(`Invalid API response: missing ${field}`);
-      }
+    const missingFields = requiredFields.filter(field => !result[field]);
+    
+    if (missingFields.length > 0) {
+      throw new Error(`Invalid API response: missing fields: ${missingFields.join(', ')}`);
     }
 
     // Save to cache
@@ -131,15 +155,41 @@ export async function analyzeGrantFit(organization, grant) {
     return result;
   } catch (error) {
     console.error('Error in analyzeGrantFit:', error);
+    // Return a more structured error response
     return {
       error: true,
-      message: error.message
+      message: error.message,
+      alignment_score: 0,
+      likelihood: 0,
+      effort_level: {
+        rating: 'Unknown',
+        hours_estimate: 'Unknown'
+      },
+      key_strengths: {
+        points: ['Error analyzing grant fit']
+      },
+      action_items: {
+        immediate: ['Review error and try again'],
+        preparation: []
+      },
+      why_apply: {
+        main_reasons: ['Analysis failed']
+      }
     };
   }
 }
 
 export async function rankGrants(organization, grants) {
+  console.log('Starting rankGrants for:', {
+    organization: organization?.organization,
+    grantsCount: grants?.length
+  });
+
   try {
+    if (!organization || !grants || !Array.isArray(grants)) {
+      throw new Error('Invalid parameters: organization and grants array are required');
+    }
+
     // Create a unique cache key for this org's grant rankings
     const cacheKey = `${organization.organization}_rankings`;
     
@@ -152,10 +202,6 @@ export async function rankGrants(organization, grants) {
 
     console.log('Generating new rankings for:', organization.organization);
 
-    if (!organization || !grants || !Array.isArray(grants)) {
-      throw new Error('Invalid parameters: organization and grants array are required');
-    }
-
     // For each grant, get its analysis (which will use cache if available)
     const analyses = await Promise.all(
       grants.map(async (grant) => {
@@ -167,9 +213,15 @@ export async function rankGrants(organization, grants) {
       })
     );
 
+    console.log('Analyses completed:', analyses.map(a => ({
+      title: a.grant_title,
+      hasError: a.analysis.error,
+      score: a.analysis.error ? 0 : (a.analysis.alignment_score + a.analysis.likelihood) / 2
+    })));
+
     // Sort grants by their scores
     const rankedGrants = analyses
-      .filter(item => !item.analysis.error)
+      .filter(item => !item.analysis.error) // Remove any failed analyses
       .sort((a, b) => {
         const scoreA = (a.analysis.alignment_score + a.analysis.likelihood) / 2;
         const scoreB = (b.analysis.alignment_score + b.analysis.likelihood) / 2;
@@ -184,11 +236,21 @@ export async function rankGrants(organization, grants) {
         why_ranked_here: item.analysis.why_apply.main_reasons[0]
       }));
 
-    const result = { top_grants: rankedGrants };
+    console.log('Final ranked grants:', rankedGrants);
 
-    // Save to cache
-    console.log('Caching rankings for:', organization.organization);
-    updateCache(cacheKey, result);
+    const result = { 
+      top_grants: rankedGrants,
+      total_analyzed: analyses.length,
+      successful_analyses: analyses.filter(a => !a.analysis.error).length
+    };
+
+    // Only cache if we have successful rankings
+    if (rankedGrants.length > 0) {
+      console.log('Caching rankings for:', organization.organization);
+      updateCache(cacheKey, result);
+    } else {
+      console.warn('No successful analyses to cache');
+    }
     
     return result;
   } catch (error) {
@@ -202,7 +264,9 @@ export async function rankGrants(organization, grants) {
         score: 0,
         key_factors: ['Error in analysis'],
         why_ranked_here: 'Error occurred during analysis'
-      }))
+      })),
+      total_analyzed: grants.length,
+      successful_analyses: 0
     };
   }
 }
