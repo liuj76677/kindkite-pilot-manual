@@ -38,7 +38,7 @@ const updateCache = (cacheKey, analysisData) => {
 }
 
 const callOpenAI = async (prompt) => {
-  const response = await fetch('/api/analyze-grant', {
+  const response = await fetch('/.netlify/functions/analyze-grant', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -47,7 +47,8 @@ const callOpenAI = async (prompt) => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to analyze grant');
+    const error = await response.text();
+    throw new Error(`Failed to analyze grant: ${error}`);
   }
 
   const data = await response.json();
