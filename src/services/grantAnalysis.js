@@ -1,5 +1,8 @@
 import { CACHE_KEY, CACHE_EXPIRY } from './constants';
 
+// API base URL - use environment variable or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 const getCache = () => {
   try {
     const cache = localStorage.getItem(CACHE_KEY);
@@ -37,11 +40,11 @@ const updateCache = (cacheKey, analysisData) => {
   }
 }
 
-const callVercelFunction = async (prompt) => {
+const callBackendAPI = async (prompt) => {
   try {
     console.log('Calling backend with prompt:', prompt.substring(0, 100) + '...');
 
-    const response = await fetch('https://kindkite-backend.onrender.com/analyze-grant', {
+    const response = await fetch(`${API_BASE_URL}/analyze-grant`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,7 +78,7 @@ const callVercelFunction = async (prompt) => {
       throw new Error('Failed to parse API response');
     }
   } catch (error) {
-    console.error('Error in callVercelFunction:', error);
+    console.error('Error in callBackendAPI:', error);
     throw error;
   }
 }
@@ -135,7 +138,7 @@ export async function analyzeGrantFit(organization, grant) {
     }`;
 
     console.log('Calling API for grant analysis...');
-    const result = await callVercelFunction(prompt);
+    const result = await callBackendAPI(prompt);
     console.log('API response for grant:', grant.title, result);
     
     // Validate the response structure

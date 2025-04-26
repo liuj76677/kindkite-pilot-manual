@@ -1,13 +1,10 @@
-import { OpenAI } from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+// API base URL - use environment variable or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 // Fetch pre-processed grant application data
 export async function getGrantApplicationData(grantId) {
   try {
-    const response = await fetch(`https://kindkite-backend.onrender.com/grant-application/${grantId}`);
+    const response = await fetch(`${API_BASE_URL}/grant-application/${grantId}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch grant application data');
@@ -24,36 +21,20 @@ export async function getGrantApplicationData(grantId) {
 // Generate sample answers for pre-processed questions
 export async function generateSampleAnswers(questions, organization) {
   try {
-    const prompt = `
-    Generate sample answers for these grant application questions based on the organization's profile:
-
-    Organization Profile:
-    ${JSON.stringify(organization, null, 2)}
-
-    Questions:
-    ${JSON.stringify(questions, null, 2)}
-
-    Provide answers in this JSON format:
-    {
-      "answers": [
-        {
-          "questionId": "matching question id",
-          "answer": "sample answer text",
-          "confidence": number (0-100),
-          "needsReview": true|false,
-          "reviewNotes": "what needs to be reviewed or modified"
-        }
-      ]
-    }`;
-
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
-      messages: [{ role: 'user', content: prompt }],
-      response_format: { type: 'json_object' },
-      temperature: 0.7
+    const response = await fetch(`${API_BASE_URL}/generate-answers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ questions, organization })
     });
 
-    return JSON.parse(completion.choices[0].message.content);
+    if (!response.ok) {
+      throw new Error('Failed to generate sample answers');
+    }
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error generating sample answers:', error);
     throw error;
@@ -63,7 +44,7 @@ export async function generateSampleAnswers(questions, organization) {
 // Get application status and progress
 export async function getApplicationStatus(grantId, organizationId) {
   try {
-    const response = await fetch(`https://kindkite-backend.onrender.com/application-status/${grantId}/${organizationId}`);
+    const response = await fetch(`${API_BASE_URL}/application-status/${grantId}/${organizationId}`);
     
     if (!response.ok) {
       throw new Error('Failed to fetch application status');
@@ -80,7 +61,7 @@ export async function getApplicationStatus(grantId, organizationId) {
 // Save application progress
 export async function saveApplicationProgress(grantId, organizationId, answers) {
   try {
-    const response = await fetch(`https://kindkite-backend.onrender.com/save-application/${grantId}/${organizationId}`, {
+    const response = await fetch(`${API_BASE_URL}/save-application/${grantId}/${organizationId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

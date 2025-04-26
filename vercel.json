@@ -3,10 +3,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { 
-      "source": "/analyze-grant",
-      "destination": "https://your-backend-url.onrender.com/analyze-grant"
-    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

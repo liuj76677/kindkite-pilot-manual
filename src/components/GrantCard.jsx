@@ -189,7 +189,7 @@ export default function GrantCard({ grant, organization }) {
 
 GrantCard.propTypes = {
   grant: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.string,
     title: PropTypes.string.isRequired,
     funder: PropTypes.string.isRequired,
     deadline: PropTypes.string.isRequired,
@@ -198,6 +198,6 @@ GrantCard.propTypes = {
   organization: PropTypes.shape({
     organization: PropTypes.string.isRequired,
     mission: PropTypes.string.isRequired,
-    country: PropTypes.string.isRequired,
-  }).isRequired,
+    country: PropTypes.string.isRequired
+  }).isRequired
 };
