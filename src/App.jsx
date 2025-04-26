@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import OrgDashboard from './pages/OrgDashboard';
 import OrgPage from './components/OrgPage';
+import AdminGrantManager from './components/AdminGrantManager';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<OrgDashboard />} />
           <Route path="/org/:orgId" element={<OrgPage />} />
+          <Route path="/admin/grants" element={<AdminGrantManager />} />
         </Routes>
       </Router>
     </div>
