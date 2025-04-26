@@ -242,9 +242,9 @@ export default function AdminGrantManager() {
         <div className="space-y-4">
           {grants.map((grant) => (
             <div
-              key={grant.id}
+              key={grant._id}
               className={`p-4 rounded-lg border cursor-pointer transition-colors ${
-                selectedGrant?.id === grant.id
+                selectedGrant?._id === grant._id
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-200 hover:border-blue-300'
               }`}
