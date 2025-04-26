@@ -8,12 +8,25 @@ const Home = () => {
       <p className="text-lg mb-6 max-w-xl text-center text-[#5e4633]">
         KindKite helps nonprofits discover top-fit, low-effort grants with AI support. Explore your personalized dashboard below.
       </p>
-      <Link
-        to="/dashboard"
-        className="bg-[#3d6b44] hover:bg-opacity-90 text-white px-8 py-4 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg"
-      >
-        View Dashboard
-      </Link>
+      <div className="flex flex-col gap-4">
+        <Link
+          to="/dashboard"
+          className="bg-[#3d6b44] hover:bg-opacity-90 text-white px-8 py-4 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg"
+        >
+          View Dashboard
+        </Link>
+        <Link
+          to="/admin/grants"
+          className="bg-[#6b3d3d] hover:bg-opacity-90 text-white px-8 py-4 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg"
+        >
+          Admin Dashboard
+        </Link>
+      </div>
+      
+      {/* Version info */}
+      <div className="absolute bottom-4 right-4 text-sm text-gray-500">
+        Version 1.0
+      </div>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getGrantApplicationData, saveGrantApplication } from '../services/grantDatabase';
+import { getApiUrl, ENDPOINTS } from '../config/api';
 
 export default function AdminGrantManager() {
   const [grants, setGrants] = useState([]);
@@ -20,11 +21,14 @@ export default function AdminGrantManager() {
 
   const fetchGrants = async () => {
     try {
-      const response = await fetch('https://kindkite-backend.onrender.com/admin/grants');
+      const response = await fetch(getApiUrl(ENDPOINTS.GRANTS));
+      if (!response.ok) {
+        throw new Error(`Failed to fetch grants: ${response.status}`);
+      }
       const data = await response.json();
       setGrants(data);
     } catch (err) {
-      setError('Failed to fetch grants');
+      setError(err.message || 'Failed to fetch grants');
     }
   };
 
@@ -33,7 +37,7 @@ export default function AdminGrantManager() {
 
     try {
       setProcessing(true);
-      const response = await fetch('https://kindkite-backend.onrender.com/admin/search-grants', {
+      const response = await fetch(getApiUrl(ENDPOINTS.SEARCH_GRANTS), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +83,7 @@ export default function AdminGrantManager() {
       formData.append('file', file);
       formData.append('grantId', selectedGrant?.id || 'new');
 
-      const response = await fetch('https://kindkite-backend.onrender.com/admin/upload-grant', {
+      const response = await fetch(getApiUrl(ENDPOINTS.UPLOAD_GRANT), {
         method: 'POST',
         body: formData
       });
@@ -109,7 +113,7 @@ export default function AdminGrantManager() {
       setProcessing(true);
       setError(null);
 
-      const response = await fetch(`https://kindkite-backend.onrender.com/admin/grants/${editedGrant.id}`, {
+      const response = await fetch(getApiUrl(ENDPOINTS.UPDATE_GRANT.replace(':id', editedGrant.id)), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
