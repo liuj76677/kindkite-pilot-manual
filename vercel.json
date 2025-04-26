@@ -4,8 +4,8 @@
   "outputDirectory": "dist",
   "rewrites": [
     { 
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "source": "/analyze-grant",
+      "destination": "https://your-backend-url.onrender.com/analyze-grant"
     },
     {
       "source": "/(.*)",

@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { analyzeGrantFit } from '../services/grantAnalysis';
 import FitScore from './FitScore';
+import GrantApplication from './GrantApplication';
 
 export default function GrantCard({ grant, organization }) {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeSection, setActiveSection] = useState('overview');
+  const [showApplication, setShowApplication] = useState(false);
 
   useEffect(() => {
     async function getAnalysis() {
@@ -98,14 +100,29 @@ export default function GrantCard({ grant, organization }) {
         )}
 
         {/* Primary Action */}
-        <a
-          href={grant.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block w-full text-center bg-[#3d6b44] hover:bg-opacity-90 text-white text-lg font-semibold px-6 py-3 rounded-xl transition-all transform hover:scale-105 shadow-md mb-6"
-        >
-          Apply Now
-        </a>
+        <div className="flex flex-col space-y-4 mb-6">
+          <a
+            href={grant.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full text-center bg-[#3d6b44] hover:bg-opacity-90 text-white text-lg font-semibold px-6 py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
+          >
+            Apply Now
+          </a>
+          <button
+            onClick={() => setShowApplication(!showApplication)}
+            className="block w-full text-center bg-[#f2e4d5] hover:bg-opacity-90 text-[#442e1c] text-lg font-semibold px-6 py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
+          >
+            {showApplication ? 'Hide Application Details' : 'Show Application Details'}
+          </button>
+        </div>
+
+        {/* Application Details */}
+        {showApplication && (
+          <div className="mt-6">
+            <GrantApplication grant={grant} organization={organization} />
+          </div>
+        )}
 
         {/* Key Info */}
         <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
