@@ -1,22 +1,19 @@
-// API base URL - use environment variable or fallback to localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+// API base URL
+const API_BASE_URL = 'http://localhost:8080';
 
 // Fetch pre-processed grant application data
-export async function getGrantApplicationData(grantId) {
+export const getGrantApplicationData = async (grantId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/grant-application/${grantId}`);
-    
     if (!response.ok) {
       throw new Error('Failed to fetch grant application data');
     }
-
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error('Error fetching grant application data:', error);
+    console.error('Error fetching grant application:', error);
     throw error;
   }
-}
+};
 
 // Generate sample answers for pre-processed questions
 export async function generateSampleAnswers(questions, organization) {
@@ -79,4 +76,23 @@ export async function saveApplicationProgress(grantId, organizationId, answers) 
     console.error('Error saving application progress:', error);
     throw error;
   }
-} 
+}
+
+export const saveGrantApplication = async (grantId, data) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/grants/${grantId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to save grant application');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error saving grant application:', error);
+    throw error;
+  }
+}; 

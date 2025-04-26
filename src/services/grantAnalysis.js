@@ -1,7 +1,7 @@
 import { CACHE_KEY, CACHE_EXPIRY } from './constants';
 
 // API base URL - use environment variable or fallback to localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_BASE_URL = 'http://localhost:8080';
 
 const getCache = () => {
   try {
