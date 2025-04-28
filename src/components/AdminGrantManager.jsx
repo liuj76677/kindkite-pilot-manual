@@ -74,6 +74,11 @@ export default function AdminGrantManager() {
       return;
     }
 
+    if (!selectedGrant) {
+      setError('Please select a grant to update or click "Add New Grant" to create a new one');
+      return;
+    }
+
     try {
       setProcessing(true);
       setError(null);
@@ -81,7 +86,9 @@ export default function AdminGrantManager() {
 
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('grantId', selectedGrant?.id || 'new');
+      formData.append('grantId', selectedGrant._id);
+      formData.append('title', selectedGrant.title);
+      formData.append('funder', selectedGrant.funder);
 
       const response = await fetch(getApiUrl(ENDPOINTS.UPLOAD_GRANT), {
         method: 'POST',
@@ -93,7 +100,7 @@ export default function AdminGrantManager() {
       }
 
       const result = await response.json();
-      setSuccess('Grant uploaded and processed successfully');
+      setSuccess('Grant updated successfully with new PDF content');
       fetchGrants();
       setFile(null);
     } catch (err) {
