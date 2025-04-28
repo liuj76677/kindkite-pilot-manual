@@ -84,7 +84,13 @@ async function analyzeGrantContent(text, metadata) {
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4-turbo-preview',
-      messages: [{ role: 'user', content: prompt }],
+      messages: [{
+        role: 'system',
+        content: 'You are a helpful assistant that outputs JSON.'
+      }, {
+        role: 'user', 
+        content: prompt
+      }],
       response_format: { type: 'json_object' },
       temperature: 0.7
     });
@@ -146,7 +152,13 @@ export async function generateSampleAnswers(questions, organization) {
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4-turbo-preview',
-      messages: [{ role: 'user', content: prompt }],
+      messages: [{
+        role: 'system',
+        content: 'You are a helpful assistant that outputs JSON.'
+      }, {
+        role: 'user', 
+        content: prompt
+      }],
       response_format: { type: 'json_object' },
       temperature: 0.7
     });

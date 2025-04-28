@@ -25,7 +25,13 @@ export default async function handler(req, res) {
     }`;
 
     const completion = await openai.chat.completions.create({
-      messages: [{ role: "user", content: prompt }],
+      messages: [{
+        role: 'system',
+        content: 'Always return valid JSON format.'
+      }, {
+        role: "user", 
+        content: prompt
+      }],
       model: "gpt-4-turbo-preview",
       response_format: { type: "json_object" },
       temperature: 0.7,
