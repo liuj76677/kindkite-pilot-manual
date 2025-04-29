@@ -14,6 +14,7 @@ function App() {
           <Route path="/dashboard" element={<OrgDashboard />} />
           <Route path="/org/:orgId" element={<OrgPage />} />
           <Route path="/admin/grants" element={<AdminGrantManager />} />
+          <Route path="/pilot" element={<PilotV0 />} />
           <Route path="/pilot/:organizationId" element={<PilotV0 />} />
         </Routes>
       </Router>
