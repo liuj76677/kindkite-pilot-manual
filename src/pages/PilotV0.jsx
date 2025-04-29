@@ -57,7 +57,7 @@ const PilotV0 = () => {
             'Attach pitch deck or 2-3 page summary covering mission, model, team, and plans',
             'If selected, proceed with due diligence, interviews, and full proposal'
           ],
-          link: 'https://www.drkfoundation.org/apply/'
+          link: 'https://www.drkfoundation.org/apply-for-funding/submit-an-application/'
         }
       ]
     }
