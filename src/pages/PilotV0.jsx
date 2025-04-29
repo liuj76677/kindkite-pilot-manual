@@ -1,9 +1,11 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import PilotGrantCard from '../components/PilotGrantCard';
 
 const PilotV0 = () => {
   const { organizationId } = useParams();
+  const location = useLocation();
+  const isDirectAccess = location.state?.direct;
 
   // This would typically come from an API, but for v0 we'll hardcode it
   const organizationGrants = {
@@ -64,34 +66,36 @@ const PilotV0 = () => {
     // Add other organizations here
   };
 
-  // If no organizationId is provided, show the landing page
-  if (!organizationId) {
+  // If no organizationId is provided and not direct access, show the landing page
+  if (!organizationId && !isDirectAccess) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Pilot Organizations
-          </h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Select your organization to view your personalized grant opportunities.
-          </p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-[#442e1c] mb-4">
+              Pilot Organizations
+            </h1>
+            <p className="text-lg text-[#5e4633] max-w-3xl mx-auto">
+              Select your organization to view your personalized grant opportunities.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Object.entries(organizationGrants).map(([id, org]) => (
-            <Link
-              key={id}
-              to={`/pilot/${id}`}
-              className="block p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
-            >
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                {org.name}
-              </h2>
-              <p className="text-sm text-gray-600">
-                {org.description}
-              </p>
-            </Link>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Object.entries(organizationGrants).map(([id, org]) => (
+              <Link
+                key={id}
+                to={`/pilot/${id}`}
+                className="block p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-md hover:shadow-xl transition-all transform hover:scale-105 border border-[#f2e4d5]"
+              >
+                <h2 className="text-xl font-semibold text-[#442e1c] mb-2">
+                  {org.name}
+                </h2>
+                <p className="text-sm text-[#5e4633]">
+                  {org.description}
+                </p>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -100,24 +104,61 @@ const PilotV0 = () => {
   const organization = organizationGrants[organizationId];
 
   if (!organization) {
-    return <div>Organization not found</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-semibold text-[#442e1c]">Organization not found</h1>
+            {!isDirectAccess && (
+              <Link to="/pilot" className="text-[#3d6b44] hover:underline mt-4 inline-block">
+                ← Back to Organizations
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Grant Opportunities for {organization.name}
-        </h1>
-        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-          {organization.description}
-        </p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {!isDirectAccess && (
+          <nav className="flex mb-8" aria-label="Breadcrumb">
+            <ol className="flex items-center space-x-2">
+              <li>
+                <Link to="/" className="text-[#5e4633] hover:text-[#442e1c]">Home</Link>
+              </li>
+              <li>
+                <span className="text-[#5e4633] mx-2">›</span>
+              </li>
+              <li>
+                <Link to="/pilot" className="text-[#5e4633] hover:text-[#442e1c]">Pilot Organizations</Link>
+              </li>
+              <li>
+                <span className="text-[#5e4633] mx-2">›</span>
+              </li>
+              <li>
+                <span className="text-[#442e1c] font-medium">{organization.name}</span>
+              </li>
+            </ol>
+          </nav>
+        )}
+        
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-[#442e1c] mb-4">
+            Grant Opportunities for {organization.name}
+          </h1>
+          <p className="text-lg text-[#5e4633] max-w-3xl mx-auto">
+            {organization.description}
+          </p>
+        </div>
 
-      <div className="grid gap-8">
-        {organization.grants.map((grant) => (
-          <PilotGrantCard key={grant.id} grant={grant} />
-        ))}
+        <div className="grid gap-8">
+          {organization.grants.map((grant) => (
+            <PilotGrantCard key={grant.id} grant={grant} />
+          ))}
+        </div>
       </div>
     </div>
   );
