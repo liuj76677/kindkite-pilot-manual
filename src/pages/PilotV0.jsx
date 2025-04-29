@@ -5,7 +5,10 @@ import PilotGrantCard from '../components/PilotGrantCard';
 const PilotV0 = () => {
   const { organizationId } = useParams();
   const location = useLocation();
-  const isDirectAccess = location.state?.direct;
+  
+  // Check for direct access via state or query parameter
+  const searchParams = new URLSearchParams(location.search);
+  const isDirectAccess = location.state?.direct || searchParams.get('direct') === 'true';
 
   // This would typically come from an API, but for v0 we'll hardcode it
   const organizationGrants = {
@@ -66,8 +69,46 @@ const PilotV0 = () => {
     // Add other organizations here
   };
 
-  // If no organizationId is provided and not direct access, show the landing page
-  if (!organizationId && !isDirectAccess) {
+  // If direct access, only show organization view
+  if (isDirectAccess) {
+    const organization = organizationGrants[organizationId];
+    
+    if (!organization) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h1 className="text-2xl font-semibold text-[#442e1c]">Organization not found</h1>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-[#442e1c] mb-4">
+              Grant Opportunities for {organization.name}
+            </h1>
+            <p className="text-lg text-[#5e4633] max-w-3xl mx-auto">
+              {organization.description}
+            </p>
+          </div>
+
+          <div className="grid gap-8">
+            {organization.grants.map((grant) => (
+              <PilotGrantCard key={grant.id} grant={grant} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Regular access with navigation - only shown if not direct access
+  if (!organizationId) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -109,11 +150,9 @@ const PilotV0 = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-2xl font-semibold text-[#442e1c]">Organization not found</h1>
-            {!isDirectAccess && (
-              <Link to="/pilot" className="text-[#3d6b44] hover:underline mt-4 inline-block">
-                ← Back to Organizations
-              </Link>
-            )}
+            <Link to="/pilot" className="text-[#3d6b44] hover:underline mt-4 inline-block">
+              ← Back to Organizations
+            </Link>
           </div>
         </div>
       </div>
@@ -123,27 +162,25 @@ const PilotV0 = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {!isDirectAccess && (
-          <nav className="flex mb-8" aria-label="Breadcrumb">
-            <ol className="flex items-center space-x-2">
-              <li>
-                <Link to="/" className="text-[#5e4633] hover:text-[#442e1c]">Home</Link>
-              </li>
-              <li>
-                <span className="text-[#5e4633] mx-2">›</span>
-              </li>
-              <li>
-                <Link to="/pilot" className="text-[#5e4633] hover:text-[#442e1c]">Pilot Organizations</Link>
-              </li>
-              <li>
-                <span className="text-[#5e4633] mx-2">›</span>
-              </li>
-              <li>
-                <span className="text-[#442e1c] font-medium">{organization.name}</span>
-              </li>
-            </ol>
-          </nav>
-        )}
+        <nav className="flex mb-8" aria-label="Breadcrumb">
+          <ol className="flex items-center space-x-2">
+            <li>
+              <Link to="/" className="text-[#5e4633] hover:text-[#442e1c]">Home</Link>
+            </li>
+            <li>
+              <span className="text-[#5e4633] mx-2">›</span>
+            </li>
+            <li>
+              <Link to="/pilot" className="text-[#5e4633] hover:text-[#442e1c]">Pilot Organizations</Link>
+            </li>
+            <li>
+              <span className="text-[#5e4633] mx-2">›</span>
+            </li>
+            <li>
+              <span className="text-[#442e1c] font-medium">{organization.name}</span>
+            </li>
+          </ol>
+        </nav>
         
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[#442e1c] mb-4">
