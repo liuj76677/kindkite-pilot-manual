@@ -10,7 +10,6 @@ export default function GrantCard({ grant, organization }) {
   const [error, setError] = useState(null);
   const [activeSection, setActiveSection] = useState('overview');
   const [showApplication, setShowApplication] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     async function getAnalysis() {
@@ -81,71 +80,107 @@ export default function GrantCard({ grant, organization }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] rounded-2xl shadow-md overflow-hidden border border-[#f2e4d5]">
       <div className="p-6">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {grant.title}
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
-              {grant.funder}
-            </p>
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold mb-2 text-[#442e1c]">{grant.title}</h2>
+          <p className="text-base text-[#5e4633]">{grant.funder}</p>
+        </div>
+
+        {/* Fit Score */}
+        {analysis && (
+          <div className="mb-6">
+            <FitScore
+              score={analysis.alignment_score}
+              alignment={analysis.alignment_score}
+              impact={analysis.likelihood}
+            />
           </div>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-blue-600 hover:text-blue-800"
+        )}
+
+        {/* Primary Action */}
+        <div className="flex flex-col space-y-4 mb-6">
+          <a
+            href={grant.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full text-center bg-[#3d6b44] hover:bg-opacity-90 text-white text-lg font-semibold px-6 py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
           >
-            {isExpanded ? 'Show Less' : 'Show More'}
+            Apply Now
+          </a>
+          <button
+            onClick={() => setShowApplication(!showApplication)}
+            className="block w-full text-center bg-[#f2e4d5] hover:bg-opacity-90 text-[#442e1c] text-lg font-semibold px-6 py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
+          >
+            {showApplication ? 'Hide Application Details' : 'Show Application Details'}
           </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <p className="text-sm font-medium text-gray-500">Funding</p>
-            <p className="text-sm text-gray-900">{grant.funding}</p>
+        {/* Application Details */}
+        {showApplication && (
+          <div className="mt-6">
+            <GrantApplication grant={grant} organization={organization} />
           </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500">Deadline</p>
-            <p className="text-sm text-gray-900">{grant.deadline}</p>
+        )}
+
+        {/* Key Info */}
+        <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+          <div className="bg-[#f2e4d5] bg-opacity-70 p-4 rounded-lg shadow-sm">
+            <p className="font-medium text-[#442e1c] mb-1">Deadline</p>
+            <p className="text-[#5e4633]">{grant.deadline}</p>
           </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500">Effort Level</p>
-            <p className="text-sm text-gray-900">{analysis?.effort_level?.rating || 'Unknown'}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500">Eligibility</p>
-            <p className="text-sm text-gray-900">{grant.eligibility}</p>
+          <div className="bg-[#f2e4d5] bg-opacity-70 p-4 rounded-lg shadow-sm">
+            <p className="font-medium text-[#442e1c] mb-1">Effort Level</p>
+            <p className="text-[#5e4633]">{analysis?.effort_level?.rating || 'Unknown'}</p>
           </div>
         </div>
 
-        {isExpanded && (
-          <div className="mt-4 space-y-4">
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-2">Why it's a Good Match</h4>
-              <p className="text-sm text-gray-900">{analysis?.why_apply.main_reasons.join(', ')}</p>
-            </div>
+        {/* Expandable Sections */}
+        {analysis && (
+          <>
+            <Section id="overview" title="Why This Grant?">
+              <div className="bg-[#f2e4d5] bg-opacity-70 rounded-lg p-4 shadow-sm">
+                <div className="space-y-3">
+                  {analysis.why_apply.main_reasons.map((reason, index) => (
+                    <p key={index} className="text-sm text-[#5e4633] leading-relaxed">{reason}</p>
+                  ))}
+                </div>
+              </div>
+            </Section>
 
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-2">Application Steps</h4>
-              <ul className="list-disc list-inside text-sm text-gray-900">
-                {analysis?.action_items.immediate.slice(0, 3).map((step, index) => (
-                  <li key={index}>{step}</li>
-                ))}
-              </ul>
-            </div>
+            <Section id="actions" title="Action Items">
+              <div className="bg-[#f2e4d5] bg-opacity-70 rounded-lg p-4 shadow-sm">
+                <div className="space-y-4">
+                  {analysis.action_items.immediate.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-[#442e1c] mb-2">Next Steps:</p>
+                      <ul className="list-disc list-inside text-sm space-y-2">
+                        {analysis.action_items.immediate.slice(0, 3).map((item, index) => (
+                          <li key={index} className="text-[#5e4633] leading-relaxed">{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Section>
 
-            <div className="mt-4">
-              <a
-                href={grant.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Apply Now
-              </a>
-            </div>
-          </div>
+            <Section id="strategy" title="Strategic Insights">
+              <div className="bg-[#f2e4d5] bg-opacity-70 rounded-lg p-4 shadow-sm">
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm font-medium text-[#442e1c] mb-2">Key Strengths:</p>
+                    <ul className="list-disc list-inside text-sm space-y-2">
+                      {analysis.key_strengths.points.slice(0, 3).map((strength, index) => (
+                        <li key={index} className="text-[#5e4633] leading-relaxed">{strength}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </Section>
+          </>
         )}
       </div>
     </div>

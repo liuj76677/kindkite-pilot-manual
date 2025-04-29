@@ -1,49 +1,73 @@
 import PropTypes from 'prop-types';
 
 export default function FitScore({ score, alignment, impact }) {
+  // Helper function to determine color based on score
+  const getScoreColor = (value) => {
+    if (value >= 80) return 'text-green-600';
+    if (value >= 60) return 'text-yellow-600';
+    return 'text-red-600';
+  };
+
+  // Helper function to get descriptive text based on score
+  const getScoreDescription = (value) => {
+    if (value >= 80) return 'Excellent';
+    if (value >= 60) return 'Good';
+    if (value >= 40) return 'Fair';
+    return 'Poor';
+  };
+
   return (
-    <div className="relative p-4 rounded-lg bg-[#f2e4d5] bg-opacity-70 shadow-sm border border-[#f2e4d5]">
-      <div className="flex flex-col items-center">
-        <div className="relative w-24 h-24 mb-3">
-          <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
-            <circle
-              className="text-[#f2e4d5]"
-              strokeWidth="8"
-              stroke="currentColor"
-              fill="transparent"
-              r="44"
-              cx="50"
-              cy="50"
-            />
-            <circle
-              className="text-[#4d7c54]"
-              strokeWidth="8"
-              strokeDasharray={276.46}
-              strokeDashoffset={276.46 * (1 - score / 100)}
-              strokeLinecap="round"
-              stroke="currentColor"
-              fill="transparent"
-              r="44"
-              cx="50"
-              cy="50"
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <span className="text-2xl font-bold text-[#442e1c]">{score}</span>
-              <span className="text-sm text-[#5e4633]">%</span>
-            </div>
+    <div className="bg-[#f2e4d5] bg-opacity-70 rounded-xl p-6 shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-[#442e1c]">Fit Analysis</h3>
+        <div className="flex items-center">
+          <span className={`text-2xl font-bold ${getScoreColor(score)}`}>
+            {Math.round(score)}%
+          </span>
+          <span className="text-sm text-[#5e4633] ml-2">Overall Fit</span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-sm text-[#5e4633]">Mission Alignment</span>
+            <span className={`text-sm font-semibold ${getScoreColor(alignment)}`}>
+              {getScoreDescription(alignment)}
+            </span>
+          </div>
+          <div className="h-2 bg-gray-200 rounded-full">
+            <div
+              className={`h-full rounded-full ${
+                alignment >= 80
+                  ? 'bg-green-500'
+                  : alignment >= 60
+                  ? 'bg-yellow-500'
+                  : 'bg-red-500'
+              }`}
+              style={{ width: `${alignment}%` }}
+            ></div>
           </div>
         </div>
-        <h3 className="text-lg font-semibold text-[#442e1c] mb-2">KindKite Fit</h3>
-        <div className="flex gap-6 text-sm">
-          <div className="text-center">
-            <p className="text-[#5e4633] mb-1">Alignment</p>
-            <p className="font-semibold text-[#442e1c]">{alignment}%</p>
+
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-sm text-[#5e4633]">Impact Potential</span>
+            <span className={`text-sm font-semibold ${getScoreColor(impact)}`}>
+              {getScoreDescription(impact)}
+            </span>
           </div>
-          <div className="text-center">
-            <p className="text-[#5e4633] mb-1">Impact</p>
-            <p className="font-semibold text-[#442e1c]">{impact}%</p>
+          <div className="h-2 bg-gray-200 rounded-full">
+            <div
+              className={`h-full rounded-full ${
+                impact >= 80
+                  ? 'bg-green-500'
+                  : impact >= 60
+                  ? 'bg-yellow-500'
+                  : 'bg-red-500'
+              }`}
+              style={{ width: `${impact}%` }}
+            ></div>
           </div>
         </div>
       </div>

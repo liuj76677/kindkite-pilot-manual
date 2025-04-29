@@ -16,6 +16,12 @@ const Home = () => {
           View Dashboard
         </Link>
         <Link
+          to="/pilot"
+          className="bg-[#4d3d6b] hover:bg-opacity-90 text-white px-8 py-4 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg"
+        >
+          Pilot Access
+        </Link>
+        <Link
           to="/admin/grants"
           className="bg-[#6b3d3d] hover:bg-opacity-90 text-white px-8 py-4 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg"
         >
