@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import OrgDashboard from './pages/OrgDashboard';
 import OrgPage from './components/OrgPage';
 import AdminGrantManager from './components/AdminGrantManager';
+import PilotV0 from './pages/PilotV0';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/dashboard" element={<OrgDashboard />} />
           <Route path="/org/:orgId" element={<OrgPage />} />
           <Route path="/admin/grants" element={<AdminGrantManager />} />
+          <Route path="/pilot/:organizationId" element={<PilotV0 />} />
         </Routes>
       </Router>
     </div>
