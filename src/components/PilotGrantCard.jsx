@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { trackApplyClick, trackCardExpansion, trackGrantView } from '../services/analytics';
+import { trackInteraction, submitFeedback } from '../services/analytics';
 
 const EffortBadge = ({ level }) => {
   const colors = {
@@ -99,19 +99,19 @@ const PilotGrantCard = ({ grant, organizationName }) => {
 
   useEffect(() => {
     // Track view when card is mounted
-    trackGrantView(grant.id);
+    trackInteraction(grant.id, 'totalViews');
   }, [grant.id]);
 
   const handleExpand = () => {
     setIsExpanded(!isExpanded);
     if (!isExpanded) {
       // Only track when expanding, not collapsing
-      trackCardExpansion(grant.id);
+      trackInteraction(grant.id, 'cardExpansions');
     }
   };
 
   const handleApplyClick = () => {
-    trackApplyClick(grant.id);
+    trackInteraction(grant.id, 'applyClicks');
     window.open(grant.link, '_blank');
   };
 
