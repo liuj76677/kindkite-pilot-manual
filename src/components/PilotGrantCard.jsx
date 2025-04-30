@@ -39,8 +39,7 @@ const DeadlineBadge = ({ deadline }) => {
 
 const FeedbackPanel = ({ grantId }) => {
   const [feedback, setFeedback] = useState({
-    initialReaction: null,
-    missingInfo: '',
+    reaction: '',
     submitted: false
   });
 
@@ -62,41 +61,15 @@ const FeedbackPanel = ({ grantId }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-3">
-        <div>
-          <p className="text-sm font-medium text-[#442e1c] mb-2">What's your initial reaction to this grant?</p>
-          <div className="flex space-x-4">
-            {[
-              'Excited to apply',
-              'Might be a fit',
-              'Not quite right',
-              'Need more info'
-            ].map((option) => (
-              <label key={option} className="flex items-center">
-                <input
-                  type="radio"
-                  name="initialReaction"
-                  value={option}
-                  checked={feedback.initialReaction === option}
-                  onChange={(e) => setFeedback(prev => ({ ...prev, initialReaction: e.target.value }))}
-                  className="text-[#3d6b44] focus:ring-[#3d6b44]"
-                />
-                <span className="ml-2 text-sm text-[#5e4633]">{option}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p className="text-sm font-medium text-[#442e1c] mb-2">What other information would help you decide? (Optional)</p>
-          <textarea
-            value={feedback.missingInfo}
-            onChange={(e) => setFeedback(prev => ({ ...prev, missingInfo: e.target.value }))}
-            placeholder="E.g., specific requirements, timeline details..."
-            className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
-            rows="2"
-          />
-        </div>
+      <div>
+        <p className="text-sm font-medium text-[#442e1c] mb-2">What's your initial reaction to this grant?</p>
+        <textarea
+          value={feedback.reaction}
+          onChange={(e) => setFeedback(prev => ({ ...prev, reaction: e.target.value }))}
+          placeholder="Share your thoughts about this opportunity..."
+          className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
+          rows="3"
+        />
       </div>
 
       <button
@@ -140,24 +113,12 @@ const PilotGrantCard = ({ grant }) => {
               <DeadlineBadge deadline={grant.deadline} />
             </div>
           </div>
-          <div className="flex space-x-2">
-            <button
-              onClick={() => setShowFeedback(!showFeedback)}
-              className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2"
-              title="Give Feedback"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                      d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-              </svg>
-            </button>
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2"
-            >
-              <ExpandArrow />
-            </button>
-          </div>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2"
+          >
+            <ExpandArrow />
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -212,15 +173,27 @@ const PilotGrantCard = ({ grant }) => {
           )}
         </div>
 
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2 rounded-full hover:bg-[#f5ead7]/50"
-            aria-label={isExpanded ? "Show less" : "Show more"}
-          >
-            <ExpandArrow className="mx-auto" />
-          </button>
-        </div>
+        {isExpanded && (
+          <div className="flex justify-center mt-4 space-x-2">
+            <button
+              onClick={() => setShowFeedback(!showFeedback)}
+              className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2 rounded-full hover:bg-[#f5ead7]/50"
+              title={showFeedback ? "Hide feedback" : "Give feedback"}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                      d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2 rounded-full hover:bg-[#f5ead7]/50"
+              aria-label={isExpanded ? "Show less" : "Show more"}
+            >
+              <ExpandArrow className="mx-auto" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
