@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { trackApplyClick, trackCardExpansion, trackGrantView } from '../services/analytics';
 
 const EffortBadge = ({ level }) => {
   const colors = {
@@ -46,9 +47,6 @@ const FeedbackPanel = ({ grantId, organizationName }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      // Get existing feedback from localStorage
-      const existingFeedback = JSON.parse(localStorage.getItem('grantFeedback') || '[]');
-      
       // Create new feedback entry
       const newFeedback = {
         id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -58,13 +56,19 @@ const FeedbackPanel = ({ grantId, organizationName }) => {
         timestamp: new Date().toISOString()
       };
 
-      // Add to existing feedback and save back to localStorage
-      existingFeedback.push(newFeedback);
-      localStorage.setItem('grantFeedback', JSON.stringify(existingFeedback));
+      // Try to save to localStorage if available
+      try {
+        const existingFeedback = JSON.parse(localStorage.getItem('grantFeedback') || '[]');
+        existingFeedback.push(newFeedback);
+        localStorage.setItem('grantFeedback', JSON.stringify(existingFeedback));
+      } catch (storageError) {
+        // If localStorage fails, just log to console
+        console.log('Feedback submitted (localStorage not available):', newFeedback);
+      }
 
       setFeedback(prev => ({ ...prev, submitted: true }));
     } catch (error) {
-      console.error('Error saving feedback:', error);
+      console.error('Error handling feedback:', error);
     }
   };
 
@@ -104,6 +108,24 @@ const PilotGrantCard = ({ grant, organizationName }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
 
+  useEffect(() => {
+    // Track view when card is mounted
+    trackGrantView(grant.id);
+  }, [grant.id]);
+
+  const handleExpand = () => {
+    setIsExpanded(!isExpanded);
+    if (!isExpanded) {
+      // Only track when expanding, not collapsing
+      trackCardExpansion(grant.id);
+    }
+  };
+
+  const handleApplyClick = () => {
+    trackApplyClick(grant.id);
+    window.open(grant.link, '_blank');
+  };
+
   const ExpandArrow = ({ className = "" }) => (
     <svg 
       className={`w-5 h-5 transform transition-transform ${isExpanded ? 'rotate-180' : ''} ${className}`}
@@ -132,7 +154,7 @@ const PilotGrantCard = ({ grant, organizationName }) => {
             </div>
           </div>
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={handleExpand}
             className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2"
           >
             <ExpandArrow />
@@ -171,17 +193,15 @@ const PilotGrantCard = ({ grant, organizationName }) => {
           </div>
 
           <div className="flex justify-center pt-2">
-            <a
-              href={grant.link}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={handleApplyClick}
               className="inline-flex items-center px-6 py-3 text-base font-medium rounded-xl text-white bg-[#3d6b44] hover:bg-opacity-90 transition-all transform hover:scale-105 shadow-md"
             >
               Apply Now
               <svg className="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
-            </a>
+            </button>
           </div>
 
           {showFeedback && (
@@ -205,7 +225,7 @@ const PilotGrantCard = ({ grant, organizationName }) => {
             </button>
           )}
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={handleExpand}
             className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2 rounded-full hover:bg-[#f5ead7]/50"
             aria-label={isExpanded ? "Show less" : "Show more"}
           >

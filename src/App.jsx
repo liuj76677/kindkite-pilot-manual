@@ -5,6 +5,7 @@ import OrgPage from './components/OrgPage';
 import AdminGrantManager from './components/AdminGrantManager';
 import PilotV0 from './pages/PilotV0';
 import AdminFeedback from './pages/AdminFeedback';
+import AdminAnalytics from './pages/AdminAnalytics';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/pilot" element={<PilotV0 />} />
           <Route path="/pilot/:organizationId" element={<PilotV0 />} />
           <Route path="/admin/feedback" element={<AdminFeedback />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
         </Routes>
       </Router>
     </div>
