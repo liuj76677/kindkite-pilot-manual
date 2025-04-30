@@ -173,8 +173,8 @@ const PilotGrantCard = ({ grant }) => {
           )}
         </div>
 
-        {isExpanded && (
-          <div className="flex justify-center mt-4 space-x-2">
+        <div className="flex justify-center mt-4 space-x-2">
+          {isExpanded && (
             <button
               onClick={() => setShowFeedback(!showFeedback)}
               className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2 rounded-full hover:bg-[#f5ead7]/50"
@@ -185,15 +185,15 @@ const PilotGrantCard = ({ grant }) => {
                       d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
               </svg>
             </button>
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2 rounded-full hover:bg-[#f5ead7]/50"
-              aria-label={isExpanded ? "Show less" : "Show more"}
-            >
-              <ExpandArrow className="mx-auto" />
-            </button>
-          </div>
-        )}
+          )}
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2 rounded-full hover:bg-[#f5ead7]/50"
+            aria-label={isExpanded ? "Show less" : "Show more"}
+          >
+            <ExpandArrow className="mx-auto" />
+          </button>
+        </div>
       </div>
     </div>
   );
