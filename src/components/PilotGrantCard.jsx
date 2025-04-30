@@ -37,8 +37,81 @@ const DeadlineBadge = ({ deadline }) => {
   );
 };
 
+const FeedbackPanel = ({ grantId }) => {
+  const [feedback, setFeedback] = useState({
+    initialReaction: null,
+    missingInfo: '',
+    submitted: false
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Send feedback to backend
+    console.log('Feedback submitted:', { grantId, ...feedback });
+    setFeedback(prev => ({ ...prev, submitted: true }));
+  };
+
+  if (feedback.submitted) {
+    return (
+      <div className="bg-green-50 text-green-800 p-4 rounded-lg text-center">
+        <p className="font-medium">Thanks for your input!</p>
+        <p className="text-sm mt-1">Keep us posted on your application progress.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-3">
+        <div>
+          <p className="text-sm font-medium text-[#442e1c] mb-2">What's your initial reaction to this grant?</p>
+          <div className="flex space-x-4">
+            {[
+              'Excited to apply',
+              'Might be a fit',
+              'Not quite right',
+              'Need more info'
+            ].map((option) => (
+              <label key={option} className="flex items-center">
+                <input
+                  type="radio"
+                  name="initialReaction"
+                  value={option}
+                  checked={feedback.initialReaction === option}
+                  onChange={(e) => setFeedback(prev => ({ ...prev, initialReaction: e.target.value }))}
+                  className="text-[#3d6b44] focus:ring-[#3d6b44]"
+                />
+                <span className="ml-2 text-sm text-[#5e4633]">{option}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-sm font-medium text-[#442e1c] mb-2">What other information would help you decide? (Optional)</p>
+          <textarea
+            value={feedback.missingInfo}
+            onChange={(e) => setFeedback(prev => ({ ...prev, missingInfo: e.target.value }))}
+            placeholder="E.g., specific requirements, timeline details..."
+            className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
+            rows="2"
+          />
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        className="w-full px-4 py-2 bg-[#3d6b44] text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition-colors"
+      >
+        Submit Feedback
+      </button>
+    </form>
+  );
+};
+
 const PilotGrantCard = ({ grant }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   return (
     <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-md overflow-hidden border border-[#f2e4d5] transition-all hover:shadow-lg">
@@ -56,15 +129,27 @@ const PilotGrantCard = ({ grant }) => {
               <DeadlineBadge deadline={grant.deadline} />
             </div>
           </div>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="ml-4 text-[#3d6b44] hover:text-[#2a4b30] transition-colors"
-          >
-            <svg className={`w-6 h-6 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setShowFeedback(!showFeedback)}
+              className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2"
+              title="Give Feedback"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                      d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2"
+            >
+              <svg className={`w-5 h-5 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -77,6 +162,12 @@ const PilotGrantCard = ({ grant }) => {
             <p className="text-sm text-[#5e4633]">{grant.eligibility}</p>
           </div>
         </div>
+
+        {showFeedback && (
+          <div className="border-t border-[#f2e4d5] pt-4 mt-4">
+            <FeedbackPanel grantId={grant.id} />
+          </div>
+        )}
 
         <div className={`space-y-6 transition-all ${isExpanded ? 'opacity-100' : 'hidden opacity-0'}`}>
           <div className="bg-[#f5ead7]/30 p-4 rounded-lg">
@@ -123,6 +214,10 @@ EffortBadge.propTypes = {
 
 DeadlineBadge.propTypes = {
   deadline: PropTypes.string.isRequired
+};
+
+FeedbackPanel.propTypes = {
+  grantId: PropTypes.string.isRequired
 };
 
 PilotGrantCard.propTypes = {

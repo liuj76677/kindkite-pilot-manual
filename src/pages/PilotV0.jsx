@@ -1,6 +1,131 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import PilotGrantCard from '../components/PilotGrantCard';
+import PropTypes from 'prop-types';
+
+const PageFeedback = ({ organization }) => {
+  const [showForm, setShowForm] = useState(false);
+  const [feedback, setFeedback] = useState({
+    isHelpful: null,
+    planToApply: [],
+    otherFeedback: '',
+    submitted: false
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Send feedback to backend
+    console.log('Page feedback submitted:', { organization: organization.name, ...feedback });
+    setFeedback(prev => ({ ...prev, submitted: true }));
+  };
+
+  if (feedback.submitted) {
+    return (
+      <div className="bg-green-50 text-green-800 p-4 rounded-lg text-center mt-8">
+        <p className="font-medium">Thank you for your feedback!</p>
+        <p className="text-sm mt-1">We'll be in touch as we roll out new AI-powered features to support your grant applications.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-12 border-t border-[#f2e4d5] pt-8">
+      {!showForm ? (
+        <div className="text-center">
+          <p className="text-[#5e4633] mb-4">
+            We're building an AI-powered platform to further support your grant applications. 
+            Your feedback will help shape our development!
+          </p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="mx-auto block px-6 py-3 bg-[#3d6b44] text-white rounded-xl text-sm font-medium hover:bg-opacity-90 transition-colors"
+          >
+            Share Your Thoughts
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-white/90 rounded-xl p-6 shadow-md border border-[#f2e4d5]">
+          <h3 className="text-lg font-semibold text-[#442e1c] mb-2">Quick Feedback</h3>
+          <p className="text-sm text-[#5e4633] mb-6">Your input will help us improve KindKite as we develop more features to support your grant applications.</p>
+          
+          <div className="space-y-6">
+            <div>
+              <p className="text-sm font-medium text-[#442e1c] mb-3">Is learning about these grant opportunities helpful on its own?</p>
+              <div className="flex space-x-4">
+                {['Yes, very helpful', 'Somewhat helpful', 'Not really helpful'].map((option) => (
+                  <label key={option} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="isHelpful"
+                      value={option}
+                      checked={feedback.isHelpful === option}
+                      onChange={(e) => setFeedback(prev => ({ ...prev, isHelpful: e.target.value }))}
+                      className="text-[#3d6b44] focus:ring-[#3d6b44]"
+                    />
+                    <span className="ml-2 text-sm text-[#5e4633]">{option}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-sm font-medium text-[#442e1c] mb-3">Which grants are you considering applying to?</p>
+              <div className="space-y-2">
+                {organization.grants.map(grant => (
+                  <label key={grant.id} className="flex items-start">
+                    <input
+                      type="checkbox"
+                      value={grant.id}
+                      checked={feedback.planToApply.includes(grant.id)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setFeedback(prev => ({
+                          ...prev,
+                          planToApply: e.target.checked 
+                            ? [...prev.planToApply, value]
+                            : prev.planToApply.filter(id => id !== value)
+                        }));
+                      }}
+                      className="mt-1 text-[#3d6b44] focus:ring-[#3d6b44]"
+                    />
+                    <span className="ml-2 text-sm text-[#5e4633]">{grant.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-sm font-medium text-[#442e1c] mb-2">Any other feedback about these recommendations?</p>
+              <textarea
+                value={feedback.otherFeedback}
+                onChange={(e) => setFeedback(prev => ({ ...prev, otherFeedback: e.target.value }))}
+                placeholder="What would make these recommendations more useful? What other support would help with your grant applications?"
+                className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
+                rows="3"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="px-4 py-2 text-[#5e4633] hover:text-[#442e1c] transition-colors text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-[#3d6b44] text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition-colors"
+            >
+              Submit Feedback
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+};
 
 const PilotV0 = () => {
   const { organizationId } = useParams();
@@ -102,6 +227,8 @@ const PilotV0 = () => {
               <PilotGrantCard key={grant.id} grant={grant} />
             ))}
           </div>
+
+          <PageFeedback organization={organization} />
         </div>
       </div>
     );
@@ -199,6 +326,12 @@ const PilotV0 = () => {
       </div>
     </div>
   );
+};
+
+PageFeedback.propTypes = {
+  organization: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default PilotV0; 
