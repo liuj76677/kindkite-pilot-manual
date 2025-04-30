@@ -40,41 +40,31 @@ const DeadlineBadge = ({ deadline }) => {
 const FeedbackPanel = ({ grantId, organizationName }) => {
   const [feedback, setFeedback] = useState({
     reaction: '',
-    submitted: false,
-    error: null
+    submitted: false
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/store-feedback', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          grantId,
-          organizationName,
-          reaction: feedback.reaction
-        }),
-      });
+      // Get existing feedback from localStorage
+      const existingFeedback = JSON.parse(localStorage.getItem('grantFeedback') || '[]');
+      
+      // Create new feedback entry
+      const newFeedback = {
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        grantId,
+        organizationName,
+        reaction: feedback.reaction,
+        timestamp: new Date().toISOString()
+      };
 
-      if (!response.ok) {
-        throw new Error('Failed to submit feedback');
-      }
+      // Add to existing feedback and save back to localStorage
+      existingFeedback.push(newFeedback);
+      localStorage.setItem('grantFeedback', JSON.stringify(existingFeedback));
 
-      const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      setFeedback(prev => ({ ...prev, submitted: true, error: null }));
+      setFeedback(prev => ({ ...prev, submitted: true }));
     } catch (error) {
-      console.error('Error submitting feedback:', error);
-      setFeedback(prev => ({ 
-        ...prev, 
-        error: error.message || 'Failed to submit feedback. Please try again.' 
-      }));
+      console.error('Error saving feedback:', error);
     }
   };
 
@@ -99,10 +89,6 @@ const FeedbackPanel = ({ grantId, organizationName }) => {
           rows="3"
         />
       </div>
-
-      {feedback.error && (
-        <p className="text-sm text-red-600">{feedback.error}</p>
-      )}
 
       <button
         type="submit"

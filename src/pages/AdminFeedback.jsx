@@ -3,35 +3,18 @@ import { Link } from 'react-router-dom';
 
 const AdminFeedback = () => {
   const [feedback, setFeedback] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [filter, setFilter] = useState({
     organization: '',
     grantId: ''
   });
 
   useEffect(() => {
-    fetchFeedback();
+    // Load feedback from localStorage
+    const storedFeedback = JSON.parse(localStorage.getItem('grantFeedback') || '[]');
+    // Sort by timestamp, most recent first
+    storedFeedback.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    setFeedback(storedFeedback);
   }, []);
-
-  const fetchFeedback = async () => {
-    try {
-      const response = await fetch('/api/get-feedback');
-      if (!response.ok) {
-        throw new Error('Failed to fetch feedback');
-      }
-      const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error);
-      }
-      setFeedback(data.feedback);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching feedback:', error);
-      setError(error.message || 'Failed to load feedback data');
-      setLoading(false);
-    }
-  };
 
   const filteredFeedback = feedback.filter(item => {
     const matchesOrg = !filter.organization || 
@@ -50,30 +33,6 @@ const AdminFeedback = () => {
       minute: '2-digit'
     });
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-lg text-[#5e4633]">Loading feedback data...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-lg text-red-600">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f5ead7] to-[#f8dfc3] py-8">
