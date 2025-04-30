@@ -1,6 +1,9 @@
 // Analytics service for tracking user interactions
 
-const API_URL = process.env.VITE_API_URL || 'http://localhost:3001';
+// Get the base API URL based on environment
+const API_URL = import.meta.env.PROD 
+  ? '' // Empty string means use relative URLs in production (same domain)
+  : 'http://localhost:3001';
 
 // Initialize analytics data structure
 const initializeAnalytics = () => {
