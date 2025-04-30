@@ -224,7 +224,11 @@ const PilotV0 = () => {
 
           <div className="grid gap-8">
             {organization.grants.map((grant) => (
-              <PilotGrantCard key={grant.id} grant={grant} />
+              <PilotGrantCard 
+                key={grant.id} 
+                grant={grant} 
+                organizationName={organization.name}
+              />
             ))}
           </div>
 
@@ -320,7 +324,11 @@ const PilotV0 = () => {
 
         <div className="grid gap-8">
           {organization.grants.map((grant) => (
-            <PilotGrantCard key={grant.id} grant={grant} />
+            <PilotGrantCard 
+              key={grant.id} 
+              grant={grant} 
+              organizationName={organization.name}
+            />
           ))}
         </div>
       </div>

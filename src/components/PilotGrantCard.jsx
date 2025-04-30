@@ -37,17 +37,37 @@ const DeadlineBadge = ({ deadline }) => {
   );
 };
 
-const FeedbackPanel = ({ grantId }) => {
+const FeedbackPanel = ({ grantId, organizationName }) => {
   const [feedback, setFeedback] = useState({
     reaction: '',
-    submitted: false
+    submitted: false,
+    error: null
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Send feedback to backend
-    console.log('Feedback submitted:', { grantId, ...feedback });
-    setFeedback(prev => ({ ...prev, submitted: true }));
+    try {
+      const response = await fetch('/api/store-feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          grantId,
+          organizationName,
+          reaction: feedback.reaction
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit feedback');
+      }
+
+      setFeedback(prev => ({ ...prev, submitted: true, error: null }));
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+      setFeedback(prev => ({ ...prev, error: 'Failed to submit feedback. Please try again.' }));
+    }
   };
 
   if (feedback.submitted) {
@@ -72,6 +92,10 @@ const FeedbackPanel = ({ grantId }) => {
         />
       </div>
 
+      {feedback.error && (
+        <p className="text-sm text-red-600">{feedback.error}</p>
+      )}
+
       <button
         type="submit"
         className="w-full px-4 py-2 bg-[#3d6b44] text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition-colors"
@@ -82,7 +106,7 @@ const FeedbackPanel = ({ grantId }) => {
   );
 };
 
-const PilotGrantCard = ({ grant }) => {
+const PilotGrantCard = ({ grant, organizationName }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
 
@@ -168,7 +192,7 @@ const PilotGrantCard = ({ grant }) => {
 
           {showFeedback && (
             <div className="border-t border-[#f2e4d5] pt-4">
-              <FeedbackPanel grantId={grant.id} />
+              <FeedbackPanel grantId={grant.id} organizationName={organizationName} />
             </div>
           )}
         </div>
@@ -208,7 +232,8 @@ DeadlineBadge.propTypes = {
 };
 
 FeedbackPanel.propTypes = {
-  grantId: PropTypes.string.isRequired
+  grantId: PropTypes.string.isRequired,
+  organizationName: PropTypes.string.isRequired
 };
 
 PilotGrantCard.propTypes = {
@@ -222,7 +247,9 @@ PilotGrantCard.propTypes = {
     match: PropTypes.string.isRequired,
     steps: PropTypes.arrayOf(PropTypes.string).isRequired,
     link: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
   }).isRequired,
+  organizationName: PropTypes.string.isRequired,
 };
 
 export default PilotGrantCard; 
