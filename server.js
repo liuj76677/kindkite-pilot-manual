@@ -3,23 +3,33 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import { config } from 'dotenv';
+
+config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://kindkite-pilot-manual.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// In production, serve the static files from the dist directory
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'dist')));
-}
+// Serve the static files from the dist directory
+app.use(express.static(path.join(__dirname, 'dist')));
 
 // MongoDB connection with detailed logging
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/kindkite';
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) {
+  console.error('MONGODB_URI environment variable is required');
+  process.exit(1);
+}
+
 console.log('Attempting to connect to MongoDB...');
-console.log('Database URI:', MONGODB_URI.replace(/mongodb\+srv:\/\/([^:]+):([^@]+)@/, 'mongodb+srv://[username]:[password]@')); // Log URI without credentials
+console.log('Database URI:', MONGODB_URI.replace(/mongodb\+srv:\/\/([^:]+):([^@]+)@/, 'mongodb+srv://[username]:[password]@'));
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
@@ -175,17 +185,13 @@ app.get('/api/analytics', async (req, res) => {
   }
 });
 
-// For production, handle all other routes by serving the index.html
-if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-  });
-}
+// Handle all other routes by serving the index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 // Start server
 const PORT = process.env.PORT || 3001;
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
 }); 

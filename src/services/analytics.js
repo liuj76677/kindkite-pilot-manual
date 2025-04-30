@@ -1,14 +1,9 @@
 // Analytics service for tracking user interactions
 
-// Get the base API URL based on environment
-const API_URL = import.meta.env.PROD 
-  ? '' // Empty string means use relative URLs in production (same domain)
-  : 'http://localhost:3001';
-
 // Track interaction
 export const trackInteraction = async (grantId, type) => {
   try {
-    await fetch(`${API_URL}/api/interactions`, {
+    await fetch('/api/interactions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -29,7 +24,7 @@ export const trackInteraction = async (grantId, type) => {
 // Submit feedback
 export const submitFeedback = async (feedback) => {
   try {
-    await fetch(`${API_URL}/api/feedback`, {
+    await fetch('/api/feedback', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +45,7 @@ export const submitFeedback = async (feedback) => {
 // Get all analytics data
 export const getAnalytics = async () => {
   try {
-    const response = await fetch(`${API_URL}/api/analytics`);
+    const response = await fetch('/api/analytics');
     const data = await response.json();
     return data;
   } catch (error) {

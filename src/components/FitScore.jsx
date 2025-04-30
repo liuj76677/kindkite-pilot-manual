@@ -35,7 +35,7 @@ export default function FitScore({ score, alignment, impact }) {
             <span className={`text-sm font-semibold ${getScoreColor(alignment)}`}>
               {getScoreDescription(alignment)}
             </span>
-          </div>
+            </div>
           <div className="h-2 bg-gray-200 rounded-full">
             <div
               className={`h-full rounded-full ${
