@@ -113,6 +113,17 @@ const PilotGrantCard = ({ grant }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
 
+  const ExpandArrow = ({ className = "" }) => (
+    <svg 
+      className={`w-5 h-5 transform transition-transform ${isExpanded ? 'rotate-180' : ''} ${className}`}
+      fill="none" 
+      stroke="currentColor" 
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  );
+
   return (
     <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-md overflow-hidden border border-[#f2e4d5] transition-all hover:shadow-lg">
       <div className="p-6">
@@ -144,10 +155,7 @@ const PilotGrantCard = ({ grant }) => {
               onClick={() => setIsExpanded(!isExpanded)}
               className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2"
             >
-              <svg className={`w-5 h-5 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
-                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
+              <ExpandArrow />
             </button>
           </div>
         </div>
@@ -162,12 +170,6 @@ const PilotGrantCard = ({ grant }) => {
             <p className="text-sm text-[#5e4633]">{grant.eligibility}</p>
           </div>
         </div>
-
-        {showFeedback && (
-          <div className="border-t border-[#f2e4d5] pt-4 mt-4">
-            <FeedbackPanel grantId={grant.id} />
-          </div>
-        )}
 
         <div className={`space-y-6 transition-all ${isExpanded ? 'opacity-100' : 'hidden opacity-0'}`}>
           <div className="bg-[#f5ead7]/30 p-4 rounded-lg">
@@ -202,6 +204,22 @@ const PilotGrantCard = ({ grant }) => {
               </svg>
             </a>
           </div>
+
+          {showFeedback && (
+            <div className="border-t border-[#f2e4d5] pt-4">
+              <FeedbackPanel grantId={grant.id} />
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="text-[#3d6b44] hover:text-[#2a4b30] transition-colors p-2 rounded-full hover:bg-[#f5ead7]/50"
+            aria-label={isExpanded ? "Show less" : "Show more"}
+          >
+            <ExpandArrow className="mx-auto" />
+          </button>
         </div>
       </div>
     </div>
