@@ -44,29 +44,18 @@ const FeedbackPanel = ({ grantId, organizationName }) => {
     submitted: false
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Create new feedback entry
-      const newFeedback = {
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      const success = await submitFeedback({
         grantId,
         organizationName,
-        reaction: feedback.reaction,
-        timestamp: new Date().toISOString()
-      };
-
-      // Try to save to localStorage if available
-      try {
-        const existingFeedback = JSON.parse(localStorage.getItem('grantFeedback') || '[]');
-        existingFeedback.push(newFeedback);
-        localStorage.setItem('grantFeedback', JSON.stringify(existingFeedback));
-      } catch (storageError) {
-        // If localStorage fails, just log to console
-        console.log('Feedback submitted (localStorage not available):', newFeedback);
+        reaction: feedback.reaction
+      });
+      
+      if (success) {
+        setFeedback(prev => ({ ...prev, submitted: true }));
       }
-
-      setFeedback(prev => ({ ...prev, submitted: true }));
     } catch (error) {
       console.error('Error handling feedback:', error);
     }

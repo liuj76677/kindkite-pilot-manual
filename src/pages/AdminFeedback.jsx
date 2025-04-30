@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getAnalytics } from '../services/analytics';
 
 const AdminFeedback = () => {
   const [feedback, setFeedback] = useState([]);
@@ -9,11 +10,11 @@ const AdminFeedback = () => {
   });
 
   useEffect(() => {
-    // Load feedback from localStorage
-    const storedFeedback = JSON.parse(localStorage.getItem('grantFeedback') || '[]');
-    // Sort by timestamp, most recent first
-    storedFeedback.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    setFeedback(storedFeedback);
+    const loadFeedback = async () => {
+      const data = await getAnalytics();
+      setFeedback(data.feedback);
+    };
+    loadFeedback();
   }, []);
 
   const filteredFeedback = feedback.filter(item => {

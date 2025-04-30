@@ -5,29 +5,8 @@ const API_URL = import.meta.env.PROD
   ? '' // Empty string means use relative URLs in production (same domain)
   : 'http://localhost:3001';
 
-// Initialize analytics data structure
-const initializeAnalytics = () => {
-  try {
-    // Initialize feedback if not exists
-    if (!localStorage.getItem(STORAGE_KEYS.FEEDBACK)) {
-      localStorage.setItem(STORAGE_KEYS.FEEDBACK, JSON.stringify([]));
-    }
-    
-    // Initialize interactions if not exists
-    if (!localStorage.getItem(STORAGE_KEYS.INTERACTIONS)) {
-      localStorage.setItem(STORAGE_KEYS.INTERACTIONS, JSON.stringify({
-        applyClicks: {},
-        cardExpansions: {},
-        totalViews: {}
-      }));
-    }
-  } catch (error) {
-    console.error('Error initializing analytics:', error);
-  }
-};
-
-// Track apply button clicks
-export const trackApplyClick = async (grantId) => {
+// Track interaction
+export const trackInteraction = async (grantId, type) => {
   try {
     await fetch(`${API_URL}/api/interactions`, {
       method: 'POST',
@@ -35,48 +14,15 @@ export const trackApplyClick = async (grantId) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        type: 'applyClicks',
-        grantId
+        grantId,
+        type,
+        timestamp: new Date().toISOString()
       })
     });
+    return true;
   } catch (error) {
-    console.error('Error tracking apply click:', error);
-  }
-};
-
-// Track card expansions
-export const trackCardExpansion = async (grantId) => {
-  try {
-    await fetch(`${API_URL}/api/interactions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        type: 'cardExpansions',
-        grantId
-      })
-    });
-  } catch (error) {
-    console.error('Error tracking card expansion:', error);
-  }
-};
-
-// Track grant views
-export const trackGrantView = async (grantId) => {
-  try {
-    await fetch(`${API_URL}/api/interactions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        type: 'totalViews',
-        grantId
-      })
-    });
-  } catch (error) {
-    console.error('Error tracking grant view:', error);
+    console.error('Error tracking interaction:', error);
+    return false;
   }
 };
 
@@ -118,7 +64,4 @@ export const getAnalytics = async () => {
       }
     };
   }
-};
-
-// Initialize analytics on module load
-initializeAnalytics(); 
+}; 
