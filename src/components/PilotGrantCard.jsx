@@ -63,10 +63,18 @@ const FeedbackPanel = ({ grantId, organizationName }) => {
         throw new Error('Failed to submit feedback');
       }
 
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       setFeedback(prev => ({ ...prev, submitted: true, error: null }));
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      setFeedback(prev => ({ ...prev, error: 'Failed to submit feedback. Please try again.' }));
+      setFeedback(prev => ({ 
+        ...prev, 
+        error: error.message || 'Failed to submit feedback. Please try again.' 
+      }));
     }
   };
 

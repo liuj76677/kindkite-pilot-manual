@@ -21,11 +21,14 @@ const AdminFeedback = () => {
         throw new Error('Failed to fetch feedback');
       }
       const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
       setFeedback(data.feedback);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching feedback:', error);
-      setError('Failed to load feedback data');
+      setError(error.message || 'Failed to load feedback data');
       setLoading(false);
     }
   };
