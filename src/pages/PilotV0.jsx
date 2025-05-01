@@ -188,7 +188,7 @@ const PilotV0 = () => {
           eligibility: 'Open worldwide to for-profit or nonprofit entrepreneurs. Tembo\'s global experience gives it an edge, though D-Prize often favors newer startups.',
           funding: 'Up to $20,000 in grant funding to launch pilot (equity-free)',
           deadline: 'May 18, 2025 (early deadline); June 29, 2025 (final)',
-          effort: 'Light',
+          effort: 'Application Effort: Light',
           steps: [
             'Fill out the online concept note form addressing the specific D-Prize challenge category',
             'If invited to Stage 2, submit a full proposal (~10 pages)',
@@ -204,7 +204,7 @@ const PilotV0 = () => {
           eligibility: 'Open to for-profits, nonprofits, or individuals worldwide with a charitable purpose',
           funding: '$2,500 to $15,000 for one year (equity-free)',
           deadline: 'Rolling – no fixed deadline',
-          effort: 'Light',
+          effort: 'Application Effort: Light',
           steps: [
             'Submit via the Catalyst Fund\'s online portal',
             'Create an account and fill in the proposal questions in English',
@@ -220,7 +220,7 @@ const PilotV0 = () => {
           eligibility: 'Both nonprofits and mission-driven for-profits (including C-corp or B-corp structures). Looking for full-time founding teams with proven concept and early traction.',
           funding: 'Up to $300,000 over 3 years (typically $100K/year) plus mentorship',
           deadline: 'Rolling – year-round submissions',
-          effort: 'Moderate',
+          effort: 'Application Effort: Moderate',
           steps: [
             'Complete the "Submit an Application" form with basic info and short prompts',
             'Attach pitch deck or 2-3 page summary covering mission, model, team, and plans',
@@ -242,7 +242,7 @@ const PilotV0 = () => {
           eligibility: 'Open to women-run, for-profit businesses worldwide with strong social or environmental impact missions. Two Moons qualifies as a women-led impact venture in the health and wellness space.',
           funding: 'Up to US$100,000 for 1st place (with second and third place awards of $60,000 and $30,000) in each regional or thematic category. All fellows also get access to mentorship, networking, and INSEAD courses.',
           deadline: 'June 24, 2025 (2pm CEST) for the 2025 cohort',
-          effort: 'Medium',
+          effort: 'Application Effort: Medium',
           steps: [
             'Complete the online application form',
             'Submit business plan and impact metrics',
@@ -259,7 +259,7 @@ const PilotV0 = () => {
           eligibility: 'Open to women-owned small businesses in the U.S. The application is simple and qualifies you for all monthly and category-specific grants over the next 12 months.',
           funding: '$10,000 awarded monthly, with winners becoming eligible for an additional $25,000 year-end Amber Grant',
           deadline: 'Rolling monthly applications',
-          effort: 'Light',
+          effort: 'Application Effort: Light',
           steps: [
             'Complete the short online application form',
             'Application remains active for 12 months',
@@ -275,7 +275,7 @@ const PilotV0 = () => {
           eligibility: 'Open to women entrepreneurs across the U.S., including New York',
           funding: '$1,000 monthly',
           deadline: 'Rolling monthly applications',
-          effort: 'Light',
+          effort: 'Application Effort: Light',
           steps: [
             'Submit brief explanation of business idea',
             'Describe importance and fund utilization',
@@ -291,7 +291,7 @@ const PilotV0 = () => {
           eligibility: 'Open to women-led businesses in the U.S.',
           funding: 'Varies; past grants have ranged from $5,000 to $25,000',
           deadline: 'Ongoing; submit once to be considered for multiple opportunities',
-          effort: 'Light',
+          effort: 'Application Effort: Light',
           steps: [
             'Complete the Universal Grant Application',
             'Get matched with relevant grant opportunities',
