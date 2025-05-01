@@ -229,8 +229,78 @@ const PilotV0 = () => {
           link: 'https://www.drkfoundation.org/apply-for-funding/submit-an-application/'
         }
       ]
+    },
+    'two-moons-health': {
+      name: 'Two Moons Health',
+      description: 'A for-profit social enterprise (Delaware C-corp) focused on women\'s hormonal health through natural, science-backed solutions. Founded by a doctor and a lawyer in NYC, Two Moons offers the first-ever seed cycling capsule (patent pending) to support PMS, PMDD, perimenopause, hormonal acne, and cycle irregularities. The company combines ancient wisdom with modern science to create all-organic, plant-based supplements designed to sync with the menstrual cycle\'s phases.',
+      grants: [
+        {
+          id: 'cartier-womens-initiative',
+          name: 'Cartier Women\'s Initiative',
+          funder: 'Cartier International (Cartier Philanthropy)',
+          match: 'Two Moons Health perfectly aligns with Cartier\'s mission of supporting women-led impact ventures that leverage business for social good. As a women-founded company addressing critical women\'s health needs through innovative, science-backed solutions, Two Moons represents the type of social enterprise Cartier seeks to support.',
+          eligibility: 'Open to women-run, for-profit businesses worldwide with strong social or environmental impact missions. Two Moons qualifies as a women-led impact venture in the health and wellness space.',
+          funding: 'Up to US$100,000 for 1st place (with second and third place awards of $60,000 and $30,000) in each regional or thematic category. All fellows also get access to mentorship, networking, and INSEAD courses.',
+          deadline: 'June 24, 2025 (2pm CEST) for the 2025 cohort',
+          effort: 'Medium',
+          steps: [
+            'Complete the online application form',
+            'Submit business plan and impact metrics',
+            'If selected, participate in regional finals',
+            'Finalists pitch to judges'
+          ],
+          link: 'https://www.cartierwomensinitiative.com/'
+        },
+        {
+          id: 'amber-grant',
+          name: 'Amber Grant (WomensNet)',
+          funder: 'WomensNet (Amber Grant Foundation)',
+          match: 'Two Moons Health fits perfectly within the Amber Grant\'s scope as a woman-owned wellness venture. The company\'s focus on women\'s health and empowerment aligns well with the grant\'s mission of supporting women entrepreneurs.',
+          eligibility: 'Open to women-owned small businesses in the U.S. The application is simple and qualifies you for all monthly and category-specific grants over the next 12 months.',
+          funding: '$10,000 awarded monthly, with winners becoming eligible for an additional $25,000 year-end Amber Grant',
+          deadline: 'Rolling monthly applications',
+          effort: 'Light',
+          steps: [
+            'Complete the short online application form',
+            'Application remains active for 12 months',
+            'Automatic consideration for monthly and category-specific grants'
+          ],
+          link: 'https://ambergrantsforwomen.com/'
+        },
+        {
+          id: 'big-idea-grant',
+          name: 'Big Idea Grant by YippityDoo',
+          funder: 'YippityDoo',
+          match: 'Two Moons Health\'s innovative approach to women\'s wellness through seed cycling capsules aligns well with this grant\'s focus on supporting innovative women entrepreneurs.',
+          eligibility: 'Open to women entrepreneurs across the U.S., including New York',
+          funding: '$1,000 monthly',
+          deadline: 'Rolling monthly applications',
+          effort: 'Light',
+          steps: [
+            'Submit brief explanation of business idea',
+            'Describe importance and fund utilization',
+            'Complete simple application form'
+          ],
+          link: 'https://yippitydoo.com/'
+        },
+        {
+          id: 'ifundwomen',
+          name: 'IFundWomen Universal Grant Application',
+          funder: 'IFundWomen (IFW)',
+          match: 'Two Moons Health\'s mission of empowering women through better hormonal health aligns perfectly with IFW\'s focus on supporting women-led businesses. The company\'s innovative approach to women\'s wellness makes it a strong candidate for various grant opportunities.',
+          eligibility: 'Open to women-led businesses in the U.S.',
+          funding: 'Varies; past grants have ranged from $5,000 to $25,000',
+          deadline: 'Ongoing; submit once to be considered for multiple opportunities',
+          effort: 'Light',
+          steps: [
+            'Complete the Universal Grant Application',
+            'Get matched with relevant grant opportunities',
+            'Access coaching and networking resources'
+          ],
+          link: 'https://ifundwomen.com/'
+        }
+      ]
     }
-    // Add other organizations here
   };
 
   // If direct access, only show organization view
