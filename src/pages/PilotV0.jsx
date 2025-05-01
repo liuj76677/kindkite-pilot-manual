@@ -300,6 +300,80 @@ const PilotV0 = () => {
           link: 'https://ifundwomen.com/'
         }
       ]
+    },
+    'viva-la-vida': {
+      name: 'Viva La Vida',
+      description: 'A global nonprofit organization building cross-cultural connections and solidarity through collaborative art projects. Founded by Xiaoning Lyu, Viva La Vida focuses on fostering mental well-being and resilience among marginalized communities (children, refugees, women, LGBTQ+) while amplifying underrepresented voices through art-based advocacy and exhibitions. The organization partners with global institutions including the UN, NGOs, and corporations to advance social impact.',
+      grants: [
+        {
+          id: 'unesco-ifcd',
+          name: 'UNESCO International Fund for Cultural Diversity (IFCD)',
+          funder: 'UNESCO',
+          match: 'IFCD supports innovative arts and culture projects that empower underserved communities and foster cross-cultural connections, perfectly aligning with VLV\'s mission. As an organization registered in multiple countries including China (a developing country party to the 2005 Convention), VLV qualifies as an international NGO applicant. The organization\'s track record of UN exhibitions and art programs for refugees/children strengthens the application.',
+          eligibility: 'Open to NGOs and international NGOs. Projects must benefit developing-country communities and drive sustainable change in cultural industries.',
+          funding: 'Up to US$100,000 for 12-24 month projects',
+          deadline: 'May 21, 2025',
+          effort: 'Application Effort: Moderate',
+          steps: [
+            'Develop detailed project proposal focusing on structural impacts',
+            'Engage with National Commissions for UNESCO in registration countries',
+            'Complete online platform application with results framework',
+            'Obtain endorsement from national UNESCO commissions'
+          ],
+          link: 'https://www.unesco.org/creativity/sites/default/files/medias/fichiers/2025/03/16_IFCD_call_2025_en_0.pdf?hub=11'
+        },
+        {
+          id: 'nea-gap',
+          name: 'NEA Grants for Arts Projects (GAP)',
+          funder: 'National Endowment for the Arts',
+          match: 'The NEA\'s principal grant program aligns perfectly with Viva La Vida\'s focus on arts for mental health, resilience, and community impact. The organization\'s innovative approach to integrating arts with social well-being initiatives and cross-cultural engagement makes it a strong candidate.',
+          eligibility: 'U.S. 501(c)(3) nonprofits with at least 3 years of arts programming. Projects can involve international partners but applicant must be U.S.-based.',
+          funding: '$10,000 to $100,000 (1:1 non-federal match required)',
+          deadline: 'July 10, 2025 (Part 1); July 22, 2025 (Part 2)',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Submit Part 1 application via Grants.gov by July 10, 2025',
+            'Complete Part 2 application by July 22, 2025',
+            'Prepare detailed project budget with matching funds',
+            'Document track record of arts programming'
+          ],
+          link: 'https://www.arts.gov/grants/grants-for-arts-projects'
+        },
+        {
+          id: 'drk-foundation',
+          name: 'Draper Richards Kaplan Foundation Support',
+          funder: 'DRK Foundation',
+          match: 'DRK\'s venture philanthropy approach is ideal for Viva La Vida\'s innovative art-for-social-impact model. The foundation\'s focus on scaling early-stage, high-impact organizations aligns with VLV\'s goals of expanding its cross-cultural healing and advocacy work.',
+          eligibility: 'Early-stage nonprofits (1-3 years old or at critical growth point) with strong leadership and scalable social impact model. Open to registered nonprofits in any country.',
+          funding: 'Approximately $300,000 over 3 years (~$100,000/year)',
+          deadline: 'Rolling (year-round submissions)',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Submit executive summary for initial consideration',
+            'If selected, participate in due diligence process',
+            'Present scalable impact model to DRK team',
+            'Develop detailed growth and implementation plan'
+          ],
+          link: 'https://www.drkfoundation.org/apply-for-funding/'
+        },
+        {
+          id: 'ned-democracy',
+          name: 'National Endowment for Democracy (NED) – Global Democracy Grants',
+          funder: 'National Endowment for Democracy',
+          match: 'NED\'s focus on empowering marginalized communities and promoting human rights through civic engagement perfectly aligns with Viva La Vida\'s art-as-advocacy initiatives. The organization\'s work in using art to raise awareness of refugee issues, LGBTQ+ rights, and other social justice causes in challenging environments makes it an ideal candidate.',
+          eligibility: 'Non-governmental organizations worldwide, including civil society groups and cultural organizations in over 100 countries. VLV can apply via its local NGO entities in eligible countries for projects that tie into democratic values or human rights.',
+          funding: 'Around $50,000 per grant on average (for a 12-month project). Grants are typically for one year but can be renewed.',
+          deadline: 'Quarterly cycles (June 2025 and October 2025 remaining for 2025)',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Identify specific project tying art to democratic values/human rights',
+            'Submit proposal through NED\'s grant portal',
+            'Wait for quarterly board review',
+            'If approved, implement 12-month project plan'
+          ],
+          link: 'https://www.ned.org/apply-for-grant/'
+        }
+      ]
     }
   };
 
