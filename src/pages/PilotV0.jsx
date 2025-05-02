@@ -534,6 +534,63 @@ const PilotV0 = () => {
           link: 'https://www.cost.eu/how-to-apply/'
         }
       ]
+    },
+    'taylor-institute': {
+      name: 'Taylor Leadership Institute at UNF',
+      description: 'The Taylor Leadership Institute at the University of North Florida operates C.A.M.P. Osprey (Collegiate Achievement Mentoring Program), an innovative leadership mentoring program that connects UNF student leaders with middle and high school students from rural and underserved communities. The program has expanded to serve five counties in Northeast Florida (Duval, Putnam, Flagler, St. Johns and Clay) and three additional cities through virtual mentoring (Miami, Dallas and Raleigh). With demonstrated success in improving student attendance (27%) and academic achievement (11% GPA gain), C.A.M.P. Osprey focuses on college and career readiness, leadership development, and life skills through hands-on experiences, workshops, and one-on-one mentorship.',
+      grants: [
+        {
+          id: 'jim-moran',
+          name: 'Jim Moran Foundation Education Grants',
+          funder: 'Jim Moran Foundation',
+          match: 'As a Florida-based funder focused on education in Duval County, the Jim Moran Foundation is perfectly aligned with C.A.M.P. Osprey\'s geographic focus and mission. The program\'s proven impact on student attendance (+27%) and academic achievement (+11% GPA), combined with strong school-university partnerships, makes it an ideal candidate for the foundation\'s education grants.',
+          eligibility: 'Open to 501(c)(3) organizations and public educational institutions operating in Duval County, Florida. C.A.M.P. Osprey can apply through the UNF Foundation.',
+          funding: '$20,000 – $350,000+ with possibility of multi-year support',
+          deadline: 'Rolling LOI, reviewed quarterly',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Submit Letter of Intent (LOI)',
+            'Document program impact metrics',
+            'Highlight local partnerships',
+            'Detail expansion plans within service area'
+          ],
+          link: 'https://jimmoranfoundation.org/grant/guidelines/'
+        },
+        {
+          id: 'honda-foundation',
+          name: 'American Honda Foundation – Youth Education Grants',
+          funder: 'American Honda Foundation',
+          match: 'The foundation\'s focus on STEM, literacy, leadership, and career readiness aligns perfectly with C.A.M.P. Osprey\'s comprehensive approach to student development. Their history of supporting university-K12 partnerships and emphasis on measurable outcomes matches well with the program\'s demonstrated impact.',
+          eligibility: 'Open to 501(c)(3) organizations and public educational institutions. UNF can apply directly or through the UNF Foundation.',
+          funding: '$20,000 – $75,000',
+          deadline: 'August 1, 2025 (next upcoming quarterly cycle)',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Complete online application',
+            'Provide detailed program metrics',
+            'Submit letters of support from partner schools',
+            'Outline curriculum and mentorship components'
+          ],
+          link: 'https://csr.honda.com/longform-content/honda-corporate-funding/'
+        },
+        {
+          id: 'state-farm',
+          name: 'State Farm Companies Foundation – Good Neighbor Citizenship Grants',
+          funder: 'State Farm Companies Foundation',
+          match: 'C.A.M.P. Osprey\'s focus on improving K-12 student outcomes and expanding access to higher education aligns perfectly with State Farm\'s education and community development priorities. The program\'s track record of serving high-need communities in Northeast Florida makes it an especially strong candidate.',
+          eligibility: 'Available to 501(c)(3) nonprofits and public educational institutions. UNF or the UNF Foundation is eligible.',
+          funding: '$10,000 – $50,000+ depending on scope and region',
+          deadline: 'Rolling – apply early in the year for best consideration',
+          effort: 'Application Effort: Light',
+          steps: [
+            'Submit initial application through CyberGrants portal',
+            'Document community impact and needs assessment',
+            'Provide program evaluation data',
+            'Detail sustainability plan'
+          ],
+          link: 'https://www.cybergrants.com/pls/cybergrants/quiz.display_question?x_gm_id=4214&x_quiz_id=9970&x_order_by=1'
+        }
+      ]
     }
   };
 
