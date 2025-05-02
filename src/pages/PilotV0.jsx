@@ -460,6 +460,80 @@ const PilotV0 = () => {
           link: 'https://blackambitionprize.com/'
         }
       ]
+    },
+    'jote': {
+      name: 'Journal of Trial and Error',
+      description: 'The Journal of Trial and Error (JOTE) is a Netherlands-based non-profit organization that aims to make public the lessons of struggles in research. Through our Center of Trial and Error, we provide a space for independent reflection on academic practice and stimulate students and early career researchers to disrupt existing scholarly infrastructures. We believe that trial and error is fundamental to learning and discovery, publishing answers to the question "what went wrong?" in scientific practice.',
+      grants: [
+        {
+          id: 'wtgrant-research',
+          name: 'Research Grants on Improving the Use of Research Evidence',
+          funder: 'William T. Grant Foundation (USA)',
+          match: 'This program funds rigorous studies on how research evidence is generated, interpreted, and used—especially in youth-serving systems. JOTE\'s focus on publishing failed research, methodological flaws, and peer reviews aligns deeply with this goal. The foundation welcomes international applicants, provided the work has implications for U.S. practice.',
+          eligibility: 'Open to international applicants. Partnership with U.S.-based researchers or youth-focused nonprofits recommended.',
+          funding: 'Up to $500,000 USD over 2–4 years (typical range: $100,000–$400,000)',
+          deadline: 'Letters of Inquiry expected August 2025; full proposals by February 2026',
+          effort: 'Application Effort: High',
+          steps: [
+            'Submit Letter of Inquiry (LOI)',
+            'If invited, prepare full proposal',
+            'Partner with U.S.-based researchers',
+            'Demonstrate relevance to U.S. policy systems'
+          ],
+          link: 'https://wtgrantfoundation.org/funding/research-grants-on-improving-use-of-research-evidence'
+        },
+        {
+          id: 'oscars-open-science',
+          name: 'OSCARS 2nd Open Call for Open Science Projects',
+          funder: 'European Commission via OSCARS Project (Horizon Europe)',
+          match: 'This grant funds open science services that promote FAIR data, transparency, and collaboration. As a nonprofit with ANBI status and a clear open science mission, JOTE is an ideal applicant. The call prioritizes cross-border collaboration and institutional change—core aspects of JOTE\'s mission.',
+          eligibility: 'Open to universities, research institutes, SMEs, non-profits in Europe. Cross-border and cross-domain cooperation prioritized.',
+          funding: '€100,000–€250,000 per project for 12-24 months',
+          deadline: 'May 14, 2025, 17:00 CEST',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Outline specific project advancing open science',
+            'Describe objectives, methodology, and expected outcomes',
+            'Partner with university or open science community in another EU country',
+            'Emphasize integration with European Open Science Cloud'
+          ],
+          link: 'https://oscars-project.eu'
+        },
+        {
+          id: 'amazon-think-big',
+          name: 'Amazon Research Awards – "Think Big" Track',
+          funder: 'Amazon Science/AWS',
+          match: 'Amazon\'s "Think Big" program supports bold, unconventional research across all disciplines. JOTE could propose a project investigating the effects of publishing failure narratives on scientific behavior, trust, or innovation, or develop an experimental publishing system for real-time, transparent peer review.',
+          eligibility: 'Open to faculty at accredited institutions or permanent researchers at NGOs with nonprofit status internationally',
+          funding: 'Up to $100,000 USD in unrestricted funds, plus ~$70,000 in AWS credits and training support',
+          deadline: 'May 7, 2025 (11:59 PM Pacific Time)',
+          effort: 'Application Effort: Light',
+          steps: [
+            'Submit concise research proposal (3 pages)',
+            'Highlight fundamental challenge addressed',
+            'Outline bold and paradigm-challenging idea',
+            'Detail potential impact and fund usage'
+          ],
+          link: 'https://amazon.science'
+        },
+        {
+          id: 'cost-action',
+          name: 'COST Action Open Call',
+          funder: 'COST Association (EU Framework Programme)',
+          match: 'COST funds European research networks built around novel, interdisciplinary topics – perfect for JOTE\'s mission. The network could convene scholars across disciplines to share methods, hold training sessions, and push institutional change in academic publishing and research transparency.',
+          eligibility: 'Requires at least seven proposers from COST member states. Netherlands-based organizations eligible.',
+          funding: '€135,000–€150,000 per year for up to 4 years (for networking, workshops, training schools)',
+          deadline: 'October 21, 2025 at 12:00 noon CEST',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Assemble core group of researchers/institutions',
+            'Submit 15-page proposal with objectives and work plan',
+            'Detail network composition and expected impact',
+            'Plan networking activities and training events'
+          ],
+          link: 'https://www.cost.eu/how-to-apply/'
+        }
+      ]
     }
   };
 
