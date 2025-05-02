@@ -705,6 +705,63 @@ const PilotV0 = () => {
           link: 'https://corporate.charter.com/digital-education/grants'
         }
       ]
+    },
+    'munevo': {
+      name: 'Munevo',
+      description: 'Munevo is a German/US-based company on a mission to make technology available and accessible by creating the first smart glass-based wheelchair control system, especially for people with ALS or SCI. Founded during a university course at the Technical University of Munich (TUM), Munevo develops innovative assistive technology that empowers people with disabilities to live more independently. Their flagship product, munevo DRIVE, provides a less stigmatizing and more comfortable control system for power wheelchairs, serving people with various conditions including ALS, SCI, MS, MD, CP, and SMA. The company emphasizes user feedback in product development, working closely with the disability community to create intuitive and precise control systems.',
+      grants: [
+        {
+          id: 'remarkable-us',
+          name: 'Remarkable US Accelerator',
+          funder: 'Cerebral Palsy Alliance Research Foundation (CPARF)',
+          match: 'Munevo\'s smart glass-based wheelchair control system perfectly aligns with Remarkable\'s focus on disability tech startups. Their innovative approach to assistive mobility technology and track record of user-centered development makes them an ideal candidate for this accelerator program.',
+          eligibility: 'For-profit startups incorporated in the US (for US cohort) or international startups (for Australia+ track)',
+          funding: '$55,000 USD in seed funding via SAFE note, plus intensive coaching and mentorship',
+          deadline: 'May 15, 2025 (Program runs Sept 8, 2025 to Jan 8, 2026)',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Submit application via CPARF\'s online portal',
+            'Prepare pitch focusing on solution and impact',
+            'If selected, participate in 16-week accelerator program',
+            'Present at Demo Day for investor exposure'
+          ],
+          link: 'https://cparf.org/remarkable-us'
+        },
+        {
+          id: 'eic-accelerator',
+          name: 'EIC Accelerator – European Innovation Council',
+          funder: 'European Innovation Council (EIC)',
+          match: 'Munevo\'s smart glass-based wheelchair control system represents a disruptive innovation in assistive mobility technology, perfectly aligning with EIC\'s focus on high-impact technologies that can create new markets. Their dual registration in Germany and US positions them well for this EU-focused program.',
+          eligibility: 'Start-ups and SMEs based in EU Member States or associated countries',
+          funding: 'Up to €2.5 million in grant funding and up to €10 million in equity investments',
+          deadline: 'Full Proposal Cut-off: March 12, 2025 or October 1, 2025 (Short proposals accepted continuously)',
+          effort: 'Application Effort: High',
+          steps: [
+            'Submit short proposal with pitch deck and 3-minute video',
+            'If successful, submit full proposal by next cut-off date',
+            'Participate in face-to-face interview with EIC jury',
+            'Receive business acceleration services if selected'
+          ],
+          link: 'https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en'
+        },
+        {
+          id: 'gupta-als-prize',
+          name: 'Gupta Family Endowed Prize for Innovation in ALS Care',
+          funder: 'Sean M. Healey & AMG Center for ALS at Massachusetts General Hospital',
+          match: 'Munevo\'s technology directly addresses mobility challenges faced by individuals with ALS, offering a hands-free control system that promotes independence. Their focus on improving quality of life for ALS patients aligns perfectly with the prize\'s mission.',
+          eligibility: 'Global nominations accepted for teams/organizations with innovative ALS care solutions',
+          funding: '$40,000 USD plus up to $2,500 USD travel reimbursement',
+          deadline: 'May 30, 2025, 5:00 PM EDT',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Submit nomination through online portal',
+            'Detail innovative approach to ALS care',
+            'Demonstrate impact on patient quality of life',
+            'If selected, present at NEALS Annual Meeting (Oct 7-10, 2025)'
+          ],
+          link: 'https://www.massgeneral.org/neurology/als/prize'
+        }
+      ]
     }
   };
 
