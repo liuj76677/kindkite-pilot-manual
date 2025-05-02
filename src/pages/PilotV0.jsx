@@ -591,6 +591,63 @@ const PilotV0 = () => {
           link: 'https://www.cybergrants.com/pls/cybergrants/quiz.display_question?x_gm_id=4214&x_quiz_id=9970&x_order_by=1'
         }
       ]
+    },
+    'planet-abled': {
+      name: 'Planet Abled',
+      description: 'Planet Abled is a globally recognized travel brand promoting inclusive tourism for persons with disabilities and the elderly. Operating in India and Austria, the organization takes an intersectional approach to breaking down barriers in the global tourism industry. Since 2016, Planet Abled has been the only tourism company designing inclusive tours for both disabled and non-disabled people to travel together, while also providing consulting services to help tourism businesses become more accessible. Through the Planet Abled India Foundation, their non-profit arm, they focus on advocacy, DEI projects, and promoting travel experiences for disabled people facing financial hardship.',
+      grants: [
+        {
+          id: 'cei-cooperation',
+          name: 'CEI Cooperation Fund – Call for Proposals 2025',
+          funder: 'Central European Initiative (CEI)',
+          match: 'Through its Austrian registration, Planet Abled is perfectly positioned for this fund that supports regional cooperation and sustainable development. Their innovative approach to inclusive tourism and track record of building accessibility frameworks aligns perfectly with CEI\'s goals. The organization could propose capacity-building programs or inclusive tourism workshops across CEI member countries.',
+          eligibility: 'Open to organizations registered in CEI member states, which includes Austria. Planet Abled qualifies through its Austrian registration.',
+          funding: 'Up to €100,000',
+          deadline: 'June 9, 2025',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Submit proposal via CEI\'s online portal',
+            'Detail regional cooperation components',
+            'Outline sustainable development impact',
+            'Provide implementation timeline'
+          ],
+          link: 'https://www.cei.int/calls-for-proposals'
+        },
+        {
+          id: 'azim-premji',
+          name: 'Azim Premji Foundation Grants',
+          funder: 'Azim Premji Foundation',
+          match: 'Planet Abled\'s work in India directly supports the Foundation\'s goals of advancing equity and inclusion. Their innovative model for improving accessibility in travel and tourism enhances livelihood opportunities for people with disabilities, aligning perfectly with the Foundation\'s focus on social equity and systemic change.',
+          eligibility: 'Open to organizations working in India. Planet Abled qualifies through its Indian registration and operations.',
+          funding: 'Variable based on project scope and impact',
+          deadline: 'Rolling applications',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Submit online proposal through Foundation portal',
+            'Document social impact metrics',
+            'Outline scaling strategy',
+            'Detail sustainability plan'
+          ],
+          link: 'https://azimpremjifoundation.org/apply-for-a-grant/'
+        },
+        {
+          id: 'sst-tourism',
+          name: 'Swiss Foundation for Solidarity in Tourism (SST) Grants',
+          funder: 'Swiss Foundation for Solidarity in Tourism',
+          match: 'SST\'s focus on sustainable tourism development in the Global South perfectly matches Planet Abled\'s mission to make Indian tourism inclusive. Their community-led approach to building accessible tourism infrastructure and awareness campaigns strongly aligns with SST\'s goals. The relatively straightforward application process also makes this an efficient funding opportunity.',
+          eligibility: 'Open to tourism projects contributing to sustainable development in the Global South',
+          funding: 'CHF 5,000 to CHF 25,000',
+          deadline: 'Rolling applications',
+          effort: 'Application Effort: Light',
+          steps: [
+            'Submit concise email application',
+            'Outline project sustainability',
+            'Detail community impact',
+            'Provide budget breakdown'
+          ],
+          link: 'https://www.sstfoundation.org/de/'
+        }
+      ]
     }
   };
 
