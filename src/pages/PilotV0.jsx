@@ -463,7 +463,7 @@ const PilotV0 = () => {
     },
     'jote': {
       name: 'Journal of Trial and Error',
-      description: 'The Journal of Trial and Error (JOTE) is a Netherlands-based non-profit organization that aims to make public the lessons of struggles in research. Through our Center of Trial and Error, we provide a space for independent reflection on academic practice and stimulate students and early career researchers to disrupt existing scholarly infrastructures. We believe that trial and error is fundamental to learning and discovery, publishing answers to the question "what went wrong?" in scientific practice.',
+      description: 'The Journal of Trial and Error (JOTE) is a Netherlands-based non-profit organization that aims to make public the lessons of struggles in research. The organization\'s Center of Trial and Error provides a space for independent reflection on academic practice and stimulates students and early career researchers to disrupt existing scholarly infrastructures. JOTE believes that trial and error is fundamental to learning and discovery, focusing on publishing answers to the question "what went wrong?" in scientific practice.',
       grants: [
         {
           id: 'wtgrant-research',
