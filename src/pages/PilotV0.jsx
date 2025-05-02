@@ -648,6 +648,63 @@ const PilotV0 = () => {
           link: 'https://www.sstfoundation.org/de/'
         }
       ]
+    },
+    'tampa-bay-masterminds': {
+      name: 'Tampa Bay Masterminds',
+      description: 'Tampa Bay Masterminds, Inc. is a 501(c)(3) Entrepreneur Support Organization based in Tampa Bay, Florida. Led by Jon Tavarez, the organization fuels the success of local founders by connecting them with top-tier resources, game-changing events, and a thriving community of entrepreneurs. With an annual budget of $100,000, they focus on serving millennial founders, techies, and entrepreneurs through recurring meetups including social events, discussion panels, and private masterminds. Their members form a supportive tribe that helps entrepreneurs learn the latest marketing and advertising techniques, leverage tech solutions, and avoid costly mistakes through shared experiences.',
+      grants: [
+        {
+          id: 'cftb-competitive',
+          name: 'Community Foundation Tampa Bay – Annual Competitive Grants',
+          funder: 'Community Foundation Tampa Bay',
+          match: 'As a Tampa Bay-based 501(c)(3) with programs focused on economic opportunity and community engagement, TBM perfectly aligns with the Foundation\'s priorities. Their established track record of serving local entrepreneurs and annual budget over $50,000 makes them an ideal candidate for this regional funding opportunity.',
+          eligibility: 'Open to 501(c)(3) organizations serving Hillsborough County with annual revenue over $50,000',
+          funding: '$7,000–$52,000 (average ~$24,500)',
+          deadline: 'Rolling LOI submissions with quarterly reviews',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Submit Letter of Intent (LOI)',
+            'If invited, complete full application',
+            'Provide impact metrics and outcomes data',
+            'Detail community partnerships and engagement'
+          ],
+          link: 'https://cftampabay.org/grants/'
+        },
+        {
+          id: 'nasdaq-quarterly',
+          name: 'Nasdaq Foundation Quarterly Grant Program',
+          funder: 'Nasdaq Foundation',
+          match: 'The Nasdaq Foundation\'s focus on empowering under-resourced entrepreneurs through mentorship and financial literacy perfectly aligns with TBM\'s mission. Their established mentorship program, tech education initiatives, and measurable impact on local founders make them a strong candidate.',
+          eligibility: 'Open to 501(c)(3) organizations with programs supporting entrepreneurship and financial literacy',
+          funding: 'Variable (average ~$75,000)',
+          deadline: 'Quarterly submissions',
+          effort: 'Application Effort: Medium',
+          steps: [
+            'Submit application via CyberGrants portal',
+            'Document program impact and scalability',
+            'Outline financial literacy components',
+            'Provide success metrics and testimonials'
+          ],
+          link: 'https://www.nasdaq.com/nasdaq-foundation/grant-program'
+        },
+        {
+          id: 'spectrum-digital',
+          name: 'Spectrum Digital Education Grants',
+          funder: 'Spectrum',
+          match: 'TBM\'s focus on digital education and tech-forward entrepreneurship aligns perfectly with Spectrum\'s mission to increase digital literacy. Their track record of helping entrepreneurs leverage technology and automation makes them an excellent candidate for this grant.',
+          eligibility: 'Open to 501(c)(3) organizations providing digital education and skills training',
+          funding: '$2,500–$50,000',
+          deadline: 'March 28, 2025',
+          effort: 'Application Effort: Light',
+          steps: [
+            'Complete online application form',
+            'Detail digital education components',
+            'Provide metrics on tech skill development',
+            'Outline program sustainability plan'
+          ],
+          link: 'https://corporate.charter.com/digital-education/grants'
+        }
+      ]
     }
   };
 
