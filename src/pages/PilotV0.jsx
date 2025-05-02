@@ -374,6 +374,92 @@ const PilotV0 = () => {
           link: 'https://www.ned.org/apply-for-grant/'
         }
       ]
+    },
+    'prima-vault': {
+      name: 'Prima Vault',
+      description: 'Prima Vault is a purpose-driven luxury resale platform that curates and sells authenticated, pre-loved designer goods. Our mission is to redefine what luxury means combining timeless fashion with social impact. We believe in elevating both style and purpose by making high-end pieces more accessible while giving back to underrepresented communities.',
+      grants: [
+        {
+          id: 'amber-grant',
+          name: 'Amber Grant – WomensNet',
+          funder: 'WomensNet',
+          match: 'Perfect for Prima Vault\'s pre-launch stage with no minimum business age or revenue required. The grant prioritizes women with inspiring ideas and missions, aligning well with Prima Vault\'s purpose-driven venture.',
+          eligibility: 'Open to women-owned businesses in the U.S.',
+          funding: '$10,000 awarded monthly, with winners eligible for $25,000 year-end grant',
+          deadline: 'Rolling (monthly)',
+          effort: 'Application Effort: Light',
+          steps: [
+            'Complete simple online application',
+            'Share your business story and vision',
+            'Explain planned use of funds'
+          ],
+          link: 'https://ambergrantsforwomen.com/'
+        },
+        {
+          id: 'ifundwomen',
+          name: 'IFundWomen Universal Grant Application',
+          funder: 'IFundWomen/Honeycomb',
+          match: 'One application opens doors to multiple grant opportunities. Ideal for Prima Vault\'s small founding team, saving time while accessing grants supporting women, tech innovation, and sustainability initiatives.',
+          eligibility: 'Women-owned businesses in the U.S.',
+          funding: 'Varies by opportunity ($5,000-$25,000)',
+          deadline: 'Ongoing',
+          effort: 'Application Effort: Light',
+          steps: [
+            'Complete Universal Grant Application',
+            'Get matched with relevant opportunities',
+            'Access coaching and resources'
+          ],
+          link: 'https://ifundwomen.com/'
+        },
+        {
+          id: 'boundless-futures',
+          name: 'Boundless Futures Foundation Grants (EmpowHer Grants)',
+          funder: 'Boundless Futures Foundation',
+          match: 'Prima Vault\'s circular economy model and sustainability focus align perfectly with the Foundation\'s mission. The program specifically supports women-led ventures with strong social impact, matching Prima Vault\'s purpose-driven ethos.',
+          eligibility: 'Women-led businesses with social/environmental impact',
+          funding: 'Up to $25,000',
+          deadline: 'Quarterly',
+          effort: 'Application Effort: Moderate',
+          steps: [
+            'Submit detailed project proposal',
+            'Demonstrate social impact metrics',
+            'Present sustainability model'
+          ],
+          link: 'https://boundlessfutures.org/'
+        },
+        {
+          id: 'wfn-pitch',
+          name: 'Women Founders Network Fast Pitch Competition',
+          funder: 'Women Founders Network',
+          match: 'Perfect for Prima Vault\'s pre-launch stage and women-led team. Offers not just funding but also mentorship and investor connections. The competition\'s focus on early-stage companies creates a level playing field.',
+          eligibility: 'Female founders, early-stage (under $750K raised)',
+          funding: '$25,000 first place grant',
+          deadline: 'May 31, 2025',
+          effort: 'Application Effort: Moderate',
+          steps: [
+            'Submit initial application',
+            'If selected, prepare pitch deck',
+            'Present to investor panel'
+          ],
+          link: 'https://womenfoundersnetwork.com/'
+        },
+        {
+          id: 'black-ambition',
+          name: 'Black Ambition Prize Competition',
+          funder: 'Black Ambition (Pharrell Williams)',
+          match: 'If Prima Vault\'s founders identify as Black or Latinx, this competition offers transformative funding and exposure. The program\'s focus on tech innovation and social impact aligns perfectly with Prima Vault\'s mission.',
+          eligibility: 'Black and Latinx founders',
+          funding: 'Up to $1 million (non-dilutive)',
+          deadline: 'June 2025',
+          effort: 'Application Effort: High',
+          steps: [
+            'Submit comprehensive application',
+            'If selected, join accelerator program',
+            'Pitch to final judging panel'
+          ],
+          link: 'https://blackambitionprize.com/'
+        }
+      ]
     }
   };
 
