@@ -677,7 +677,7 @@ const PilotV0 = () => {
           match: 'The Nasdaq Foundation\'s focus on empowering under-resourced entrepreneurs through mentorship and financial literacy perfectly aligns with TBM\'s mission. Their established mentorship program, tech education initiatives, and measurable impact on local founders make them a strong candidate.',
           eligibility: 'Open to 501(c)(3) organizations with programs supporting entrepreneurship and financial literacy',
           funding: 'Variable (average ~$75,000)',
-          deadline: 'Quarterly submissions',
+          deadline: 'Quarterly submissions - Next deadline: May 2, 2025 (submissions after deadline will be considered for next quarter)',
           effort: 'Application Effort: Medium',
           steps: [
             'Submit application via CyberGrants portal',
