@@ -1,0 +1,127 @@
+Education Challenges
+Updated April 2025
+
+ConnectEd: Phone-based targeted instruction tutoring program
+We challenge you to design a social enterprise that delivers ConnectEd, a high-access, low-cost
+phone based innovation to deliver remedial education to underserved primary-aged learners in
+low- and middle-income countries. ConnectEd is an educational program designed to improve
+primary grade literacy and numeracy. D-Prize will award up to $20,000 to teams with a plan to
+launch a three-month pilot of this work serving 200-300 primary-aged learners with a long-term
+vision to scale country-wide.
+
+The Poverty Problem
+Students worldwide are sitting in classrooms but are not learning. In many countries, a majority
+of students are below grade level and automatically move to subsequent grades without
+acquiring basic numeracy and literacy skills. The abilities to read, write, and do mathematics are
+foundational skills for all future learning.
+
+Meanwhile, millions of children continue to experience disruptions to schooling every year,
+exacerbating an ongoing learning crisis. Disruptions such as natural disasters, conflict, illness,
+and education system failure hinder education access for nearly 250 million children globally.
+
+Children in low resource settings disproportionately lack access to resources (internet,
+computers, smartphones, print materials) that enable remote learning. Covid-19, which caused
+in-person school closures for 141 days globally between February 2020 and 2022, acutely
+demonstrated the inadequacies of remote schooling.
+
+Beyond crises, marginalized children experience substantial learning loss as a result of teacher
+absences and routine school closure, such as school holidays and breaks. Uncovering the best
+methods to reach students in school and falling behind as well as those affected by disruptions
+and more routine closures would represent a significant step towards building resilient and
+effective education systems on a global level.
+
+The Proven Intervention
+To address these challenges, education systems need to build greater resilience by developing,
+testing, and utilizing proven solutions that are low-cost, easy-to-use, readily deployable, and
+adaptable across contexts.
+
+A proven solution to address learning loss – whether experienced by students in school not
+learning the basics or children out-of-school affected by disruptions – is using widely accessible
+basic mobile phones to deliver 1:1 instruction to students remotely. Known as ConnectEd, the
+solution is a remote, targeted, mobile phone-based education intervention that cost-effectively
+brings trained tutors to students where they are. The program capitalizes on the near
+universality of mobile phones, reaching students in underserved and remote areas, and those
+unable to reach school due to disruptions and displacement.
+
+Originally developed and tested by Youth Impact in Botswana, the intervention was studied in
+randomized controlled trials (RCT) in five additional countries (Kenya, Nepal, India, Uganda and
+the Philippines) between 2021-2022. Results demonstrated that nearly 65% of students enrolled
+in ConnectEd mastered all basic operations indicating a significant impact on learning
+outcomes. The program is among the most cost-effective education interventions available
+showing to produce 3.4 Learning Adjusted Years of Schooling (LAYS) per $100. Moreover
+ConnectEd builds on a broader evidence base showing tutoring and targeted instruction
+approaches are some of the most effective education interventions.
+
+Since then, ConnectEd has been subject to over 20 additional rapid impact assessments in
+multiple delivery contexts, including as a supplement to ongoing schooling delivered by
+government teachers. It is now being implemented by local organizations in Afghanistan,
+Botswana, Ethiopia, India, Namibia, Pakistan, Philippines and Somalia.
+
+Your Distribution Challenge
+D-Prize will award up to $20,000 to teams that can create a new organization that delivers the
+ConnectEd catch up program to students who otherwise would fall behind. You must have a
+vision to reach 25,000 learners within five years. Our award is meant to enable the first step
+toward this vision by supporting a small test pilot of your idea, that helps anywhere from
+200-300 students.
+
+Please note: We are challenging you to replicate and deliver the proven ConnectEd program.
+Proposals to develop new programs will not be considered.
+
+Designing Your Social Enterprise
+There are several challenges an organization implementing ConnectEd will need to address.
+We suggest focusing your pilot on testing approaches to address these challenges.
+
+1. What is your ConnectEd implementation model? ConnectEd can be delivered in a
+variety of settings and in a variety of ways – each dependent on factors that are unique
+to the delivery context. Some of the questions that will be important to consider include:
+○ Who will deliver the sessions – will it be teachers, tutors, volunteers, interns or
+others?
+○ When and where will it be delivered – ongoing with the school term or during
+school breaks? During the school calendar and/or when there are class
+suspensions or breaks?
+○ Depending on the implementation timing and tutor, what is a reasonable
+instructor:student ratio?
+○ What will be the support structure for those who are delivering ConnectEd, and in
+what ways that will be scalable and sustainable?
+
+2. How will you establish a strong data collection system for monitoring, feedback and
+learning? Strong data systems for monitoring and feedback are a core component of
+ConnectEd and have been identified as necessary for effective implementation. We've
+found that the most effective systems are designed to be used by those involved with
+delivering ConnectEd to improve program quality and outcomes. Some of the questions
+that will be important to consider include:
+○ What data will be most essential to collect and analyze?
+○ How will you ensure instruction is well targeted to student learning levels?
+○ Who will be responsible for gathering and submitting data?
+○ What tools and instruments will be used?
+○ Who will analyze the data and how will results and learning be shared?
+○ Are there existing government data systems that can be leveraged?
+
+3. How do you gain government support at all levels? Engaging with all levels of an existing
+education system is needed–from the national to regional to local bodies. This may
+range from:
+○ Government approval at a central level
+○ Engagement with regional departments
+○ Close collaboration with schools
+
+4. How will ConnectEd be scaled and sustained? Summarize the strategy for bringing
+ConnectEd to 25,000 learners over the next five years while ensuring impact is
+sustained. This includes:
+○ What key elements or conditions in the broader system are likely to be significant
+assets or challenges to scaling?
+○ What partnerships are in place or are needed to support scaling?
+○ Are there any related existing approaches where coordination and learning will
+be necessary?
+○ Where might resources be mobilized to establish a longer-term funding base?
+○ Are there any unintended negative consequences that may result from scaling?
+
+Context Conditions
+● D-Prize aims to support ventures that work to reach the most underserved children. This
+generally means learners who lack reliable internet access. We recommend your idea
+tailor itself to these learners, and avoid plans that require stable internet access.
+● Similarly, high-technology tools or platforms that would be unavailable or unsustainable
+in low-resource contexts should be avoided as well.
+
+Additional Support
+With successful applicants/in some circumstances, Youth Impact is available to provide
+technical assistance and support as relevant. 

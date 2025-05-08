@@ -6,6 +6,7 @@ import AdminGrantManager from './components/AdminGrantManager';
 import PilotV0 from './pages/PilotV0';
 import AdminFeedback from './pages/AdminFeedback';
 import AdminAnalytics from './pages/AdminAnalytics';
+import Landing from './pages/Landing';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/landing" element={<Landing />} />
           <Route path="/dashboard" element={<OrgDashboard />} />
           <Route path="/org/:orgId" element={<OrgPage />} />
           <Route path="/admin/grants" element={<AdminGrantManager />} />

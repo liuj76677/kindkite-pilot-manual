@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getGrantApplicationData, generateSampleAnswers, getApplicationStatus, saveApplicationProgress } from '../services/grantDatabase';
+import { searchSimilarDocuments, augmentPrompt } from '../utils/rag';
 
 export default function GrantApplication({ grant, organization }) {
   const [loading, setLoading] = useState(true);
@@ -9,6 +10,7 @@ export default function GrantApplication({ grant, organization }) {
   const [answers, setAnswers] = useState(null);
   const [status, setStatus] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [responses, setResponses] = useState({});
 
   useEffect(() => {
     async function loadApplicationData() {
@@ -37,10 +39,64 @@ export default function GrantApplication({ grant, organization }) {
     loadApplicationData();
   }, [grant.id, organization]);
 
+  useEffect(() => {
+    loadGrantAndGenerateResponses();
+  }, [grant.id, organization]);
+
+  const loadGrantAndGenerateResponses = async () => {
+    try {
+      setLoading(true);
+      // First, get the grant details
+      const grantDetails = await fetchGrantDetails(grant.id);
+      setApplicationData(grantDetails.application);
+
+      // Generate responses for each question
+      const generatedResponses = {};
+      for (const question of grantDetails.application.questions) {
+        const context = await searchSimilarDocuments(
+          `${question.question} ${question.guidelines}`
+        );
+        
+        const prompt = `
+          Organization Information:
+          ${JSON.stringify(organization)}
+          
+          Grant Question:
+          ${question.question}
+          
+          Guidelines:
+          ${question.guidelines}
+          
+          Please generate a response that:
+          1. Directly answers the question
+          2. Incorporates relevant organization information
+          3. Follows the guidelines
+          4. Stays within ${question.maxLength} characters
+        `;
+
+        const response = await augmentPrompt(prompt, context);
+        generatedResponses[question.id] = response;
+      }
+
+      setResponses(generatedResponses);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResponseEdit = (questionId, newResponse) => {
+    setResponses(prev => ({
+      ...prev,
+      [questionId]: newResponse
+    }));
+  };
+
   const handleSaveProgress = async () => {
     try {
       setSaving(true);
-      await saveApplicationProgress(grant.id, organization.id, answers);
+      await saveApplicationProgress(grant.id, organization.id, responses);
       // Refresh status after saving
       const newStatus = await getApplicationStatus(grant.id, organization.id);
       setStatus(newStatus);
@@ -135,6 +191,19 @@ export default function GrantApplication({ grant, organization }) {
                     )}
                   </div>
                 )}
+
+                <div className="space-y-2">
+                  <textarea
+                    value={responses[question.id] || ''}
+                    onChange={(e) => handleResponseEdit(question.id, e.target.value)}
+                    className="w-full p-3 border rounded-lg"
+                    rows={question.type === 'short_answer' ? 3 : 8}
+                    maxLength={question.maxLength}
+                  />
+                  <div className="text-sm text-gray-500">
+                    {responses[question.id]?.length || 0} / {question.maxLength} characters
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -181,6 +250,15 @@ export default function GrantApplication({ grant, organization }) {
           </div>
         </div>
       )}
+
+      <div className="flex justify-end space-x-4 mt-8">
+        <button className="px-6 py-2 border rounded-lg">
+          Save Draft
+        </button>
+        <button className="px-6 py-2 bg-blue-600 text-white rounded-lg">
+          Submit Application
+        </button>
+      </div>
     </div>
   );
 }

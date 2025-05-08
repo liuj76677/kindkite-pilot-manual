@@ -1,0 +1,98 @@
+Tembo Education is a non-profit organization focused on improving education in underserved communities. Our mission is to provide quality education and learning opportunities to students who lack access to traditional educational resources.
+
+Key Information:
+- Founded: 2020
+- Location: Multiple locations across Africa
+- Focus: Education technology and digital learning solutions
+- Target Audience: Students in underserved communities
+- Current Reach: 5,000+ students across 8 countries
+
+Programs:
+1. ConnectEd Initiative
+   - Digital learning platform
+   - Offline-first approach
+   - Mobile-based delivery
+   - Teacher training and support
+
+2. Community Learning Centers
+   - Physical learning spaces
+   - Internet connectivity
+   - Computer labs
+   - Study materials
+
+3. Teacher Development Program
+   - Professional development
+   - Digital skills training
+   - Curriculum support
+   - Peer learning networks
+
+Impact:
+- 85% student engagement rate
+- 70% improvement in digital literacy
+- 60% increase in teacher confidence
+- 50% reduction in dropout rates
+
+Partnerships:
+- Local schools and education departments
+- Technology providers
+- Community organizations
+- International education partners
+
+Future Goals:
+- Expand to 25,000 students in 5 years
+- Develop more offline learning resources
+- Strengthen government partnerships
+- Enhance monitoring and evaluation systems
+
+Technical Infrastructure:
+- Mobile-first platform
+- Offline content delivery
+- Basic feature phones support
+- SMS-based communication
+- Data collection and analytics
+
+Team:
+- 15 full-time staff
+- 50+ part-time educators
+- 100+ community volunteers
+- Technical support team
+- Monitoring and evaluation team
+
+Financial Information:
+- Annual budget: $500,000
+- Funding sources: Grants, donations, partnerships
+- Cost per student: $20/year
+- Administrative overhead: 15%
+
+Monitoring and Evaluation:
+- Student progress tracking
+- Teacher performance metrics
+- Program impact assessment
+- Regular reporting systems
+- Data-driven decision making
+
+Government Engagement:
+- National education policies
+- Regional implementation
+- School-level integration
+- Teacher certification
+- Curriculum alignment
+
+Scaling Strategy:
+1. Phase 1 (Year 1)
+   - Pilot in 3 new countries
+   - 200-300 students per location
+   - Basic infrastructure setup
+   - Initial government partnerships
+
+2. Phase 2 (Years 2-3)
+   - Expand to 5,000 students
+   - Enhanced platform features
+   - Strengthened partnerships
+   - Improved monitoring systems
+
+3. Phase 3 (Years 4-5)
+   - Reach 25,000 students
+   - Full government integration
+   - Sustainable funding model
+   - Comprehensive impact assessment 
