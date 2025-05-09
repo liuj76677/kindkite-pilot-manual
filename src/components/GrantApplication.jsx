@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getGrantApplicationData, generateSampleAnswers, getApplicationStatus, saveApplicationProgress } from '../services/grantDatabase';
 import { searchSimilarDocuments, augmentPrompt } from '../utils/rag';
+import axios from 'axios';
 
 export default function GrantApplication({ grant, organization }) {
   const [loading, setLoading] = useState(true);
@@ -22,9 +23,27 @@ export default function GrantApplication({ grant, organization }) {
         const data = await getGrantApplicationData(grant.id);
         setApplicationData(data);
 
-        // Generate sample answers
-        const sampleAnswers = await generateSampleAnswers(data.questions, organization);
-        setAnswers(sampleAnswers);
+        // Fetch draft answers from backend RAG endpoint
+        let draftAnswers = null;
+        try {
+          const response = await axios.post('/api/generate-draft-answers', {
+            orgInfo: organization,
+            grantQuestions: data.questions
+          });
+          draftAnswers = response.data;
+        } catch (e) {
+          // If the endpoint fails, fallback to empty answers
+          draftAnswers = { answers: [] };
+        }
+        setAnswers(draftAnswers);
+        // Set initial responses to the draft answers
+        const initialResponses = {};
+        if (draftAnswers && draftAnswers.answers) {
+          draftAnswers.answers.forEach(a => {
+            initialResponses[a.questionId] = a.answer;
+          });
+        }
+        setResponses(initialResponses);
 
         // Get application status
         const applicationStatus = await getApplicationStatus(grant.id, organization.id);
