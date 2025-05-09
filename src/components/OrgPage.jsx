@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import data from '../data/pilot_data.json';
 import GrantCard from './GrantCard';
 import { rankGrants } from '../services/grantAnalysis';
@@ -165,11 +165,13 @@ export default function OrgPage() {
                   Match Score: {rankedGrant.score}%
                 </span>
               </div>
-              <GrantCard 
-                grant={grant} 
-                organization={org}
-                rankInfo={rankedGrant}
-              />
+              <Link to={`/org/${org.id}/grant/${grant.id}`} state={{ org, grant, rankInfo: rankedGrant }}>
+                <GrantCard 
+                  grant={grant} 
+                  organization={org}
+                  rankInfo={rankedGrant}
+                />
+              </Link>
             </div>
           );
         })}
@@ -183,11 +185,12 @@ export default function OrgPage() {
               </p>
             </div>
             {org.grant_recommendations.map((grant, index) => (
-              <GrantCard 
-                key={index} 
-                grant={grant} 
-                organization={org}
-              />
+              <Link key={index} to={`/org/${org.id}/grant/${grant.id}`} state={{ org, grant }}>
+                <GrantCard 
+                  grant={grant} 
+                  organization={org}
+                />
+              </Link>
             ))}
           </>
         )}

@@ -1,98 +1,171 @@
-Tembo Education is a non-profit organization focused on improving education in underserved communities. Our mission is to provide quality education and learning opportunities to students who lack access to traditional educational resources.
+All the information we have about Tembo Education:
+VISION: Maximize human potential, via children.
+MISSION: The largest educator in the world for 0-6 aged children. 
+GOAL: Educate 100M children.
+HOW: We educate 0-6 year old children around the world, via text messages, WhatsApp, and FB Messenger. This increases parent engagement and decreases screen-time because we send one curriculum activity per day to the parent's phone and the parent educates their child on that day's activity. We're currently in 7 countries and 5 languages.
+Parents of 0-6 year old children (globally), including pregnant women since we start prenatal, at week 13 in the mother's womb. 
+Interested in pilot program or innovation grants
+Also interested in emergency grants. For example: helped educate the Syrian refugees so our services can reach populations where they have no schooling or education like war-time in Palestine, Syria, Yemen, etc.
+Additional information from their website:
+Founded in 2015, Tembo Education Group utilizes technology and infrastructure to tackle the unmet need of our times: early childhood education. We focus on children ages 0 to 6, an instrumental time that creates the building blocks of the rest of a person's life. The mission of Tembo Education Group is to deliver a global, scalable solution for two pressing problems of modern education: access and screen dependency.
+We work to develop minds between the ages of 0 to 6 across the developed and developing worlds through the accessible delivery of early childhood education (or ECE). Early childhood is a crucial time for the development of a child and a parent. Harvard University research shows that 86-98% of a child’s vocabulary is derived from their parents. Vocabulary growth corresponds with higher test scores, mental processing speed and language learning abilities. Additionally, studies have found that every dollar invested in ECE results in a return on investment of $7-$13. We want the hundreds of millions of children ages 0 to 6 in the developing world to reach their full cognitive potential.We partner with NGOs, telecoms, and other companies to deliver our learning platform globally and reach markets where quality, curriculum-based early childhood learning is often financially and geographically inaccessible. In the developing world, we leverage these relationships to create incentives for learning, such as free data and airtime.We have worked with several leading organizations on pilot studies with our text-based learning platform. Additionally, we offer bespoke learning solutions for older children and adult learning contexts. 
+At Tembo Education, we operate globally to provide high-quality education and support to diverse communities worldwide. Our platform is designed for seamless accessibility, offering multilingual support to ensure effective communication for all. By bridging cultures and breaking language barriers, we empower individuals and organizations to learn, grow, and thrive—wherever they are.
+Social impact initiatives which already existed in our first target demographic, Sub-Saharan Africa, specifically Nigeria, shelter, clothes and food were often provided, but education was not. Ages 0-6 are the most imperative for brain development. By providing education to children during the most pivotal time for their development, we give them the opportunity to succeed not only in education, but in life, by teaching them basic social and critical skills which can be applied and leveraged for the rest of their lives.
 
-Key Information:
-- Founded: 2020
-- Location: Multiple locations across Africa
-- Focus: Education technology and digital learning solutions
-- Target Audience: Students in underserved communities
-- Current Reach: 5,000+ students across 8 countries
+Skip to Content
+Tembo Education
+Home
+About
+Impact
+Global
+Research
+Log In
+SIGN UP
 
-Programs:
-1. ConnectEd Initiative
-   - Digital learning platform
-   - Offline-first approach
-   - Mobile-based delivery
-   - Teacher training and support
+ABOUT US
+Founded in 2015, Tembo Education Group utilizes technology and infrastructure to tackle the unmet need of our times: early childhood education. We focus on children ages 0 to 6, an instrumental time that creates the building blocks of the rest of a person's life. The mission of Tembo Education Group is to deliver a global, scalable solution for two pressing problems of modern education: access and screen dependency.
 
-2. Community Learning Centers
-   - Physical learning spaces
-   - Internet connectivity
-   - Computer labs
-   - Study materials
 
-3. Teacher Development Program
-   - Professional development
-   - Digital skills training
-   - Curriculum support
-   - Peer learning networks
 
-Impact:
-- 85% student engagement rate
-- 70% improvement in digital literacy
-- 60% increase in teacher confidence
-- 50% reduction in dropout rates
+We work to develop minds between the ages of 0 to 6 across the developed and developing worlds through the accessible delivery of early childhood education (or ECE). Early childhood is a crucial time for the development of a child and a parent. Harvard University research shows that 86-98% of a child’s vocabulary is derived from their parents. Vocabulary growth corresponds with higher test scores, mental processing speed and language learning abilities. Additionally, studies have found that every dollar invested in ECE results in a return on investment of $7-$13. We want the hundreds of millions of children ages 0 to 6 in the developing world to reach their full cognitive potential.
 
-Partnerships:
-- Local schools and education departments
-- Technology providers
-- Community organizations
-- International education partners
+SOCIAL IMPACT
 
-Future Goals:
-- Expand to 25,000 students in 5 years
-- Develop more offline learning resources
-- Strengthen government partnerships
-- Enhance monitoring and evaluation systems
 
-Technical Infrastructure:
-- Mobile-first platform
-- Offline content delivery
-- Basic feature phones support
-- SMS-based communication
-- Data collection and analytics
 
-Team:
-- 15 full-time staff
-- 50+ part-time educators
-- 100+ community volunteers
-- Technical support team
-- Monitoring and evaluation team
+We partner with NGOs, telecoms, and other companies to deliver our learning platform globally and reach markets where quality, curriculum-based early childhood learning is often financially and geographically inaccessible. In the developing world, we leverage these relationships to create incentives for learning, such as free data and airtime.
 
-Financial Information:
-- Annual budget: $500,000
-- Funding sources: Grants, donations, partnerships
-- Cost per student: $20/year
-- Administrative overhead: 15%
+We have worked with several leading organizations on pilot studies with our text-based learning platform. Additionally, we offer bespoke learning solutions for older children and adult learning contexts. If you would like to learn more, please contact us.
 
-Monitoring and Evaluation:
-- Student progress tracking
-- Teacher performance metrics
-- Program impact assessment
-- Regular reporting systems
-- Data-driven decision making
+PARTNERSHIPS
 
-Government Engagement:
-- National education policies
-- Regional implementation
-- School-level integration
-- Teacher certification
-- Curriculum alignment
+Receive expert advice, fun activities, and toddler-friendly strategies straight to your inbox.
 
-Scaling Strategy:
-1. Phase 1 (Year 1)
-   - Pilot in 3 new countries
-   - 200-300 students per location
-   - Basic infrastructure setup
-   - Initial government partnerships
+Get Free Parenting Tips
 
-2. Phase 2 (Years 2-3)
-   - Expand to 5,000 students
-   - Enhanced platform features
-   - Strengthened partnerships
-   - Improved monitoring systems
+Skip to Content
+Tembo Education
+Home
+About
+Impact
+Global
+Research
+Log In
+SIGN UP
+RESEARCH
 
-3. Phase 3 (Years 4-5)
-   - Reach 25,000 students
-   - Full government integration
-   - Sustainable funding model
-   - Comprehensive impact assessment 
+Our convenient, text-based ECE (Early Childhood Education) is derived from studies by leading researchers. We employ evidence-based learning to maximize your child's potential.
+
+
+Text-Based Learning Studies
+
+
+WHY ECE
+
+New research shows that early education starting from birth to age six is the critical and unmet need of this century.
+
+Studies have shown that every dollar invested in early childhood education results in a return on investment of $7-$13.
+
+[Read More]
+
+TEMBO RESULTS:
+
+What PARENTS Say…
+
+NPS (Net Promoter Score, which is the gold standard for measuring results.
+
+
+Tembo has an 80.5% NPS Parent Score
+
+
+100% of Parents agree Tembo increases child’s performance in school
+
+
+100% of Parents agree Tembo increases child’s knowledge and social/emotional bond
+
+
+97% of Parents agree they recommend Tembo to friends and family
+
+TEMBO RESULTS:
+
+What TEACHERS Say…
+
+NPS (Net Promoter Score, which is the gold standard for measuring results.)
+
+
+Tembo has a 97% NPS Teacher Score
+
+
+96% of Teachers agree Tembo increases child’s School-Readiness
+
+
+97% of Teachers agree Tembo increases child’s knowledge and social / emotional bond
+
+
+100% of Teachers agree they recommend Tembo to friends and family
+
+Convenience & Ease of Understanding
+(Reported by Parents)
+
+100% agree activities are easy to read & understand
+
+
+97.4% agree performing activities with children is easy
+
+
+100% agree activities are fun to engage with child
+
+
+89.7% agree activities can be done with everyday household items.
+
+Child’s Favorite Activities
+
+(Reported by Parents)
+
+Play-based Game Activities
+
+
+Social Engagement (1-on-1, group activities)
+
+
+Specificity of Food / Nutrition
+
+
+Gross & Fine Motor Skills (yoga, moving around, body parts
+
+
+Involving objects (puzzles, ball playing, etc.)
+
+Child’s Favorite Activities
+
+(Reported by Teachers)
+
+Creative/art activities (colors, drawings, etc.)
+
+
+Group/Social (games, group activities)
+
+
+Involving objects (puzzle, ball playing, etc.)
+
+
+Emotional (describing family, etc.)
+
+
+Language (singing, alphabet, stories, rhyming, etc.)
+
+
+Numeracy (counting, etc.)
+
+
+Motor (moving around, body parts)
+
+
+1-on-1 (non-group activities)
+
+Between the various facets of modern life, you have less time, making it increasingly difficult to educate your child at home. With an endless number of apps and more information than ever at your fingertips, it is simplify inconvenient and overwhelming for parents to find trustworthy information.
+This is why our team at Tembo Education created a convenient and accessible solution that doesn't add to your child's screen time. Our activities create successful learning outcomes and opportunities for you to meaningfully bond with your child in just 15 minutes a day.
+Quality Learning for Your Child
+Get a sample activity and find out what Tembo Education can do for you and your child.
+Receive expert advice, fun activities, and toddler-friendly strategies straight to your inbox.
+

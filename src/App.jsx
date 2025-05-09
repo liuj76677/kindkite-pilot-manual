@@ -7,6 +7,7 @@ import PilotV0 from './pages/PilotV0';
 import AdminFeedback from './pages/AdminFeedback';
 import AdminAnalytics from './pages/AdminAnalytics';
 import Landing from './pages/Landing';
+import GrantDashboard from './pages/GrantDashboard';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/landing" element={<Landing />} />
           <Route path="/dashboard" element={<OrgDashboard />} />
           <Route path="/org/:orgId" element={<OrgPage />} />
+          <Route path="/org/:orgId/grant/:grantId" element={<GrantDashboard />} />
           <Route path="/admin/grants" element={<AdminGrantManager />} />
           <Route path="/pilot" element={<PilotV0 />} />
           <Route path="/pilot/:organizationId" element={<PilotV0 />} />
