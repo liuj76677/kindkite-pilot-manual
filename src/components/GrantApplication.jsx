@@ -1,55 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getGrantApplicationData, generateSampleAnswers, getApplicationStatus, saveApplicationProgress } from '../services/grantDatabase';
-import { searchSimilarDocuments, augmentPrompt } from '../utils/rag';
+import { ragClient } from '../utils/rag';
 import axios from 'axios';
 
 export default function GrantApplication({ grant, organization }) {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [globalError, setGlobalError] = useState(null);
+  const [questionErrors, setQuestionErrors] = useState({});
   const [applicationData, setApplicationData] = useState(null);
   const [answers, setAnswers] = useState(null);
   const [status, setStatus] = useState(null);
   const [saving, setSaving] = useState(false);
   const [responses, setResponses] = useState({});
+  const [generatingResponses, setGeneratingResponses] = useState({});
 
   useEffect(() => {
     async function loadApplicationData() {
       try {
         setLoading(true);
-        setError(null);
+        setGlobalError(null);
+        setQuestionErrors({});
 
         // Fetch pre-processed grant application data
         const data = await getGrantApplicationData(grant.id);
         setApplicationData(data);
 
-        // Fetch draft answers from backend RAG endpoint
-        let draftAnswers = null;
-        try {
-          const response = await axios.post('/api/generate-draft-answers', {
-            orgInfo: organization,
-            grantQuestions: data.questions
-          });
-          draftAnswers = response.data;
-        } catch (e) {
-          // If the endpoint fails, fallback to empty answers
-          draftAnswers = { answers: [] };
+        // Generate responses for each question
+        const generatedResponses = {};
+        for (const question of data.questions) {
+          try {
+            setGeneratingResponses(prev => ({ ...prev, [question.id]: true }));
+            
+            const searchResults = await ragClient.hybridSearch(
+              `${question.question} ${question.guidelines}`
+            );
+            
+            const prompt = `
+              Organization Information:
+              ${JSON.stringify(organization)}
+              
+              Grant Question:
+              ${question.question}
+              
+              Guidelines:
+              ${question.guidelines}
+              
+              Please generate a response that:
+              1. Directly answers the question
+              2. Incorporates relevant organization information
+              3. Follows the guidelines
+              4. Stays within ${question.maxLength || 1000} characters
+            `;
+
+            const response = await ragClient.augmentPrompt(prompt, searchResults);
+            generatedResponses[question.id] = response.response || '';
+          } catch (err) {
+            console.error(`Error generating response for question ${question.id}:`, err);
+            setQuestionErrors(prev => ({
+              ...prev,
+              [question.id]: `Failed to generate response: ${err.message}`
+            }));
+            generatedResponses[question.id] = '';
+          } finally {
+            setGeneratingResponses(prev => ({ ...prev, [question.id]: false }));
+          }
         }
-        setAnswers(draftAnswers);
-        // Set initial responses to the draft answers
-        const initialResponses = {};
-        if (draftAnswers && draftAnswers.answers) {
-          draftAnswers.answers.forEach(a => {
-            initialResponses[a.questionId] = a.answer;
-          });
-        }
-        setResponses(initialResponses);
+        setResponses(generatedResponses);
 
         // Get application status
         const applicationStatus = await getApplicationStatus(grant.id, organization.id);
         setStatus(applicationStatus);
       } catch (err) {
-        setError(err.message);
+        setGlobalError(err.message);
       } finally {
         setLoading(false);
       }
@@ -57,53 +80,6 @@ export default function GrantApplication({ grant, organization }) {
 
     loadApplicationData();
   }, [grant.id, organization]);
-
-  useEffect(() => {
-    loadGrantAndGenerateResponses();
-  }, [grant.id, organization]);
-
-  const loadGrantAndGenerateResponses = async () => {
-    try {
-      setLoading(true);
-      // First, get the grant details
-      const grantDetails = await fetchGrantDetails(grant.id);
-      setApplicationData(grantDetails.application);
-
-      // Generate responses for each question
-      const generatedResponses = {};
-      for (const question of grantDetails.application.questions) {
-        const context = await searchSimilarDocuments(
-          `${question.question} ${question.guidelines}`
-        );
-        
-        const prompt = `
-          Organization Information:
-          ${JSON.stringify(organization)}
-          
-          Grant Question:
-          ${question.question}
-          
-          Guidelines:
-          ${question.guidelines}
-          
-          Please generate a response that:
-          1. Directly answers the question
-          2. Incorporates relevant organization information
-          3. Follows the guidelines
-          4. Stays within ${question.maxLength} characters
-        `;
-
-        const response = await augmentPrompt(prompt, context);
-        generatedResponses[question.id] = response;
-      }
-
-      setResponses(generatedResponses);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleResponseEdit = (questionId, newResponse) => {
     setResponses(prev => ({
@@ -120,7 +96,7 @@ export default function GrantApplication({ grant, organization }) {
       const newStatus = await getApplicationStatus(grant.id, organization.id);
       setStatus(newStatus);
     } catch (err) {
-      setError(err.message);
+      setGlobalError(err.message);
     } finally {
       setSaving(false);
     }
@@ -128,21 +104,20 @@ export default function GrantApplication({ grant, organization }) {
 
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
-        <div className="space-y-4">
-          <div className="h-24 bg-gray-200 rounded"></div>
-          <div className="h-24 bg-gray-200 rounded"></div>
-          <div className="h-24 bg-gray-200 rounded"></div>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading grant application...</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (globalError) {
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p className="text-red-600">{error}</p>
+        <h3 className="text-red-800 font-medium">Error</h3>
+        <p className="text-red-600 mt-2">{globalError}</p>
       </div>
     );
   }
@@ -212,15 +187,25 @@ export default function GrantApplication({ grant, organization }) {
                 )}
 
                 <div className="space-y-2">
-                  <textarea
-                    value={responses[question.id] || ''}
-                    onChange={(e) => handleResponseEdit(question.id, e.target.value)}
-                    className="w-full p-3 border rounded-lg"
-                    rows={question.type === 'short_answer' ? 3 : 8}
-                    maxLength={question.maxLength}
-                  />
-                  <div className="text-sm text-gray-500">
-                    {responses[question.id]?.length || 0} / {question.maxLength} characters
+                  <div className="relative">
+                    <textarea
+                      value={responses[question.id] || ''}
+                      onChange={(e) => handleResponseEdit(question.id, e.target.value)}
+                      className="w-full h-32 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Enter your response here..."
+                      maxLength={question.maxLength || 1000}
+                    />
+                    {generatingResponses[question.id] && (
+                      <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                      </div>
+                    )}
+                    {questionErrors[question.id] && (
+                      <p className="mt-2 text-sm text-red-600">{questionErrors[question.id]}</p>
+                    )}
+                    <p className="mt-2 text-sm text-gray-500">
+                      {responses[question.id]?.length || 0} / {question.maxLength || 1000} characters
+                    </p>
                   </div>
                 </div>
               </div>
