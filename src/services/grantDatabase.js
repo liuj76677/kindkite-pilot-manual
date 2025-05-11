@@ -56,22 +56,19 @@ export async function getApplicationStatus(grantId, organizationId) {
 }
 
 // Save application progress
-export async function saveApplicationProgress(grantId, organizationId, answers) {
+export async function saveApplicationProgress(grantId, organizationId, responses) {
   try {
-    const response = await fetch(`${API_BASE_URL}/save-application/${grantId}/${organizationId}`, {
+    const response = await fetch(`${API_BASE_URL}/application-progress/${grantId}/${organizationId}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ answers })
+      body: JSON.stringify(responses),
     });
-
     if (!response.ok) {
       throw new Error('Failed to save application progress');
     }
-
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error('Error saving application progress:', error);
     throw error;

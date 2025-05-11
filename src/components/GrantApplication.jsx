@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getGrantApplicationData, generateSampleAnswers, getApplicationStatus, saveApplicationProgress } from '../services/grantDatabase';
-import { ragClient } from '../utils/rag';
+import { getGrantApplicationData, getApplicationStatus, saveApplicationProgress } from '../services/grantDatabase';
 import axios from 'axios';
 
 export default function GrantApplication({ grant, organization }) {
@@ -13,7 +12,6 @@ export default function GrantApplication({ grant, organization }) {
   const [status, setStatus] = useState(null);
   const [saving, setSaving] = useState(false);
   const [responses, setResponses] = useState({});
-  const [generatingResponses, setGeneratingResponses] = useState({});
 
   useEffect(() => {
     async function loadApplicationData() {
@@ -25,48 +23,7 @@ export default function GrantApplication({ grant, organization }) {
         // Fetch pre-processed grant application data
         const data = await getGrantApplicationData(grant.id);
         setApplicationData(data);
-
-        // Generate responses for each question
-        const generatedResponses = {};
-        for (const question of data.questions) {
-          try {
-            setGeneratingResponses(prev => ({ ...prev, [question.id]: true }));
-            
-            const searchResults = await ragClient.hybridSearch(
-              `${question.question} ${question.guidelines}`
-            );
-            
-            const prompt = `
-              Organization Information:
-              ${JSON.stringify(organization)}
-              
-              Grant Question:
-              ${question.question}
-              
-              Guidelines:
-              ${question.guidelines}
-              
-              Please generate a response that:
-              1. Directly answers the question
-              2. Incorporates relevant organization information
-              3. Follows the guidelines
-              4. Stays within ${question.maxLength || 1000} characters
-            `;
-
-            const response = await ragClient.augmentPrompt(prompt, searchResults);
-            generatedResponses[question.id] = response.response || '';
-          } catch (err) {
-            console.error(`Error generating response for question ${question.id}:`, err);
-            setQuestionErrors(prev => ({
-              ...prev,
-              [question.id]: `Failed to generate response: ${err.message}`
-            }));
-            generatedResponses[question.id] = '';
-          } finally {
-            setGeneratingResponses(prev => ({ ...prev, [question.id]: false }));
-          }
-        }
-        setResponses(generatedResponses);
+        setResponses({}); // Clear responses on new load
 
         // Get application status
         const applicationStatus = await getApplicationStatus(grant.id, organization.id);
@@ -172,20 +129,6 @@ export default function GrantApplication({ grant, organization }) {
                     {question.required ? 'Required' : 'Optional'}
                   </span>
                 </div>
-                
-                {/* Sample Answer */}
-                {answers && (
-                  <div className="mt-4 bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium text-gray-700">Sample Answer:</p>
-                    <p className="mt-2 text-gray-600">{answers.answers.find(a => a.questionId === question.id)?.answer}</p>
-                    {answers.answers.find(a => a.questionId === question.id)?.needsReview && (
-                      <p className="mt-2 text-sm text-orange-600">
-                        Note: This answer needs review. {answers.answers.find(a => a.questionId === question.id)?.reviewNotes}
-                      </p>
-                    )}
-                  </div>
-                )}
-
                 <div className="space-y-2">
                   <div className="relative">
                     <textarea
@@ -195,17 +138,6 @@ export default function GrantApplication({ grant, organization }) {
                       placeholder="Enter your response here..."
                       maxLength={question.maxLength || 1000}
                     />
-                    {generatingResponses[question.id] && (
-                      <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                      </div>
-                    )}
-                    {questionErrors[question.id] && (
-                      <p className="mt-2 text-sm text-red-600">{questionErrors[question.id]}</p>
-                    )}
-                    <p className="mt-2 text-sm text-gray-500">
-                      {responses[question.id]?.length || 0} / {question.maxLength || 1000} characters
-                    </p>
                   </div>
                 </div>
               </div>
@@ -213,56 +145,6 @@ export default function GrantApplication({ grant, organization }) {
           </div>
         </div>
       )}
-
-      {/* Requirements Section */}
-      {applicationData && (
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Requirements</h3>
-          <div className="space-y-4">
-            {applicationData.requirements.map((req, index) => (
-              <div key={index} className="flex items-start space-x-3">
-                <span className={`mt-1 w-4 h-4 rounded-full ${
-                  req.isMet ? 'bg-green-100' : 'bg-red-100'
-                }`} />
-                <div>
-                  <p className="font-medium">{req.description}</p>
-                  {!req.isMet && (
-                    <p className="text-sm text-orange-600 mt-1">{req.actionNeeded}</p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Guidelines Section */}
-      {applicationData && (
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Guidelines</h3>
-          <div className="space-y-4">
-            {Object.entries(applicationData.guidelines).map(([category, items]) => (
-              <div key={category}>
-                <h4 className="font-medium capitalize mb-2">{category}</h4>
-                <ul className="list-disc list-inside space-y-1">
-                  {items.map((item, index) => (
-                    <li key={index} className="text-gray-600">{item}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="flex justify-end space-x-4 mt-8">
-        <button className="px-6 py-2 border rounded-lg">
-          Save Draft
-        </button>
-        <button className="px-6 py-2 bg-blue-600 text-white rounded-lg">
-          Submit Application
-        </button>
-      </div>
     </div>
   );
 }
