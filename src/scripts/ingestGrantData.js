@@ -1,46 +1,62 @@
-// Script to ingest grant data (from PDF or manual entry), chunk, and upsert to Pinecone
-import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { Pinecone } from '@pinecone-database/pinecone';
+// Script to ingest grant data (from PDF or manual entry) and store in JSON format
 import fs from 'fs';
+import path from 'path';
 
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY,
-  environment: process.env.PINECONE_ENVIRONMENT
-});
-const index = pinecone.index('kindkite-grants');
+async function ingestGrantData(content, metadata = {}) {
+  try {
+    // Create output directory if it doesn't exist
+    const outputDir = './data/grants';
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
 
-async function ingestGrantFromPDF(pdfPath, grantMeta) {
-  const loader = new PDFLoader(pdfPath);
-  const docs = await loader.load();
-  const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 200 });
-  const chunks = await splitter.splitDocuments(docs);
-  const records = chunks.map((chunk, i) => ({
-    id: `${grantMeta.id}-chunk${i}`,
-    chunk_text: chunk.pageContent,
-    ...grantMeta,
-    chunk_index: i
-  }));
-  await index.upsert(records, { namespace: '' });
-  console.log(`Upserted ${records.length} chunks for grant ${grantMeta.id}`);
+    // Generate a unique ID for the grant
+    const grantId = `grant_${Date.now()}`;
+    
+    // Create the grant document
+    const grantDoc = {
+      id: grantId,
+      content,
+      metadata: {
+        ...metadata,
+        timestamp: new Date().toISOString()
+      }
+    };
+
+    // Save to file
+    const outputPath = path.join(outputDir, `${grantId}.json`);
+    fs.writeFileSync(outputPath, JSON.stringify(grantDoc, null, 2));
+
+    console.log(`Successfully ingested grant data: ${grantId}`);
+    return grantDoc;
+  } catch (error) {
+    console.error('Error ingesting grant data:', error);
+    throw error;
+  }
 }
 
-async function ingestGrantFromText(text, grantMeta) {
-  const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 200 });
-  const docs = [{ pageContent: text }];
-  const chunks = await splitter.splitDocuments(docs);
-  const records = chunks.map((chunk, i) => ({
-    id: `${grantMeta.id}-chunk${i}`,
-    chunk_text: chunk.pageContent,
-    ...grantMeta,
-    chunk_index: i
-  }));
-  await index.upsert(records, { namespace: '' });
-  console.log(`Upserted ${records.length} chunks for grant ${grantMeta.id}`);
+// Main execution
+async function main() {
+  try {
+    // Example usage
+    const grantContent = {
+      name: "Example Grant",
+      description: "This is an example grant description",
+      requirements: ["Requirement 1", "Requirement 2"],
+      deadline: "2024-12-31"
+    };
+
+    const metadata = {
+      source: "manual_entry",
+      category: "education",
+      priority: "high"
+    };
+
+    await ingestGrantData(grantContent, metadata);
+  } catch (error) {
+    console.error('Error in main execution:', error);
+    process.exit(1);
+  }
 }
 
-// Example usage:
-// await ingestGrantFromPDF('path/to/grant.pdf', { id: 'grant1', name: 'D-Prize', ... });
-// await ingestGrantFromText('grant text here', { id: 'grant2', name: 'Other Grant', ... });
-
-export { ingestGrantFromPDF, ingestGrantFromText }; 
+main(); 

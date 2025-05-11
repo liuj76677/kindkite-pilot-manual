@@ -1,49 +1,63 @@
-// Script to ingest organization data, chunk, and upsert to Pinecone
-import { Pinecone } from '@pinecone-database/pinecone';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+// Script to ingest organization data and store in JSON format
 import fs from 'fs';
+import path from 'path';
 
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY,
-  environment: process.env.PINECONE_ENVIRONMENT
-});
-const index = pinecone.index('kindkite-grants');
+async function ingestOrgData(content, metadata = {}) {
+  try {
+    // Create output directory if it doesn't exist
+    const outputDir = './data/organizations';
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
 
-async function ingestOrgFromJSON(jsonPath) {
-  const orgs = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-  for (const org of orgs) {
-    await ingestOrg(org);
+    // Generate a unique ID for the organization
+    const orgId = `org_${Date.now()}`;
+    
+    // Create the organization document
+    const orgDoc = {
+      id: orgId,
+      content,
+      metadata: {
+        ...metadata,
+        timestamp: new Date().toISOString()
+      }
+    };
+
+    // Save to file
+    const outputPath = path.join(outputDir, `${orgId}.json`);
+    fs.writeFileSync(outputPath, JSON.stringify(orgDoc, null, 2));
+
+    console.log(`Successfully ingested organization data: ${orgId}`);
+    return orgDoc;
+  } catch (error) {
+    console.error('Error ingesting organization data:', error);
+    throw error;
   }
 }
 
-async function ingestOrg(org) {
-  // Flatten org info into text chunks
-  const fields = [
-    `Organization Name: ${org.name}`,
-    `Mission: ${org.mission}`,
-    `Focus Areas: ${org.focusAreas?.join(', ')}`,
-    `Location: ${org.location}`,
-    `Team: ${(org.team || []).map(t => `${t.name} (${t.title}): ${t.responsibilities}`).join('; ')}`,
-    `Past Projects: ${(org.pastProjects || []).join('; ')}`,
-    `Other Info: ${org.otherInfo || ''}`
-  ];
-  const text = fields.filter(Boolean).join('\n');
-  const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 200 });
-  const docs = [{ pageContent: text }];
-  const chunks = await splitter.splitDocuments(docs);
-  const records = chunks.map((chunk, i) => ({
-    id: `${org.id}-chunk${i}`,
-    chunk_text: chunk.pageContent,
-    org_id: org.id,
-    org_name: org.name,
-    chunk_index: i
-  }));
-  await index.upsert(records, { namespace: '' });
-  console.log(`Upserted ${records.length} chunks for org ${org.id}`);
+// Main execution
+async function main() {
+  try {
+    // Example usage
+    const orgContent = {
+      name: "Example Organization",
+      mission: "To provide quality education to underserved communities",
+      focusAreas: ["education", "community development"],
+      size: "small",
+      location: "New York, NY"
+    };
+
+    const metadata = {
+      source: "manual_entry",
+      status: "active",
+      verified: true
+    };
+
+    await ingestOrgData(orgContent, metadata);
+  } catch (error) {
+    console.error('Error in main execution:', error);
+    process.exit(1);
+  }
 }
 
-// Example usage:
-// await ingestOrgFromJSON('path/to/orgs.json');
-// await ingestOrg({ id: 'org1', name: 'Tembo Education', ... });
-
-export { ingestOrgFromJSON, ingestOrg }; 
+main(); 

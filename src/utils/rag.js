@@ -7,6 +7,9 @@ if (!import.meta.env.VITE_API_BASE_URL) {
   console.warn('VITE_API_BASE_URL is not set. Using default localhost URL.');
 }
 
+// Simple in-memory storage for documents
+const documentStore = new Map();
+
 // Frontend RAG client that communicates with the backend API
 export class RAGClient {
   constructor() {
@@ -24,16 +27,15 @@ export class RAGClient {
         throw new Error('Content is required for document processing');
       }
 
-      const response = await this.api.post('/rag/process-document', {
+      // Store document in memory
+      const docId = `doc_${Date.now()}`;
+      documentStore.set(docId, {
         content,
         metadata,
+        timestamp: new Date().toISOString()
       });
 
-      if (!response.data || typeof response.data !== 'object') {
-        throw new Error('Invalid response format from server');
-      }
-
-      return response.data;
+      return { id: docId, ...metadata };
     } catch (error) {
       console.error('Error processing document:', error);
       throw new Error(error.response?.data?.error || 'Failed to process document');
@@ -46,20 +48,30 @@ export class RAGClient {
         throw new Error('Search query is required');
       }
 
-      const response = await this.api.post('/rag/search', {
-        query,
-        topK,
-      });
+      // Simple keyword-based search for now
+      const results = Array.from(documentStore.entries())
+        .map(([id, doc]) => ({
+          id,
+          score: this.calculateRelevanceScore(query, doc.content),
+          metadata: doc.metadata,
+          content: doc.content
+        }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, topK);
 
-      if (!Array.isArray(response.data)) {
-        throw new Error('Invalid search results format from server');
-      }
-
-      return response.data;
+      return results;
     } catch (error) {
       console.error('Error performing hybrid search:', error);
       throw new Error(error.response?.data?.error || 'Failed to perform search');
     }
+  }
+
+  calculateRelevanceScore(query, content) {
+    // Simple keyword matching score
+    const queryWords = query.toLowerCase().split(/\s+/);
+    const contentWords = content.toLowerCase().split(/\s+/);
+    const matches = queryWords.filter(word => contentWords.includes(word)).length;
+    return matches / queryWords.length;
   }
 
   async augmentPrompt(query, context, options = {}) {
@@ -99,16 +111,19 @@ export class RAGClient {
         throw new Error('New content is required for update');
       }
 
-      const response = await this.api.put(`/rag/documents/${documentId}`, {
-        content: newContent,
-        metadata,
-      });
-
-      if (!response.data || typeof response.data !== 'object') {
-        throw new Error('Invalid response format from server');
+      // Update document in memory
+      if (documentStore.has(documentId)) {
+        const existingDoc = documentStore.get(documentId);
+        documentStore.set(documentId, {
+          ...existingDoc,
+          content: newContent,
+          metadata: { ...existingDoc.metadata, ...metadata },
+          timestamp: new Date().toISOString()
+        });
+        return { id: documentId, ...metadata };
+      } else {
+        throw new Error('Document not found');
       }
-
-      return response.data;
     } catch (error) {
       console.error('Error updating document:', error);
       throw new Error(error.response?.data?.error || 'Failed to update document');
