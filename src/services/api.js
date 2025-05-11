@@ -7,4 +7,4 @@ export const fetchGrants = () => axios.get(`${API_BASE_URL}/admin/grants`).then(
 export const fetchGrant = (grantId) => axios.get(`${API_BASE_URL}/admin/grants/${grantId}`).then(res => res.data);
 export const fetchDraft = (orgId, grantId) => axios.get(`${API_BASE_URL}/drafts/${orgId}/${grantId}`).then(res => res.data);
 export const saveDraft = (orgId, grantId, data) => axios.post(`${API_BASE_URL}/drafts/${orgId}/${grantId}`, data).then(res => res.data);
-export const fetchOrg = (orgId) => axios.get(`${API_BASE_URL}/orgs/${orgId}`).then(res => res.data); 
+export const fetchOrg = (orgId) => axios.get(`${API_BASE_URL}/api/orgs/${orgId}`).then(res => res.data); 
