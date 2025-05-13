@@ -107,14 +107,14 @@ export default function GrantCard({ grant, organization }) {
             rel="noopener noreferrer"
             className="block w-full text-center bg-[#3d6b44] hover:bg-opacity-90 text-white text-lg font-semibold px-6 py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
           >
-            Apply Now
+            Learn More
           </a>
-          <button
-            onClick={() => setShowApplication(!showApplication)}
+          <a
+            href={`/org/${organization.id}/grant/${grant.id}`}
             className="block w-full text-center bg-[#f2e4d5] hover:bg-opacity-90 text-[#442e1c] text-lg font-semibold px-6 py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
           >
-            {showApplication ? 'Hide Application Details' : 'Show Application Details'}
-          </button>
+            Apply with KindKite
+          </a>
         </div>
 
         {/* Application Details */}
