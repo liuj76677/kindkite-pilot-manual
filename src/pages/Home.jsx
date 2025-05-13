@@ -9,7 +9,7 @@ const Home = () => {
         KindKite helps nonprofits discover top-fit, low-effort grants with AI support. Explore your personalized dashboard below.
       </p>
       <Link
-        to="/dashboard"
+        to="/org"
         className="bg-[#3d6b44] hover:bg-opacity-90 text-white px-8 py-4 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg"
       >
         View Dashboard

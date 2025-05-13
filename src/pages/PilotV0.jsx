@@ -176,7 +176,7 @@ const PilotV0 = () => {
 
   // This would typically come from an API, but for v0 we'll hardcode it
   const organizationGrants = {
-    'tembo-education': {
+    'tembo': {
       name: 'Tembo Education',
       description: 'A for-profit social enterprise (educational services company) focused on early childhood education via mobile technology. As a for-profit, Tembo should target grants and competitions open to social enterprises or companies with a charitable mission (not restricted to 501(c)(3) nonprofits).',
       grants: [
