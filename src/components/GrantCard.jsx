@@ -110,7 +110,7 @@ export default function GrantCard({ grant, organization }) {
             Learn More
           </a>
           <a
-            href={`/org/${organization.id}/grant/${grant.id}`}
+            href="/dashboard"
             className="block w-full text-center bg-[#f2e4d5] hover:bg-opacity-90 text-[#442e1c] text-lg font-semibold px-6 py-3 rounded-xl transition-all transform hover:scale-105 shadow-md"
           >
             Apply with KindKite
