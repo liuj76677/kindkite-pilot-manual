@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { fetchGrant, fetchDraft, fetchOrg, saveDraft } from '../services/api';
+import axios from 'axios';
 
 const ORG_ID = 'tembo-education';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 const Workspace = ({ selectedGrantId }) => {
   const [activeTab, setActiveTab] = useState('summary');
@@ -10,6 +12,9 @@ const Workspace = ({ selectedGrantId }) => {
   const [org, setOrg] = useState(null);
   const [draftSections, setDraftSections] = useState({});
   const [saving, setSaving] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [highlightedSections, setHighlightedSections] = useState({});
+  const [pdfUrl, setPdfUrl] = useState(null);
 
   useEffect(() => {
     if (selectedGrantId) {
@@ -39,6 +44,58 @@ const Workspace = ({ selectedGrantId }) => {
     setSaving(true);
     await saveDraft(ORG_ID, selectedGrantId, { sections: draftSections });
     setSaving(false);
+  };
+
+  const generateAIDraft = async () => {
+    if (!selectedGrantId || !org || !grant) return;
+    
+    setGenerating(true);
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/generate-draft-answers`, {
+        orgInfo: org,
+        grantQuestions: grant.questions
+      });
+      
+      const { answers } = response.data;
+      
+      // Update draft sections with AI-generated answers
+      const newSections = {};
+      answers.forEach(({ questionId, answer }) => {
+        newSections[questionId] = answer;
+        // Highlight sections that need human review
+        setHighlightedSections(prev => ({
+          ...prev,
+          [questionId]: true
+        }));
+      });
+      
+      setDraftSections(newSections);
+      await handleSaveDraft();
+    } catch (error) {
+      console.error('Error generating AI draft:', error);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const generatePDF = async () => {
+    if (!selectedGrantId || !draftSections) return;
+    
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/generate-pdf`, {
+        orgId: ORG_ID,
+        grantId: selectedGrantId,
+        sections: draftSections,
+        grant: grant
+      }, {
+        responseType: 'blob'
+      });
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      setPdfUrl(url);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
   };
 
   if (!selectedGrantId) {
@@ -75,53 +132,86 @@ const Workspace = ({ selectedGrantId }) => {
       </div>
 
       {/* Tab Content */}
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 overflow-y-auto p-6">
         {activeTab === 'summary' && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <h2 className="text-2xl font-bold text-gray-900">{grant.title}</h2>
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold mb-2">Educational Brief</h3>
-              <p className="text-gray-700 mb-2">{grant.summary}</p>
-              <div className="text-sm text-gray-500 mb-2">Deadline: {grant.deadline} | Funder: {grant.funder}</div>
-              <div className="text-sm text-gray-500 mb-2">Effort: {grant.effort} | Chance of Success: {grant.chance_of_success}</div>
-              <div className="text-sm text-gray-500 mb-2">Why: {grant.why}</div>
-              <div className="mt-4">
-                <span className="font-semibold">Prompt:</span> {grant.prompt_description}
-              </div>
-              <button className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
-                Summarize Again
-              </button>
+            <div className="prose max-w-none">
+              <p className="text-gray-600">{grant.description}</p>
+              <h3 className="text-lg font-semibold mt-4">Requirements</h3>
+              <ul className="list-disc list-inside">
+                {grant.requirements?.map((req, idx) => (
+                  <li key={idx} className="text-gray-600">{req.description}</li>
+                ))}
+              </ul>
             </div>
-            {org && (
-              <div className="bg-gray-50 rounded-lg p-4 mt-4">
-                <h4 className="font-semibold mb-1">About {org.name}</h4>
-                <div className="text-sm text-gray-700">{org.overview}</div>
-              </div>
-            )}
           </div>
         )}
 
         {activeTab === 'draft' && (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gray-900">Draft Response</h2>
-            <div className="bg-white rounded-lg shadow p-6 space-y-6">
-              {grant.sections.map((section) => (
-                <div key={section.label} className="mb-6">
-                  <label className="block font-semibold mb-1">{section.label}</label>
-                  <div className="text-xs text-gray-500 mb-1">{section.description}</div>
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-900">Draft Response</h2>
+              <div className="space-x-4">
+                <button
+                  onClick={generateAIDraft}
+                  disabled={generating}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {generating ? 'Generating...' : 'Generate with AI'}
+                </button>
+                <button
+                  onClick={generatePDF}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                >
+                  Export PDF
+                </button>
+                {pdfUrl && (
+                  <a
+                    href={pdfUrl}
+                    download={`${grant.title}-application.pdf`}
+                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                  >
+                    Download PDF
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {grant.questions?.map((question) => (
+                <div
+                  key={question.id}
+                  className={`p-4 rounded-lg ${
+                    highlightedSections[question.id]
+                      ? 'bg-yellow-50 border border-yellow-200'
+                      : 'bg-white border border-gray-200'
+                  }`}
+                >
+                  <h3 className="text-lg font-semibold mb-2">{question.question}</h3>
+                  {question.guidelines && (
+                    <p className="text-sm text-gray-600 mb-4">{question.guidelines}</p>
+                  )}
                   <textarea
-                    className="w-full h-28 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder={`Draft your response for ${section.label}...`}
-                    value={draftSections[section.label] || ''}
-                    onChange={e => handleSectionChange(section.label, e.target.value)}
+                    value={draftSections[question.id] || ''}
+                    onChange={(e) => handleSectionChange(question.id, e.target.value)}
+                    className="w-full h-32 p-2 border rounded-lg"
+                    placeholder="Enter your response here..."
                   />
-                  {/* Future: Add "Ask AI to Rewrite" button here */}
+                  {highlightedSections[question.id] && (
+                    <div className="mt-2 text-sm text-yellow-600">
+                      This section was generated by AI and may need human review.
+                    </div>
+                  )}
                 </div>
               ))}
+            </div>
+
+            <div className="flex justify-end space-x-4">
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                 onClick={handleSaveDraft}
                 disabled={saving}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50"
               >
                 {saving ? 'Saving...' : 'Save Draft'}
               </button>
@@ -130,25 +220,15 @@ const Workspace = ({ selectedGrantId }) => {
         )}
 
         {activeTab === 'chat' && (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gray-900">Chat with AI</h2>
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="h-96 overflow-y-auto mb-4 border border-gray-200 rounded-md p-4">
-                {/* Chat messages will go here */}
-                <p className="text-gray-600">Start a conversation with the AI assistant...</p>
-              </div>
-              <div className="flex space-x-4">
-                <input
-                  type="text"
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-                  placeholder="Type your message..."
-                  disabled
-                />
-                <button className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700" disabled>
-                  Send
-                </button>
-              </div>
-              <div className="text-xs text-gray-400 mt-2">(AI chat coming soon)</div>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">Chat with AI Assistant</h2>
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+              <p className="text-gray-600">
+                Chat with our AI assistant to get help with your grant application.
+                The assistant has access to your organization's information and can
+                provide personalized guidance.
+              </p>
+              {/* Chat interface will be implemented in the next step */}
             </div>
           </div>
         )}
