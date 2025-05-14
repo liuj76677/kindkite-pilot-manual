@@ -165,13 +165,11 @@ export default function OrgPage() {
                   Match Score: {rankedGrant.score}%
                 </span>
               </div>
-              <Link to={`/org/${org.id}/grant/${grant.id}`} state={{ org, grant, rankInfo: rankedGrant }}>
-                <GrantCard 
-                  grant={grant} 
-                  organization={org}
-                  rankInfo={rankedGrant}
-                />
-              </Link>
+              <GrantCard 
+                grant={grant} 
+                organization={org}
+                rankInfo={rankedGrant}
+              />
             </div>
           );
         })}
@@ -185,12 +183,11 @@ export default function OrgPage() {
               </p>
             </div>
             {org.grant_recommendations.map((grant, index) => (
-              <Link key={index} to={`/org/${org.id}/grant/${grant.id}`} state={{ org, grant }}>
-                <GrantCard 
-                  grant={grant} 
-                  organization={org}
-                />
-              </Link>
+              <GrantCard 
+                key={index}
+                grant={grant} 
+                organization={org}
+              />
             ))}
           </>
         )}
