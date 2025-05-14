@@ -51,9 +51,15 @@ const Workspace = ({ selectedGrantId }) => {
     
     setGenerating(true);
     try {
+      // Map sections to grantQuestions format
+      const grantQuestions = (grant.sections || []).map((section, idx) => ({
+        id: section.label?.toLowerCase().replace(/\s+/g, '_') || `section_${idx}`,
+        question: section.label,
+        guidelines: section.description || ''
+      }));
       const response = await axios.post(`${API_BASE_URL}/api/generate-draft-answers`, {
         orgInfo: org,
-        grantQuestions: grant.questions
+        grantQuestions
       });
       
       const { answers } = response.data;
