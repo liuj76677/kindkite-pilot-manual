@@ -94,6 +94,14 @@ export async function analyzeGrantFit(organization, grant) {
       throw new Error('Missing required parameters: organization and grant are required');
     }
 
+    // Use a cache key based on org and grant IDs
+    const cacheKey = `${organization.organization || organization.id}_${grant.title || grant.id}`;
+    const cache = getCache();
+    if (cache[cacheKey]) {
+      console.log('Returning cached analysis for:', cacheKey);
+      return cache[cacheKey];
+    }
+
     console.log('Generating new analysis for:', grant.title);
 
     const prompt = `
@@ -149,6 +157,8 @@ export async function analyzeGrantFit(organization, grant) {
       throw new Error(`Invalid API response: missing fields: ${missingFields.join(', ')}`);
     }
 
+    // Save to cache
+    updateCache(cacheKey, result);
     return result;
   } catch (error) {
     console.error('Error in analyzeGrantFit:', error);
