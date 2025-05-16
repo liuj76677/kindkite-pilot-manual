@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchGrant, fetchDraft, fetchOrg, saveDraft } from '../services/api';
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 const ORG_ID = 'tembo-education';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
@@ -15,6 +16,8 @@ const Workspace = ({ selectedGrantId }) => {
   const [generating, setGenerating] = useState(false);
   const [highlightedSections, setHighlightedSections] = useState({});
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [polishedDoc, setPolishedDoc] = useState('');
+  const [polishing, setPolishing] = useState(false);
 
   useEffect(() => {
     if (selectedGrantId) {
@@ -34,6 +37,17 @@ const Workspace = ({ selectedGrantId }) => {
       setDraftSections({});
     }
   }, [selectedGrantId]);
+
+  useEffect(() => {
+    // Automatically polish with AI when user first clicks the 'full' tab and grant/draftSections are loaded
+    if (activeTab === 'full' && !polishedDoc && grant && grant.sections && Object.keys(draftSections).length > 0 && !polishing) {
+      polishWithAI();
+    }
+    // Optionally, clear polishedDoc if user edits draftSections in 'draft' tab
+    // (Uncomment if you want to force re-polish after edits)
+    // if (activeTab === 'draft') setPolishedDoc('');
+    // eslint-disable-next-line
+  }, [activeTab, grant, draftSections]);
 
   const handleSectionChange = (label, value) => {
     setDraftSections(prev => ({ ...prev, [label]: value }));
@@ -116,13 +130,62 @@ const Workspace = ({ selectedGrantId }) => {
     return [];
   };
 
+  // Helper to clean up markdown artifacts
+  const cleanMarkdown = (text) => {
+    if (!text) return '';
+    // Remove **bold**, __underline__, ## headers, etc.
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/__(.*?)__/g, '$1')
+      .replace(/\#\s?(.*)/g, '<strong>$1</strong>')
+      .replace(/\n{2,}/g, '<br/><br/>')
+      .replace(/\n/g, '<br/>');
+  };
+
   // Helper to assemble the full document as HTML
   const getFullDocumentHtml = () => {
+    if (polishedDoc) {
+      // If AI-polished, show that
+      return DOMPurify.sanitize(polishedDoc);
+    }
     if (!grant?.sections) return '';
     return grant.sections.map((section) => {
       const answer = draftSections[section.label?.toLowerCase().replace(/\s+/g, '_')] || '';
-      return `<h2 style='margin-top:2em;'>${section.label}</h2><div style='margin-bottom:2em;'>${answer.replace(/\n/g, '<br/>')}</div>`;
+      return `
+        <div style='margin-bottom:2em;'>
+          <div style='font-size:0.95em;color:#888;margin-bottom:0.5em;'>${section.description || ''}</div>
+          <h2 style='margin-top:0.5em;'>${section.label}</h2>
+          <div>${cleanMarkdown(answer)}</div>
+        </div>
+      `;
     }).join('');
+  };
+
+  // Polish with AI
+  const polishWithAI = async () => {
+    setPolishing(true);
+    try {
+      const requirements = grant.sections.map(s => ({
+        label: s.label,
+        description: s.description || ''
+      }));
+      const answers = grant.sections.map(s => ({
+        label: s.label,
+        answer: draftSections[s.label?.toLowerCase().replace(/\s+/g, '_')] || ''
+      }));
+      const response = await axios.post(`${API_BASE_URL}/api/polish-full-document`, {
+        requirements,
+        answers,
+        grantTitle: grant.title,
+        orgName: org?.organization || '',
+        prompt: `Combine these answers into a single, cohesive, well-formatted concept note that flows smoothly, covers all requirements, and is free of markdown or formatting artifacts. Ensure every grant requirement is addressed clearly and professionally.`
+      });
+      setPolishedDoc(response.data.polishedDocument || '');
+    } catch (err) {
+      alert('Failed to polish document with AI.');
+    } finally {
+      setPolishing(false);
+    }
   };
 
   if (!selectedGrantId) {
@@ -254,12 +317,20 @@ const Workspace = ({ selectedGrantId }) => {
         {activeTab === 'full' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Full Document Review</h2>
+            <div className="flex justify-end mb-4">
+              <button
+                className="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 disabled:opacity-50"
+                onClick={polishWithAI}
+                disabled={polishing}
+              >
+                {polishing ? 'Polishing with AI...' : 'Re-Polish Full Document with AI'}
+              </button>
+            </div>
             <div
               className="prose prose-lg min-h-[400px] border rounded p-6 bg-gray-50 focus:outline-none"
               contentEditable
               suppressContentEditableWarning
               style={{ whiteSpace: 'pre-wrap', cursor: 'text' }}
-              // onMouseUp={handleAIAction} // Placeholder for future AI actions
               dangerouslySetInnerHTML={{ __html: getFullDocumentHtml() }}
             />
             <div className="mt-2 text-xs text-gray-500">Highlight text to see AI options (coming soon).</div>
