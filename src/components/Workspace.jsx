@@ -116,6 +116,15 @@ const Workspace = ({ selectedGrantId }) => {
     return [];
   };
 
+  // Helper to assemble the full document as HTML
+  const getFullDocumentHtml = () => {
+    if (!grant?.sections) return '';
+    return grant.sections.map((section) => {
+      const answer = draftSections[section.label?.toLowerCase().replace(/\s+/g, '_')] || '';
+      return `<h2 style='margin-top:2em;'>${section.label}</h2><div style='margin-bottom:2em;'>${answer.replace(/\n/g, '<br/>')}</div>`;
+    }).join('');
+  };
+
   if (!selectedGrantId) {
     return <div className="flex items-center justify-center h-full text-gray-400">Select a grant to get started.</div>;
   }
@@ -129,19 +138,18 @@ const Workspace = ({ selectedGrantId }) => {
           {[
             { id: 'summary', label: 'Grant Summary', color: 'purple' },
             { id: 'draft', label: 'Draft Response', color: 'blue' },
+            { id: 'full', label: 'Full Document', color: 'green' },
             { id: 'chat', label: 'Chat with AI', color: 'yellow' },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`
-                py-4 px-1 border-b-2 font-medium text-sm
-                ${
-                  activeTab === tab.id
-                    ? `border-${tab.color}-500 text-${tab.color}-600`
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }
-              `}
+              className={
+                `py-4 px-1 border-b-2 font-medium text-sm ` +
+                (activeTab === tab.id
+                  ? `border-${tab.color}-500 text-${tab.color}-600`
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300')
+              }
             >
               {tab.label}
             </button>
@@ -240,6 +248,21 @@ const Workspace = ({ selectedGrantId }) => {
                 {saving ? 'Saving...' : 'Save Draft'}
               </button>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'full' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Full Document Review</h2>
+            <div
+              className="prose prose-lg min-h-[400px] border rounded p-6 bg-gray-50 focus:outline-none"
+              contentEditable
+              suppressContentEditableWarning
+              style={{ whiteSpace: 'pre-wrap', cursor: 'text' }}
+              // onMouseUp={handleAIAction} // Placeholder for future AI actions
+              dangerouslySetInnerHTML={{ __html: getFullDocumentHtml() }}
+            />
+            <div className="mt-2 text-xs text-gray-500">Highlight text to see AI options (coming soon).</div>
           </div>
         )}
 
