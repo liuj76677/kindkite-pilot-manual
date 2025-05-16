@@ -10,6 +10,7 @@ export default function GrantDashboard() {
   const org = location.state?.org || null;
   const grant = location.state?.grant || null;
   const [accepted, setAccepted] = useState(false);
+  const [answers, setAnswers] = useState({});
 
   if (!org || !grant) {
     return (
@@ -71,7 +72,13 @@ export default function GrantDashboard() {
       {/* Grant application Q&A */}
       {(accepted || !grant.requirements || grant.requirements.length === 0) && (
         <div className="mt-8">
-          <GrantApplication grant={grant} organization={org} />
+          <GrantApplication grant={grant} organization={org} onAnswersChange={setAnswers} />
+          <button
+            className="mt-6 px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
+            onClick={() => navigate(`/org/${orgId}/grant/${grantId}/review`, { state: { org, grant, answers } })}
+          >
+            Review Full Document
+          </button>
         </div>
       )}
     </div>

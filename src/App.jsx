@@ -8,6 +8,7 @@ import GrantDashboard from './pages/GrantDashboard';
 import AdminFeedback from './pages/AdminFeedback';
 import AdminAnalytics from './pages/AdminAnalytics';
 import OrgPage from './components/OrgPage';
+import GrantDocumentReview from './pages/GrantDocumentReview';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/org" element={<OrgDashboard />} />
         <Route path="/org/:orgId" element={<OrgPage />} />
         <Route path="/org/:orgId/grant/:grantId" element={<GrantDashboard />} />
+        <Route path="/org/:orgId/grant/:grantId/review" element={<GrantDocumentReview />} />
         <Route path="/admin/feedback" element={<AdminFeedback />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/dashboard" element={<Layout />} />

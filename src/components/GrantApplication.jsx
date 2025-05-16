@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { getGrantApplicationData, getApplicationStatus, saveApplicationProgress } from '../services/grantDatabase';
 import axios from 'axios';
 
-export default function GrantApplication({ grant, organization }) {
+export default function GrantApplication({ grant, organization, onAnswersChange }) {
   const [loading, setLoading] = useState(true);
   const [globalError, setGlobalError] = useState(null);
   const [questionErrors, setQuestionErrors] = useState({});
@@ -24,6 +24,7 @@ export default function GrantApplication({ grant, organization }) {
         const data = await getGrantApplicationData(grant.id);
         setApplicationData(data);
         setResponses({}); // Clear responses on new load
+        if (onAnswersChange) onAnswersChange({});
 
         // Get application status
         const applicationStatus = await getApplicationStatus(grant.id, organization.id);
@@ -39,10 +40,11 @@ export default function GrantApplication({ grant, organization }) {
   }, [grant.id, organization]);
 
   const handleResponseEdit = (questionId, newResponse) => {
-    setResponses(prev => ({
-      ...prev,
-      [questionId]: newResponse
-    }));
+    setResponses(prev => {
+      const updated = { ...prev, [questionId]: newResponse };
+      if (onAnswersChange) onAnswersChange(updated);
+      return updated;
+    });
   };
 
   const handleSaveProgress = async () => {
@@ -161,4 +163,5 @@ GrantApplication.propTypes = {
     mission: PropTypes.string.isRequired,
     country: PropTypes.string.isRequired,
   }).isRequired,
+  onAnswersChange: PropTypes.func,
 }; 
