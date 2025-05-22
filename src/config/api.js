@@ -3,10 +3,10 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localho
 
 // API endpoints
 export const ENDPOINTS = {
-  GRANTS: '/admin/grants',
-  SEARCH_GRANTS: '/admin/search-grants',
-  UPLOAD_GRANT: '/admin/upload-grant',
-  ANALYZE_GRANT: '/analyze-grant',
+  GRANTS: '/api/grants',
+  SEARCH_GRANTS: '/api/search-grants',
+  UPLOAD_GRANT: '/api/upload-grant',
+  ANALYZE_GRANT: '/api/analyze-grant',
 };
 
 // Helper function to get full URL
