@@ -120,63 +120,65 @@ export default function GrantDocumentReview() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white rounded shadow">
-      <button
-        className="mb-6 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
-        onClick={() => navigate(-1)}
-      >
-        ← Back to Grant Dashboard
-      </button>
-      <h1 className="text-3xl font-bold mb-2 text-[#442e1c]">{grant.name || grant.title} - Comprehensive Document</h1>
-      <p className="text-lg text-[#5e4633] italic mb-4">{org.organization}</p>
-      <div className="mb-8 text-sm text-[#5e4633]">{grant.funder} | Deadline: {grant.deadline}</div>
-      <div className="mb-4 text-right">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-8">
+      <div className="bg-white shadow-xl rounded-xl p-10 max-w-3xl w-full prose prose-lg">
         <button
-          className="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 disabled:opacity-60"
-          onClick={() => fetchOrPolishDocument(true)}
-          disabled={isPolishing || loading}
+          className="mb-6 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+          onClick={() => navigate(-1)}
         >
-          {isPolishing ? 'Polishing...' : 'Re-Polish Full Document with AI'}
+          ← Back to Grant Dashboard
         </button>
-      </div>
-      {loading ? (
-        <div className="text-center text-gray-500 py-12">Loading document...</div>
-      ) : error ? (
-        <div className="text-center text-red-500 py-12">{error}</div>
-      ) : clarificationQuestions ? (
-        <form onSubmit={handleClarificationSubmit} className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-[#442e1c]">AI needs more information</h2>
-          {clarificationQuestions.map((q, i) => (
-            <div key={i} className="mb-4">
-              <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
-              <textarea
-                className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
-                rows={2}
-                value={clarificationAnswers[i]}
-                onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
-                required
-              />
+        <h1 className="text-3xl font-bold mb-2 text-[#442e1c]">{grant.name || grant.title} - Comprehensive Document</h1>
+        <p className="text-lg text-[#5e4633] italic mb-4">{org.organization}</p>
+        <div className="mb-8 text-sm text-[#5e4633]">{grant.funder} | Deadline: {grant.deadline}</div>
+        <div className="mb-4 text-right">
+          <button
+            className="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 disabled:opacity-60"
+            onClick={() => fetchOrPolishDocument(true)}
+            disabled={isPolishing || loading}
+          >
+            {isPolishing ? 'Polishing...' : 'Re-Polish Full Document with AI'}
+          </button>
+        </div>
+        {loading ? (
+          <div className="text-center text-gray-500 py-12">Loading document...</div>
+        ) : error ? (
+          <div className="text-center text-red-500 py-12">{error}</div>
+        ) : clarificationQuestions ? (
+          <form onSubmit={handleClarificationSubmit} className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
+            <h2 className="text-xl font-semibold mb-4 text-[#442e1c]">AI needs more information</h2>
+            {clarificationQuestions.map((q, i) => (
+              <div key={i} className="mb-4">
+                <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
+                <textarea
+                  className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
+                  rows={2}
+                  value={clarificationAnswers[i]}
+                  onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
+                  required
+                />
+              </div>
+            ))}
+            <div className="text-right">
+              <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
             </div>
-          ))}
-          <div className="text-right">
-            <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
-          </div>
-        </form>
-      ) : (
-        <div
-          ref={editorRef}
-          className="prose prose-lg min-h-[400px] border rounded p-6 bg-gray-50 focus:outline-none"
-          contentEditable
-          suppressContentEditableWarning
-          style={{ whiteSpace: 'pre-wrap', cursor: 'text' }}
-          onMouseUp={handleAIAction}
-          dangerouslySetInnerHTML={{ __html: documentHtml }}
-        />
-      )}
-      <div className="mt-4 text-right">
-        <button className="px-6 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800">Export as PDF</button>
+          </form>
+        ) : (
+          <div
+            ref={editorRef}
+            className="min-h-[400px] focus:outline-none"
+            contentEditable
+            suppressContentEditableWarning
+            style={{ whiteSpace: 'pre-wrap', cursor: 'text' }}
+            onMouseUp={handleAIAction}
+            dangerouslySetInnerHTML={{ __html: documentHtml }}
+          />
+        )}
+        <div className="mt-4 text-right">
+          <button className="px-6 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800">Export as PDF</button>
+        </div>
+        <div className="mt-2 text-xs text-gray-500">Highlight text to see AI options (coming soon).</div>
       </div>
-      <div className="mt-2 text-xs text-gray-500">Highlight text to see AI options (coming soon).</div>
     </div>
   );
 } 
