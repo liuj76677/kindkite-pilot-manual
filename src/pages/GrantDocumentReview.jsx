@@ -50,6 +50,9 @@ export default function GrantDocumentReview() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           requirements: grant.requirements || [],
+          instructions: grant.instructions || '',
+          guidelines: grant.guidelines || {},
+          evaluation: grant.evaluation || [],
           answers: grant.sections.map(section => ({
             label: section.label,
             answer: answers[section.id] || ''
