@@ -6,6 +6,7 @@ import Draggable from 'react-draggable';
 
 const ORG_ID = 'tembo-education';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const BACKEND_API_URL = 'https://kindkite-backend.onrender.com'; // Update to your backend URL
 
 const Workspace = ({ selectedGrantId }) => {
   const [activeTab, setActiveTab] = useState('summary');
@@ -214,8 +215,8 @@ const Workspace = ({ selectedGrantId }) => {
 
   const handleClarificationSubmit = async (e) => {
     e.preventDefault();
-    // Save clarifications to org DB
-    await axios.post(`${API_BASE_URL}/api/save-clarifications`, {
+    // Save clarifications to org DB (backend)
+    await axios.post(`${BACKEND_API_URL}/api/save-clarifications`, {
       orgId: org?.id || 'tembo',
       grantId: grant?.title || '',
       clarifications: clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] }))

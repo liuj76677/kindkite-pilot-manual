@@ -77,6 +77,21 @@ const InteractionSchema = new mongoose.Schema({
 const Feedback = mongoose.model('Feedback', FeedbackSchema);
 const Interaction = mongoose.model('Interaction', InteractionSchema);
 
+// Organization model for clarifications
+const Organization = mongoose.models.Organization || mongoose.model('Organization', new mongoose.Schema({
+  id: String,
+  name: String,
+  clarifications: [
+    {
+      grantId: String,
+      question: String,
+      answer: String,
+      timestamp: Date
+    }
+  ]
+  // ...other org fields...
+}, { collection: 'organizations' }));
+
 // Add test endpoint to verify database connection
 app.get('/api/test-db', async (req, res) => {
   try {
@@ -182,6 +197,38 @@ app.get('/api/analytics', async (req, res) => {
   } catch (error) {
     console.error('Error fetching analytics:', error);
     res.status(500).json({ error: 'Failed to fetch analytics', details: error.message });
+  }
+});
+
+// Save clarifications endpoint
+app.post('/api/save-clarifications', async (req, res) => {
+  try {
+    const { orgId, grantId, clarifications } = req.body;
+    if (!orgId || !clarifications || !Array.isArray(clarifications)) {
+      return res.status(400).json({ error: 'Missing orgId or clarifications' });
+    }
+    const now = new Date();
+    // Add clarifications to the org
+    const update = {
+      $push: {
+        clarifications: {
+          $each: clarifications.map(c => ({
+            grantId,
+            question: c.question,
+            answer: c.answer,
+            timestamp: now
+          }))
+        }
+      }
+    };
+    const org = await Organization.findOneAndUpdate({ id: orgId }, update, { new: true });
+    if (!org) {
+      return res.status(404).json({ error: 'Organization not found' });
+    }
+    res.json({ org });
+  } catch (error) {
+    console.error('Error saving clarifications:', error);
+    res.status(500).json({ error: 'Failed to save clarifications' });
   }
 });
 
