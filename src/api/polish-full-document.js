@@ -25,6 +25,7 @@ export default async function handler(req, res) {
       `7. The final output should be a single, ready-to-submit document, formatted in HTML (no markdown).\n` +
       `8. When asking clarification questions, ONLY ask for missing factual information. Do NOT reference section-specific jargon, grant section names, or assume the user knows what the grant is asking. Phrase each question in plain, user-friendly language, and be specific about what factual detail is missing.\n` +
       `9. Do NOT ask the user to "clarify" or "elaborate" in general terms—be concrete about what information is needed.\n` +
+      `10. Minimize the number of clarification questions. Only ask for information that is absolutely required to complete the draft. Do NOT ask broad, open-ended, or fluffy questions. Each question must be specific, actionable, and only about factual gaps that prevent completion.\n` +
       `\nGrant Requirements and Descriptions:\n` +
       requirements.map(r => `- ${r.label}: ${r.description}`).join('\n') +
       `\n\nDraft Answers:\n` +

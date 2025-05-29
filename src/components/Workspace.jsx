@@ -359,27 +359,29 @@ const Workspace = ({ selectedGrantId }) => {
             <div className="mt-2 text-xs text-gray-500">Highlight text to see AI options (coming soon).</div>
             {clarificationQuestions && (
               <Draggable handle=".modal-header">
-                <div className="fixed top-1/2 left-1/2 z-50 bg-yellow-50 border border-yellow-200 rounded-lg shadow-xl p-6 w-[600px] max-w-full" style={{ transform: 'translate(-50%, -50%)' }}>
-                  <form onSubmit={handleClarificationSubmit}>
-                    <div className="modal-header cursor-move flex justify-between items-center mb-4">
-                      <h2 className="text-xl font-semibold text-[#442e1c]">AI needs more information</h2>
-                    </div>
-                    {clarificationQuestions.map((q, i) => (
-                      <div key={i} className="mb-4">
-                        <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
-                        <textarea
-                          className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
-                          rows={2}
-                          value={clarificationAnswers[i]}
-                          onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
-                          required
-                        />
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg shadow-xl p-6 w-[600px] max-w-full">
+                    <form onSubmit={handleClarificationSubmit}>
+                      <div className="modal-header cursor-move flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-semibold text-[#442e1c]">AI needs more information</h2>
                       </div>
-                    ))}
-                    <div className="text-right">
-                      <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
-                    </div>
-                  </form>
+                      {clarificationQuestions.map((q, i) => (
+                        <div key={i} className="mb-4">
+                          <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
+                          <textarea
+                            className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
+                            rows={2}
+                            value={clarificationAnswers[i]}
+                            onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
+                            required
+                          />
+                        </div>
+                      ))}
+                      <div className="text-right">
+                        <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </Draggable>
             )}
