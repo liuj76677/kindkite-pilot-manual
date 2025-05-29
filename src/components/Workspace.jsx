@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { fetchGrant, fetchDraft, fetchOrg, saveDraft } from '../services/api';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
+import Draggable from 'react-draggable';
 
 const ORG_ID = 'tembo-education';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
@@ -198,6 +199,18 @@ const Workspace = ({ selectedGrantId }) => {
     }
   };
 
+  const handleClarificationSubmit = async (e) => {
+    e.preventDefault();
+    // Save clarifications to org DB
+    await axios.post(`${API_BASE_URL}/api/save-clarifications`, {
+      orgId: org?.id || 'tembo',
+      grantId: grant?.title || '',
+      clarifications: clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] }))
+    });
+    // Then send to polish endpoint
+    await polishWithAI(clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] })));
+  };
+
   if (!selectedGrantId) {
     return <div className="flex items-center justify-center h-full text-gray-400">Select a grant to get started.</div>;
   }
@@ -345,30 +358,30 @@ const Workspace = ({ selectedGrantId }) => {
             />
             <div className="mt-2 text-xs text-gray-500">Highlight text to see AI options (coming soon).</div>
             {clarificationQuestions && (
-              <form
-                className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8"
-                onSubmit={e => {
-                  e.preventDefault();
-                  polishWithAI(clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] })));
-                }}
-              >
-                <h2 className="text-xl font-semibold mb-4 text-[#442e1c]">AI needs more information</h2>
-                {clarificationQuestions.map((q, i) => (
-                  <div key={i} className="mb-4">
-                    <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
-                    <textarea
-                      className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
-                      rows={2}
-                      value={clarificationAnswers[i]}
-                      onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
-                      required
-                    />
-                  </div>
-                ))}
-                <div className="text-right">
-                  <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
+              <Draggable handle=".modal-header">
+                <div className="fixed top-1/4 left-1/2 z-50 bg-yellow-50 border border-yellow-200 rounded-lg shadow-xl p-6 w-[600px] max-w-full" style={{ transform: 'translate(-50%, 0)' }}>
+                  <form onSubmit={handleClarificationSubmit}>
+                    <div className="modal-header cursor-move flex justify-between items-center mb-4">
+                      <h2 className="text-xl font-semibold text-[#442e1c]">AI needs more information</h2>
+                    </div>
+                    {clarificationQuestions.map((q, i) => (
+                      <div key={i} className="mb-4">
+                        <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
+                        <textarea
+                          className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
+                          rows={2}
+                          value={clarificationAnswers[i]}
+                          onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
+                          required
+                        />
+                      </div>
+                    ))}
+                    <div className="text-right">
+                      <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
+                    </div>
+                  </form>
                 </div>
-              </form>
+              </Draggable>
             )}
           </div>
         )}
