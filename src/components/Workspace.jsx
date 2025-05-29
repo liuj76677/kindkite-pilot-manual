@@ -36,7 +36,14 @@ const Workspace = ({ selectedGrantId }) => {
         setDraft(null);
         setDraftSections({});
       });
-      fetchOrg(ORG_ID).then(setOrg);
+      fetchOrg(ORG_ID).then(fetchedOrg => {
+        // Ensure org.id is always set
+        const orgWithId = { ...fetchedOrg };
+        if (!orgWithId.id) orgWithId.id = ORG_ID;
+        setOrg(orgWithId);
+        // Debug log
+        console.log('Fetched org:', orgWithId);
+      });
     } else {
       setGrant(null);
       setDraft(null);
@@ -215,18 +222,28 @@ const Workspace = ({ selectedGrantId }) => {
 
   const handleClarificationSubmit = async (e) => {
     e.preventDefault();
-    // Save clarifications to org DB (backend)
-    await axios.post(`${BACKEND_API_URL}/api/save-clarifications`, {
-      orgId: org?.id || 'tembo',
-      grantId: grant?.title || '',
-      clarifications: clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] }))
-    });
-    // Then send to polish endpoint
-    await polishWithAI(clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] })));
-    // If no more clarifications needed, close the modal and panel
-    if (!clarificationQuestions || clarificationQuestions.length === 0) {
-      setShowClarificationModal(false);
-      setClarificationPanelOpen(false);
+    try {
+      // Save clarifications to org DB (backend)
+      const orgIdToSend = org?.id || ORG_ID || 'tembo';
+      const response = await axios.post(`${BACKEND_API_URL}/api/save-clarifications`, {
+        orgId: orgIdToSend,
+        grantId: grant?.title || '',
+        clarifications: clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] }))
+      });
+      // Then send to polish endpoint
+      await polishWithAI(clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] })));
+      // If no more clarifications needed, close the modal and panel
+      if (!clarificationQuestions || clarificationQuestions.length === 0) {
+        setShowClarificationModal(false);
+        setClarificationPanelOpen(false);
+      }
+    } catch (err) {
+      let msg = 'Failed to save clarifications.';
+      if (err.response && err.response.data && err.response.data.error) {
+        msg += ' ' + err.response.data.error;
+      }
+      alert(msg);
+      console.error('Clarification submit error:', err);
     }
   };
 
