@@ -360,7 +360,7 @@ const Workspace = ({ selectedGrantId }) => {
             {clarificationQuestions && (
               <Draggable handle=".modal-header">
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg shadow-xl p-6 w-[600px] max-w-full">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg shadow-xl p-6 w-[600px] max-w-full overflow-y-auto max-h-[90vh]">
                     <form onSubmit={handleClarificationSubmit}>
                       <div className="modal-header cursor-move flex justify-between items-center mb-4">
                         <h2 className="text-xl font-semibold text-[#442e1c]">AI needs more information</h2>
