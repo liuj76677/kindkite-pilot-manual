@@ -23,6 +23,8 @@ export default async function handler(req, res) {
       `5. Do NOT invent or assume any information that is not present in the answers or clarifications.\n` +
       `6. If clarifications are provided, incorporate them in the appropriate sections.\n` +
       `7. The final output should be a single, ready-to-submit document, formatted in HTML (no markdown).\n` +
+      `8. When asking clarification questions, ONLY ask for missing factual information. Do NOT reference section-specific jargon, grant section names, or assume the user knows what the grant is asking. Phrase each question in plain, user-friendly language, and be specific about what factual detail is missing.\n` +
+      `9. Do NOT ask the user to "clarify" or "elaborate" in general terms—be concrete about what information is needed.\n` +
       `\nGrant Requirements and Descriptions:\n` +
       requirements.map(r => `- ${r.label}: ${r.description}`).join('\n') +
       `\n\nDraft Answers:\n` +

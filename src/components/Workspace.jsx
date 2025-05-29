@@ -359,7 +359,7 @@ const Workspace = ({ selectedGrantId }) => {
             <div className="mt-2 text-xs text-gray-500">Highlight text to see AI options (coming soon).</div>
             {clarificationQuestions && (
               <Draggable handle=".modal-header">
-                <div className="fixed top-1/4 left-1/2 z-50 bg-yellow-50 border border-yellow-200 rounded-lg shadow-xl p-6 w-[600px] max-w-full" style={{ transform: 'translate(-50%, 0)' }}>
+                <div className="fixed top-1/2 left-1/2 z-50 bg-yellow-50 border border-yellow-200 rounded-lg shadow-xl p-6 w-[600px] max-w-full" style={{ transform: 'translate(-50%, -50%)' }}>
                   <form onSubmit={handleClarificationSubmit}>
                     <div className="modal-header cursor-move flex justify-between items-center mb-4">
                       <h2 className="text-xl font-semibold text-[#442e1c]">AI needs more information</h2>
