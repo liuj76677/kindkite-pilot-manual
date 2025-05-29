@@ -23,6 +23,7 @@ const Workspace = ({ selectedGrantId }) => {
   const [clarificationAnswers, setClarificationAnswers] = useState([]);
   const [clarificationPanelOpen, setClarificationPanelOpen] = useState(false);
   const clarificationPanelRef = useRef();
+  const [showClarificationModal, setShowClarificationModal] = useState(false);
 
   useEffect(() => {
     if (selectedGrantId) {
@@ -53,6 +54,16 @@ const Workspace = ({ selectedGrantId }) => {
     // if (activeTab === 'draft') setPolishedDoc('');
     // eslint-disable-next-line
   }, [activeTab, grant, draftSections]);
+
+  useEffect(() => {
+    // Show the modal if there are clarification questions and the panel is not open
+    if (clarificationQuestions && clarificationQuestions.length > 0) {
+      setShowClarificationModal(true);
+      setClarificationPanelOpen(false);
+    } else {
+      setShowClarificationModal(false);
+    }
+  }, [clarificationQuestions]);
 
   const handleSectionChange = (label, value) => {
     setDraftSections(prev => ({ ...prev, [label]: value }));
@@ -211,8 +222,9 @@ const Workspace = ({ selectedGrantId }) => {
     });
     // Then send to polish endpoint
     await polishWithAI(clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] })));
-    // If no more clarifications needed, close the panel
+    // If no more clarifications needed, close the modal and panel
     if (!clarificationQuestions || clarificationQuestions.length === 0) {
+      setShowClarificationModal(false);
       setClarificationPanelOpen(false);
     }
   };
@@ -430,6 +442,34 @@ const Workspace = ({ selectedGrantId }) => {
             ) : (
               <div className="text-green-700 font-medium text-lg">All required information has been provided. The AI is updating your draft.</div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Centered Clarification Modal (blocking) */}
+      {showClarificationModal && clarificationQuestions && clarificationQuestions.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg shadow-xl p-6 w-[600px] max-w-full overflow-y-auto max-h-[90vh]">
+            <form onSubmit={handleClarificationSubmit}>
+              <div className="modal-header flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-[#442e1c]">AI needs more information</h2>
+              </div>
+              {clarificationQuestions.map((q, i) => (
+                <div key={i} className="mb-4">
+                  <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
+                  <textarea
+                    className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
+                    rows={2}
+                    value={clarificationAnswers[i]}
+                    onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
+                    required
+                  />
+                </div>
+              ))}
+              <div className="text-right">
+                <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
