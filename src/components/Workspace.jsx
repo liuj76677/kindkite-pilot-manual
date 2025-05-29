@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { fetchGrant, fetchDraft, fetchOrg, saveDraft } from '../services/api';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
@@ -21,6 +21,8 @@ const Workspace = ({ selectedGrantId }) => {
   const [polishing, setPolishing] = useState(false);
   const [clarificationQuestions, setClarificationQuestions] = useState(null);
   const [clarificationAnswers, setClarificationAnswers] = useState([]);
+  const [clarificationPanelOpen, setClarificationPanelOpen] = useState(false);
+  const clarificationPanelRef = useRef();
 
   useEffect(() => {
     if (selectedGrantId) {
@@ -209,6 +211,10 @@ const Workspace = ({ selectedGrantId }) => {
     });
     // Then send to polish endpoint
     await polishWithAI(clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] })));
+    // If no more clarifications needed, close the panel
+    if (!clarificationQuestions || clarificationQuestions.length === 0) {
+      setClarificationPanelOpen(false);
+    }
   };
 
   if (!selectedGrantId) {
@@ -357,34 +363,16 @@ const Workspace = ({ selectedGrantId }) => {
               dangerouslySetInnerHTML={{ __html: getFullDocumentHtml() }}
             />
             <div className="mt-2 text-xs text-gray-500">Highlight text to see AI options (coming soon).</div>
-            {clarificationQuestions && (
-              <Draggable handle=".modal-header">
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg shadow-xl p-6 w-[600px] max-w-full overflow-y-auto max-h-[90vh]">
-                    <form onSubmit={handleClarificationSubmit}>
-                      <div className="modal-header cursor-move flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-semibold text-[#442e1c]">AI needs more information</h2>
-                      </div>
-                      {clarificationQuestions.map((q, i) => (
-                        <div key={i} className="mb-4">
-                          <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
-                          <textarea
-                            className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
-                            rows={2}
-                            value={clarificationAnswers[i]}
-                            onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
-                            required
-                          />
-                        </div>
-                      ))}
-                      <div className="text-right">
-                        <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </Draggable>
-            )}
+            {/* Add a button to open the clarification panel */}
+            <div className="fixed top-1/2 right-0 z-40 transform -translate-y-1/2">
+              <button
+                className="bg-blue-700 text-white px-3 py-2 rounded-l-lg shadow-lg hover:bg-blue-800 focus:outline-none"
+                onClick={() => setClarificationPanelOpen(true)}
+                style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+              >
+                Clarifications
+              </button>
+            </div>
           </div>
         )}
 
@@ -402,6 +390,49 @@ const Workspace = ({ selectedGrantId }) => {
           </div>
         )}
       </div>
+
+      {/* Clarification Panel */}
+      {clarificationPanelOpen && (
+        <div
+          ref={clarificationPanelRef}
+          className="fixed top-0 right-0 h-full w-full max-w-md z-50 bg-yellow-50 border-l border-yellow-200 shadow-xl flex flex-col"
+          style={{ transition: 'transform 0.3s', transform: clarificationPanelOpen ? 'translateX(0)' : 'translateX(100%)' }}
+        >
+          <div className="flex items-center justify-between p-4 border-b border-yellow-200 bg-yellow-100">
+            <h2 className="text-xl font-semibold text-[#442e1c]">AI needs more information</h2>
+            <button
+              className="text-gray-600 hover:text-gray-900 text-2xl font-bold px-2"
+              onClick={() => setClarificationPanelOpen(false)}
+              aria-label="Close clarification panel"
+            >
+              ×
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-6">
+            {clarificationQuestions && clarificationQuestions.length > 0 ? (
+              <form onSubmit={handleClarificationSubmit}>
+                {clarificationQuestions.map((q, i) => (
+                  <div key={i} className="mb-4">
+                    <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
+                    <textarea
+                      className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
+                      rows={2}
+                      value={clarificationAnswers[i]}
+                      onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
+                      required
+                    />
+                  </div>
+                ))}
+                <div className="text-right">
+                  <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
+                </div>
+              </form>
+            ) : (
+              <div className="text-green-700 font-medium text-lg">All required information has been provided. The AI is updating your draft.</div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
