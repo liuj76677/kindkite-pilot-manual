@@ -62,7 +62,6 @@ export default function GrantDocumentReview() {
           })),
           grantTitle: grant.name || grant.title,
           orgName: org.organization,
-          prompt: 'Polish and format this grant application as a single, cohesive, ready-to-submit document. Return only HTML.',
           clarifications: clarifications || null
         })
       });
@@ -89,6 +88,8 @@ export default function GrantDocumentReview() {
       });
       setIsPolishing(false);
       setLoading(false);
+      setClarificationQuestions(null);
+      setClarificationAnswers([]);
     } catch (err) {
       setError(err.message || 'An error occurred.');
       setIsPolishing(false);
