@@ -18,80 +18,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Serve the static files from the dist directory
-app.use(express.static(path.join(__dirname, 'dist')));
-
-// MongoDB connection with detailed logging
-const MONGODB_URI = process.env.MONGODB_URI;
-if (!MONGODB_URI) {
-  console.error('MONGODB_URI environment variable is required');
-  process.exit(1);
-}
-
-console.log('Attempting to connect to MongoDB...');
-console.log('Database URI:', MONGODB_URI.replace(/mongodb\+srv:\/\/([^:]+):([^@]+)@/, 'mongodb+srv://[username]:[password]@'));
-
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    console.log('Successfully connected to MongoDB');
-    console.log('Connected to database:', mongoose.connection.db.databaseName);
-    // List all collections
-    return mongoose.connection.db.listCollections().toArray();
-  })
-  .then(collections => {
-    console.log('Available collections:', collections.map(c => c.name));
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1); // Exit if we can't connect to MongoDB
-  });
-
-// Define MongoDB schemas
-const FeedbackSchema = new mongoose.Schema({
-  id: String,
-  timestamp: Date,
-  grantId: String,
-  organizationName: String,
-  reaction: String
-}, { 
-  timestamps: true,
-  collection: 'feedbacks' // Explicitly name the collection
-});
-
-const InteractionSchema = new mongoose.Schema({
-  grantId: String,
-  type: {
-    type: String,
-    enum: ['applyClicks', 'cardExpansions', 'totalViews']
-  },
-  count: {
-    type: Number,
-    default: 1
-  }
-}, { 
-  timestamps: true,
-  collection: 'interactions' // Explicitly name the collection
-});
-
-// Create MongoDB models
-const Feedback = mongoose.model('Feedback', FeedbackSchema);
-const Interaction = mongoose.model('Interaction', InteractionSchema);
-
-// Organization model for clarifications
-const Organization = mongoose.models.Organization || mongoose.model('Organization', new mongoose.Schema({
-  id: String,
-  name: String,
-  clarifications: [
-    {
-      grantId: String,
-      question: String,
-      answer: String,
-      timestamp: Date
-    }
-  ]
-  // ...other org fields...
-}, { collection: 'organizations' }));
-
+// === API ROUTES (keep all API routes here, before static/catch-all) ===
 // Add test endpoint to verify database connection
 app.get('/api/test-db', async (req, res) => {
   try {
@@ -102,7 +29,6 @@ app.get('/api/test-db', async (req, res) => {
     // Get counts
     const feedbackCount = await Feedback.countDocuments();
     const interactionCount = await Interaction.countDocuments();
-    
     res.json({
       status: 'connected',
       database: dbName,
@@ -232,7 +158,10 @@ app.post('/api/save-clarifications', async (req, res) => {
   }
 });
 
-// Handle all other routes by serving the index.html
+// Serve the static files from the dist directory (AFTER API routes)
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Handle all other routes by serving the index.html (AFTER API routes)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
