@@ -534,7 +534,27 @@ const Workspace = ({ selectedGrantId }) => {
               <form onSubmit={handleClarificationSubmit}>
                 {clarificationQuestions.map((q, i) => (
                   <div key={i} className="mb-4">
-                    <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block font-medium text-[#442e1c]">{q}</label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newQuestions = [...clarificationQuestions];
+                          const newAnswers = [...clarificationAnswers];
+                          newQuestions.splice(i, 1);
+                          newAnswers.splice(i, 1);
+                          setClarificationQuestions(newQuestions);
+                          setClarificationAnswers(newAnswers);
+                          if (newQuestions.length === 0) {
+                            setShowClarificationModal(false);
+                            setClarificationPanelOpen(false);
+                          }
+                        }}
+                        className="text-gray-400 hover:text-gray-600 text-sm font-medium transition-colors duration-200"
+                      >
+                        Skip question
+                      </button>
+                    </div>
                     <textarea
                       className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
                       rows={2}
@@ -583,7 +603,27 @@ const Workspace = ({ selectedGrantId }) => {
               )}
               {clarificationQuestions.map((q, i) => (
                 <div key={i} className="mb-4">
-                  <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block font-medium text-[#442e1c]">{q}</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newQuestions = [...clarificationQuestions];
+                        const newAnswers = [...clarificationAnswers];
+                        newQuestions.splice(i, 1);
+                        newAnswers.splice(i, 1);
+                        setClarificationQuestions(newQuestions);
+                        setClarificationAnswers(newAnswers);
+                        if (newQuestions.length === 0) {
+                          setShowClarificationModal(false);
+                          setClarificationPanelOpen(false);
+                        }
+                      }}
+                      className="text-gray-400 hover:text-gray-600 text-sm font-medium transition-colors duration-200"
+                    >
+                      Skip question
+                    </button>
+                  </div>
                   <textarea
                     className="w-full px-3 py-2 border border-[#f2e4d5] rounded-lg text-sm text-[#5e4633] placeholder-[#5e4633]/50 focus:ring-[#3d6b44] focus:border-[#3d6b44]"
                     rows={2}
