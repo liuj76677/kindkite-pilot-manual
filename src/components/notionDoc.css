@@ -1,0 +1,44 @@
+/* Notion-like document styles */
+.notion-doc {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  padding: 40px 48px;
+  margin: 32px auto;
+  max-width: 800px;
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  color: #222;
+}
+.notion-doc h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: 1.5em;
+  letter-spacing: -0.01em;
+}
+.notion-doc h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 2.5em;
+  margin-bottom: 0.5em;
+  color: #222;
+}
+.notion-doc .notion-desc {
+  color: #888;
+  font-size: 1.02rem;
+  margin-bottom: 0.7em;
+}
+.notion-doc p {
+  font-size: 1.08rem;
+  line-height: 1.7;
+  margin-bottom: 1.2em;
+  color: #333;
+}
+.notion-doc hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 2em 0;
+}
+.notion-doc section {
+  margin-bottom: 2.5em;
+} 

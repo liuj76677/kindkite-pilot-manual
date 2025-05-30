@@ -3,6 +3,7 @@ import { fetchGrant, fetchDraft, fetchOrg, saveDraft } from '../services/api';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 import Draggable from 'react-draggable';
+import './notionDoc.css';
 
 const ORG_ID = 'tembo-education';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
@@ -175,16 +176,22 @@ const Workspace = ({ selectedGrantId }) => {
       return DOMPurify.sanitize(polishedDoc);
     }
     if (!grant?.sections) return '';
-    return grant.sections.map((section) => {
-      const answer = draftSections[section.label?.toLowerCase().replace(/\s+/g, '_')] || '';
-      return `
-        <div style='margin-bottom:2em;'>
-          <div style='font-size:0.95em;color:#888;margin-bottom:0.5em;'>${section.description || ''}</div>
-          <h2 style='margin-top:0.5em;'>${section.label}</h2>
-          <div>${cleanMarkdown(answer)}</div>
-        </div>
-      `;
-    }).join('');
+    return `
+      <div class="notion-doc">
+        <h1>${grant.title}</h1>
+        ${grant.sections.map((section, idx) => {
+          const answer = draftSections[section.label?.toLowerCase().replace(/\s+/g, '_')] || '';
+          return `
+            <section>
+              <h2>${section.label}</h2>
+              ${section.description ? `<div class="notion-desc">${section.description}</div>` : ''}
+              <p>${answer.replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br/>')}</p>
+              ${idx < grant.sections.length - 1 ? '<hr />' : ''}
+            </section>
+          `;
+        }).join('')}
+      </div>
+    `;
   };
 
   // Polish with AI
@@ -474,7 +481,7 @@ const Workspace = ({ selectedGrantId }) => {
               </button>
             </div>
             <div
-              className="prose prose-lg min-h-[400px] border rounded p-6 bg-gray-50 focus:outline-none"
+              className="prose prose-lg min-h-[400px] border rounded p-6 bg-gray-50 focus:outline-none notion-doc"
               contentEditable
               suppressContentEditableWarning
               style={{ whiteSpace: 'pre-wrap', cursor: 'text' }}
