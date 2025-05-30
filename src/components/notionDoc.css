@@ -19,7 +19,7 @@
 .notion-doc h2 {
   font-size: 1.4rem;
   font-weight: 700;
-  margin-top: 2.5em;
+  margin-top: 1.5em;
   margin-bottom: 0.5em;
   color: #222;
 }
@@ -37,8 +37,8 @@
 .notion-doc hr {
   border: none;
   border-top: 1px solid #eee;
-  margin: 2em 0;
+  margin: 1em 0;
 }
 .notion-doc section {
-  margin-bottom: 2.5em;
+  margin-bottom: 1.5em;
 } 
