@@ -3,9 +3,9 @@
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-  padding: 40px 48px;
+  padding: 40px 32px;
   margin: 32px auto;
-  max-width: 800px;
+  max-width: 1100px;
   font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   color: #222;
 }
