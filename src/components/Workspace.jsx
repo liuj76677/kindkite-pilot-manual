@@ -25,6 +25,8 @@ const Workspace = ({ selectedGrantId }) => {
   const [clarificationPanelOpen, setClarificationPanelOpen] = useState(false);
   const clarificationPanelRef = useRef();
   const [showClarificationModal, setShowClarificationModal] = useState(false);
+  const [clarificationSubmitting, setClarificationSubmitting] = useState(false);
+  const [clarificationMessage, setClarificationMessage] = useState('');
 
   useEffect(() => {
     if (selectedGrantId) {
@@ -211,8 +213,40 @@ const Workspace = ({ selectedGrantId }) => {
         return;
       }
       setPolishedDoc(response.data.polishedDocument || '');
+      // Parse the polished document and update draft sections
+      const polishedSections = response.data.polishedDocument.split('<h2 style=\'margin-top:0.5em;\'>');
+      const newDraftSections = { ...draftSections };
+      
+      polishedSections.forEach((section, index) => {
+        if (index === 0) return; // Skip the first split which is before any h2
+        const [title, ...contentParts] = section.split('</h2>');
+        const content = contentParts.join('</h2>').split('<div style=\'margin-bottom:2em;\'>')[0];
+        
+        // Find matching section in grant.sections
+        const matchingSection = grant.sections.find(s => s.label === title.trim());
+        if (matchingSection) {
+          const sectionKey = matchingSection.label?.toLowerCase().replace(/\s+/g, '_');
+          if (sectionKey) {
+            // Clean up the content (remove HTML tags)
+            const cleanContent = content
+              .replace(/<[^>]*>/g, '') // Remove HTML tags
+              .replace(/&nbsp;/g, ' ') // Replace &nbsp; with space
+              .trim();
+            newDraftSections[sectionKey] = cleanContent;
+          }
+        }
+      });
+      
+      setDraftSections(newDraftSections);
+      // Save the updated draft
+      await handleSaveDraft();
+      
       setClarificationQuestions(null);
       setClarificationAnswers([]);
+      setClarificationMessage('Draft updated successfully!');
+      setTimeout(() => setClarificationMessage(''), 2000);
+      setShowClarificationModal(false);
+      setClarificationPanelOpen(false);
     } catch (err) {
       alert('Failed to polish document with AI.');
     } finally {
@@ -222,18 +256,68 @@ const Workspace = ({ selectedGrantId }) => {
 
   const handleClarificationSubmit = async (e) => {
     e.preventDefault();
+    setClarificationSubmitting(true);
+    setClarificationMessage('');
     try {
       // Save clarifications to org DB (backend)
-      const orgIdToSend = org?.id || ORG_ID || 'tembo';
-      const response = await axios.post(`${BACKEND_API_URL}/api/save-clarifications`, {
+      const orgIdToSend = org?.id || org?.orgId || ORG_ID || 'tembo-education';
+      await axios.post(`${BACKEND_API_URL}/api/save-clarifications`, {
         orgId: orgIdToSend,
         grantId: grant?.title || '',
         clarifications: clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] }))
       });
+      setClarificationMessage('Clarifications saved! AI is updating your draft...');
       // Then send to polish endpoint
-      await polishWithAI(clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] })));
-      // If no more clarifications needed, close the modal and panel
-      if (!clarificationQuestions || clarificationQuestions.length === 0) {
+      setPolishing(true);
+      const response = await axios.post(`${API_BASE_URL}/api/polish-full-document`, {
+        requirements: grant.sections.map(s => ({ label: s.label, description: s.description || '' })),
+        answers: grant.sections.map(s => ({ label: s.label, answer: draftSections[s.label?.toLowerCase().replace(/\s+/g, '_')] || '' })),
+        grantTitle: grant.title,
+        orgName: org?.organization || org?.name || '',
+        clarifications: clarificationQuestions.map((q, i) => ({ question: q, answer: clarificationAnswers[i] }))
+      });
+      if (response.data.clarificationQuestions) {
+        setClarificationQuestions(response.data.clarificationQuestions);
+        setClarificationAnswers(Array(response.data.clarificationQuestions.length).fill(''));
+        setClarificationMessage('More information is needed. Please answer the new questions.');
+        setPolishing(false);
+        setClarificationSubmitting(false);
+        return;
+      }
+      if (response.data.polishedDocument) {
+        setPolishedDoc(response.data.polishedDocument || '');
+        // Parse the polished document and update draft sections
+        const polishedSections = response.data.polishedDocument.split('<h2 style=\'margin-top:0.5em;\'>');
+        const newDraftSections = { ...draftSections };
+        
+        polishedSections.forEach((section, index) => {
+          if (index === 0) return; // Skip the first split which is before any h2
+          const [title, ...contentParts] = section.split('</h2>');
+          const content = contentParts.join('</h2>').split('<div style=\'margin-bottom:2em;\'>')[0];
+          
+          // Find matching section in grant.sections
+          const matchingSection = grant.sections.find(s => s.label === title.trim());
+          if (matchingSection) {
+            const sectionKey = matchingSection.label?.toLowerCase().replace(/\s+/g, '_');
+            if (sectionKey) {
+              // Clean up the content (remove HTML tags)
+              const cleanContent = content
+                .replace(/<[^>]*>/g, '') // Remove HTML tags
+                .replace(/&nbsp;/g, ' ') // Replace &nbsp; with space
+                .trim();
+              newDraftSections[sectionKey] = cleanContent;
+            }
+          }
+        });
+        
+        setDraftSections(newDraftSections);
+        // Save the updated draft
+        await handleSaveDraft();
+        
+        setClarificationQuestions(null);
+        setClarificationAnswers([]);
+        setClarificationMessage('Draft updated successfully!');
+        setTimeout(() => setClarificationMessage(''), 2000);
         setShowClarificationModal(false);
         setClarificationPanelOpen(false);
       }
@@ -242,8 +326,12 @@ const Workspace = ({ selectedGrantId }) => {
       if (err.response && err.response.data && err.response.data.error) {
         msg += ' ' + err.response.data.error;
       }
+      setClarificationMessage(msg);
       alert(msg);
       console.error('Clarification submit error:', err);
+    } finally {
+      setClarificationSubmitting(false);
+      setPolishing(false);
     }
   };
 
@@ -439,6 +527,9 @@ const Workspace = ({ selectedGrantId }) => {
             </button>
           </div>
           <div className="flex-1 overflow-y-auto p-6">
+            {clarificationMessage && (
+              <div className="mb-4 text-blue-700 font-medium">{clarificationMessage}</div>
+            )}
             {clarificationQuestions && clarificationQuestions.length > 0 ? (
               <form onSubmit={handleClarificationSubmit}>
                 {clarificationQuestions.map((q, i) => (
@@ -450,11 +541,26 @@ const Workspace = ({ selectedGrantId }) => {
                       value={clarificationAnswers[i]}
                       onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
                       required
+                      disabled={clarificationSubmitting}
                     />
                   </div>
                 ))}
                 <div className="text-right">
-                  <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
+                  <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800" disabled={clarificationSubmitting}>
+                    {clarificationSubmitting ? 'Submitting...' : 'Submit Clarifications'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setClarificationQuestions(null);
+                      setClarificationAnswers([]);
+                      setShowClarificationModal(false);
+                      setClarificationPanelOpen(false);
+                    }}
+                    className="ml-4 px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                  >
+                    Dismiss
+                  </button>
                 </div>
               </form>
             ) : (
@@ -472,6 +578,9 @@ const Workspace = ({ selectedGrantId }) => {
               <div className="modal-header flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-[#442e1c]">AI needs more information</h2>
               </div>
+              {clarificationMessage && (
+                <div className="mb-4 text-blue-700 font-medium">{clarificationMessage}</div>
+              )}
               {clarificationQuestions.map((q, i) => (
                 <div key={i} className="mb-4">
                   <label className="block font-medium text-[#442e1c] mb-2">{q}</label>
@@ -481,11 +590,26 @@ const Workspace = ({ selectedGrantId }) => {
                     value={clarificationAnswers[i]}
                     onChange={e => setClarificationAnswers(ans => ans.map((a, idx) => idx === i ? e.target.value : a))}
                     required
+                    disabled={clarificationSubmitting}
                   />
                 </div>
               ))}
               <div className="text-right">
-                <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Submit Clarifications</button>
+                <button type="submit" className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800" disabled={clarificationSubmitting}>
+                  {clarificationSubmitting ? 'Submitting...' : 'Submit Clarifications'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setClarificationQuestions(null);
+                    setClarificationAnswers([]);
+                    setShowClarificationModal(false);
+                    setClarificationPanelOpen(false);
+                  }}
+                  className="ml-4 px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                >
+                  Dismiss
+                </button>
               </div>
             </form>
           </div>
