@@ -172,9 +172,10 @@ const Workspace = ({ selectedGrantId }) => {
   // Helper to remove leading/trailing <br> and empty <p> tags
   const trimHtmlWhitespace = (html) => {
     if (!html) return '';
-    // Remove leading/trailing <br> tags
+    // Remove leading <br> tags
     html = html.replace(/^(<br\s*\/?>)+/i, '');
-    html = html.replace(/(<br\s*\/?>)+$/i, '');
+    // Remove trailing <br> tags (all at the end)
+    html = html.replace(/(<br\s*\/?>)+$/gi, '');
     // Remove leading/trailing empty <p> tags
     html = html.replace(/^(<p>\s*<\/p>)+/i, '');
     html = html.replace(/(<p>\s*<\/p>)+$/i, '');
