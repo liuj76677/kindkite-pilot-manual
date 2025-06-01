@@ -20,29 +20,27 @@
   font-size: 1.4rem;
   font-weight: 700;
   margin-top: 0;
-  margin-bottom: 0.2em;
+  margin-bottom: 0.3em;
   color: #222;
 }
 .notion-doc .notion-desc {
   color: #888;
   font-size: 1.02rem;
-  margin-bottom: 0.2em;
+  margin-bottom: 0.4em;
 }
 .notion-doc p {
   font-size: 1.08rem;
   line-height: 1.6;
-  margin-top: 0;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.8em;
   color: #333;
 }
 .notion-doc hr {
   border: none;
   border-top: 1px solid #eee;
-  margin: 0.5em 0;
+  margin: 0.8em 0;
 }
 .notion-doc section {
-  margin: 0;
-  padding: 0;
+  margin-bottom: 1em;
 }
 .notion-doc section > *:first-child,
 .notion-doc section > h2 + * {
