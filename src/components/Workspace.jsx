@@ -169,6 +169,18 @@ const Workspace = ({ selectedGrantId }) => {
       .replace(/\n/g, '<br/>');
   };
 
+  // Helper to remove leading/trailing <br> and empty <p> tags
+  const trimHtmlWhitespace = (html) => {
+    if (!html) return '';
+    // Remove leading/trailing <br> tags
+    html = html.replace(/^(<br\s*\/?>)+/i, '');
+    html = html.replace(/(<br\s*\/?>)+$/i, '');
+    // Remove leading/trailing empty <p> tags
+    html = html.replace(/^(<p>\s*<\/p>)+/i, '');
+    html = html.replace(/(<p>\s*<\/p>)+$/i, '');
+    return html;
+  };
+
   // Helper to assemble the full document as HTML
   const getFullDocumentHtml = () => {
     if (polishedDoc) {
@@ -180,7 +192,8 @@ const Workspace = ({ selectedGrantId }) => {
       <div class="notion-doc">
         <h1>${grant.title}</h1>
         ${grant.sections.map((section, idx) => {
-          const answer = cleanMarkdown(draftSections[section.label?.toLowerCase().replace(/\s+/g, '_')] || '');
+          let answer = cleanMarkdown(draftSections[section.label?.toLowerCase().replace(/\s+/g, '_')] || '');
+          answer = trimHtmlWhitespace(answer);
           return `
             <section>
               <h2>${section.label}</h2>
