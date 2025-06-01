@@ -198,7 +198,7 @@ const Workspace = ({ selectedGrantId }) => {
             <section>
               <h2>${section.label}</h2>
               ${section.description ? `<div class="notion-desc">${cleanMarkdown(section.description)}</div>` : ''}
-              <p>${answer}</p>
+              ${answer ? `<p>${answer}</p>` : ''}
               ${idx < grant.sections.length - 1 ? '<hr />' : ''}
             </section>
           `;
