@@ -41,6 +41,10 @@
 }
 .notion-doc section {
   margin-bottom: 1em;
+  padding-top: 0;
+}
+.notion-doc section > * {
+  margin-top: 0 !important;
 }
 .notion-doc section > *:first-child,
 .notion-doc section > h2 + * {
