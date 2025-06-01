@@ -19,7 +19,7 @@
 .notion-doc h2 {
   font-size: 1.4rem;
   font-weight: 700;
-  margin-top: 0.8em;
+  margin-top: 0;
   margin-bottom: 0.3em;
   color: #222;
 }
@@ -41,4 +41,8 @@
 }
 .notion-doc section {
   margin-bottom: 1em;
+}
+.notion-doc section > *:first-child,
+.notion-doc section > h2 + * {
+  margin-top: 0 !important;
 } 
