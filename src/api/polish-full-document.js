@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
     // Build the new, strict prompt
     let fullPrompt = `You are an expert grant writer. Your job is to combine the provided draft answers into a single, cohesive, detailed, and well-formatted grant application document for the grant titled '${grantTitle}' for the organization '${orgName}'.\n\n` +
-      `**Rules:**\n` +
+      `Rules:\n` +
       `1. Do NOT delete, omit, or summarize any content from the provided answers.\n` +
       `2. Only combine, organize, and polish the answers, ensuring every grant requirement is addressed.\n` +
       `3. The output should be as detailed as possible, preserving all information.\n` +

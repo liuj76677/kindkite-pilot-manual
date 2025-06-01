@@ -180,12 +180,12 @@ const Workspace = ({ selectedGrantId }) => {
       <div class="notion-doc">
         <h1>${grant.title}</h1>
         ${grant.sections.map((section, idx) => {
-          const answer = draftSections[section.label?.toLowerCase().replace(/\s+/g, '_')] || '';
+          const answer = cleanMarkdown(draftSections[section.label?.toLowerCase().replace(/\s+/g, '_')] || '');
           return `
             <section>
               <h2>${section.label}</h2>
-              ${section.description ? `<div class="notion-desc">${section.description}</div>` : ''}
-              <p>${answer.replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br/>')}</p>
+              ${section.description ? `<div class="notion-desc">${cleanMarkdown(section.description)}</div>` : ''}
+              <p>${answer}</p>
               ${idx < grant.sections.length - 1 ? '<hr />' : ''}
             </section>
           `;
