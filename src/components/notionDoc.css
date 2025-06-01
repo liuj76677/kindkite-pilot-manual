@@ -3,7 +3,7 @@
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-  padding: 80px 64px;
+  padding: 40px 64px;
   margin: 32px auto;
   max-width: calc(100vw - 192px);
   font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
@@ -13,32 +13,32 @@
   font-size: 2.2rem;
   font-weight: 800;
   margin-top: 0;
-  margin-bottom: 1.5em;
+  margin-bottom: 1.2em;
   letter-spacing: -0.01em;
 }
 .notion-doc h2 {
   font-size: 1.4rem;
   font-weight: 700;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
+  margin-top: 0.8em;
+  margin-bottom: 0.3em;
   color: #222;
 }
 .notion-doc .notion-desc {
   color: #888;
   font-size: 1.02rem;
-  margin-bottom: 0.7em;
+  margin-bottom: 0.4em;
 }
 .notion-doc p {
   font-size: 1.08rem;
-  line-height: 1.7;
-  margin-bottom: 1.2em;
+  line-height: 1.6;
+  margin-bottom: 0.8em;
   color: #333;
 }
 .notion-doc hr {
   border: none;
   border-top: 1px solid #eee;
-  margin: 1em 0;
+  margin: 0.8em 0;
 }
 .notion-doc section {
-  margin-bottom: 1.5em;
+  margin-bottom: 1em;
 } 
