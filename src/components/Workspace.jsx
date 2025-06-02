@@ -28,6 +28,13 @@ const Workspace = ({ selectedGrantId }) => {
   const [showClarificationModal, setShowClarificationModal] = useState(false);
   const [clarificationSubmitting, setClarificationSubmitting] = useState(false);
   const [clarificationMessage, setClarificationMessage] = useState('');
+  const [selection, setSelection] = useState(null);
+  const [showAIButton, setShowAIButton] = useState(false);
+  const [aiButtonPosition, setAIButtonPosition] = useState({ top: 0, left: 0 });
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [selectedText, setSelectedText] = useState('');
+  const notionDocRef = useRef();
+  const [previousDocHtml, setPreviousDocHtml] = useState(null);
 
   useEffect(() => {
     if (selectedGrantId) {
@@ -75,6 +82,30 @@ const Workspace = ({ selectedGrantId }) => {
       setShowClarificationModal(false);
     }
   }, [clarificationQuestions]);
+
+  // Selection detection for Full Document view
+  useEffect(() => {
+    if (activeTab !== 'full') return;
+    const handleMouseUp = (e) => {
+      const selectionObj = window.getSelection();
+      const text = selectionObj.toString();
+      if (text && notionDocRef.current && notionDocRef.current.contains(selectionObj.anchorNode)) {
+        const range = selectionObj.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        // Position the button near the selection
+        setAIButtonPosition({
+          top: rect.bottom + window.scrollY + 5,
+          left: rect.left + window.scrollX
+        });
+        setSelectedText(text);
+        setShowAIButton(true);
+      } else {
+        setShowAIButton(false);
+      }
+    };
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => document.removeEventListener('mouseup', handleMouseUp);
+  }, [activeTab]);
 
   const handleSectionChange = (label, value) => {
     setDraftSections(prev => ({ ...prev, [label]: value }));
@@ -190,7 +221,7 @@ const Workspace = ({ selectedGrantId }) => {
     }
     if (!grant?.sections) return '';
     return `
-      <div class="notion-doc">
+      <div class="notion-doc-inner">
         <h1>${grant.title}</h1>
         ${grant.sections.map((section, idx) => {
           let answer = cleanMarkdown(draftSections[section.label?.toLowerCase().replace(/\s+/g, '_')] || '');
@@ -356,6 +387,57 @@ const Workspace = ({ selectedGrantId }) => {
     }
   };
 
+  // AI Edit Handler
+  const handleAIEdit = async (instruction) => {
+    if (!selectedText || !notionDocRef.current) return;
+    // Save previous state for revert
+    setPreviousDocHtml(notionDocRef.current.innerHTML);
+    // Get full document text (HTML)
+    const fullText = notionDocRef.current.innerText;
+    // Call AI edit API
+    try {
+      const res = await fetch('/api/ai-edit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullText, selectedText, instruction })
+      });
+      const data = await res.json();
+      if (data.newText) {
+        // Replace selected text in the DOM
+        const selectionObj = window.getSelection();
+        if (selectionObj.rangeCount > 0) {
+          const range = selectionObj.getRangeAt(0);
+          range.deleteContents();
+          range.insertNode(document.createTextNode(data.newText));
+          // Auto-save: update draftSections with new HTML
+          setTimeout(() => {
+            const updatedHtml = notionDocRef.current.innerHTML;
+            // Optionally, parse updatedHtml back to draftSections if needed
+            // For now, just save the whole document as a single section
+            saveDraft(ORG_ID, selectedGrantId, { sections: { full: updatedHtml } });
+          }, 100);
+        }
+        setShowAIModal(false);
+        setShowAIButton(false);
+      } else {
+        alert('AI did not return a suggestion.');
+      }
+    } catch (err) {
+      alert('AI edit failed.');
+      console.error(err);
+    }
+  };
+
+  // Revert Handler
+  const handleRevert = () => {
+    if (previousDocHtml && notionDocRef.current) {
+      notionDocRef.current.innerHTML = previousDocHtml;
+      setPreviousDocHtml(null);
+      // Optionally, auto-save revert
+      saveDraft(ORG_ID, selectedGrantId, { sections: { full: previousDocHtml } });
+    }
+  };
+
   if (!selectedGrantId) {
     return <div className="flex items-center justify-center h-full text-gray-400">Select a grant to get started.</div>;
   }
@@ -483,7 +565,7 @@ const Workspace = ({ selectedGrantId }) => {
         )}
 
         {activeTab === 'full' && (
-          <div className="space-y-6">
+          <div className="space-y-6 relative">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Full Document Review</h2>
             <div className="flex justify-end mb-4">
               <button
@@ -495,14 +577,48 @@ const Workspace = ({ selectedGrantId }) => {
               </button>
             </div>
             <div
-              className="prose prose-lg min-h-[400px] border rounded p-6 bg-gray-50 focus:outline-none notion-doc"
+              ref={notionDocRef}
+              className="prose prose-lg min-h-[400px] border rounded p-6 bg-gray-50 focus:outline-none notion-doc relative"
               contentEditable
               suppressContentEditableWarning
               style={{ whiteSpace: 'pre-wrap', cursor: 'text' }}
               dangerouslySetInnerHTML={{ __html: getFullDocumentHtml() }}
             />
+            {/* Floating AI Button */}
+            {showAIButton && (
+              <button
+                style={{
+                  position: 'absolute',
+                  top: aiButtonPosition.top - notionDocRef.current?.getBoundingClientRect().top,
+                  left: aiButtonPosition.left - notionDocRef.current?.getBoundingClientRect().left,
+                  zIndex: 1000
+                }}
+                className="px-3 py-1 bg-blue-600 text-white rounded shadow hover:bg-blue-700"
+                onClick={() => setShowAIModal(true)}
+              >
+                Ask AI
+              </button>
+            )}
+            {/* AI Modal */}
+            {showAIModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+                <div className="bg-white rounded-lg shadow-xl p-6 w-[400px] max-w-full">
+                  <h3 className="text-lg font-bold mb-2">AI Edit</h3>
+                  <p className="mb-4 text-gray-700">Selected: <span className="bg-gray-100 px-1 rounded">{selectedText}</span></p>
+                  <div className="flex space-x-2 mb-4">
+                    <button className="px-3 py-1 bg-blue-600 text-white rounded" onClick={() => handleAIEdit('Correct spelling and grammar')}>Correct</button>
+                    <button className="px-3 py-1 bg-green-600 text-white rounded" onClick={() => handleAIEdit('Improve clarity and professionalism')}>Improve</button>
+                    <button className="px-3 py-1 bg-yellow-600 text-white rounded" onClick={() => handleAIEdit('Rewrite for conciseness and impact')}>Rewrite</button>
+                  </div>
+                  <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded" onClick={() => setShowAIModal(false)}>Cancel</button>
+                  {previousDocHtml && (
+                    <button className="mt-2 ml-2 px-4 py-2 bg-red-500 text-white rounded" onClick={handleRevert}>Revert</button>
+                  )}
+                </div>
+              </div>
+            )}
             <div className="mt-2 text-xs text-gray-500">Highlight text to see AI options (coming soon).</div>
-            {/* Add a button to open the clarification panel */}
+            {/* Clarification button ... */}
             <div className="fixed top-1/2 right-0 z-40 transform -translate-y-1/2">
               <button
                 className="bg-blue-700 text-white px-3 py-2 rounded-l-lg shadow-lg hover:bg-blue-800 focus:outline-none"
