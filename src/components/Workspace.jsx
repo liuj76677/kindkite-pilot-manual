@@ -35,6 +35,7 @@ const Workspace = ({ selectedGrantId }) => {
   const [selectedText, setSelectedText] = useState('');
   const notionDocRef = useRef();
   const [previousDocHtml, setPreviousDocHtml] = useState(null);
+  const [aiInstruction, setAIInstruction] = useState('');
 
   useEffect(() => {
     if (selectedGrantId) {
@@ -388,13 +389,11 @@ const Workspace = ({ selectedGrantId }) => {
   };
 
   // AI Edit Handler
-  const handleAIEdit = async (instruction) => {
-    if (!selectedText || !notionDocRef.current) return;
-    // Save previous state for revert
+  const handleAIEdit = async (customInstruction) => {
+    const instruction = customInstruction || aiInstruction;
+    if (!selectedText || !notionDocRef.current || !instruction) return;
     setPreviousDocHtml(notionDocRef.current.innerHTML);
-    // Get full document text (HTML)
     const fullText = notionDocRef.current.innerText;
-    // Call AI edit API
     try {
       const res = await fetch('/api/ai-edit', {
         method: 'POST',
@@ -403,22 +402,19 @@ const Workspace = ({ selectedGrantId }) => {
       });
       const data = await res.json();
       if (data.newText) {
-        // Replace selected text in the DOM
         const selectionObj = window.getSelection();
         if (selectionObj.rangeCount > 0) {
           const range = selectionObj.getRangeAt(0);
           range.deleteContents();
           range.insertNode(document.createTextNode(data.newText));
-          // Auto-save: update draftSections with new HTML
           setTimeout(() => {
             const updatedHtml = notionDocRef.current.innerHTML;
-            // Optionally, parse updatedHtml back to draftSections if needed
-            // For now, just save the whole document as a single section
             saveDraft(ORG_ID, selectedGrantId, { sections: { full: updatedHtml } });
           }, 100);
         }
         setShowAIModal(false);
         setShowAIButton(false);
+        setAIInstruction('');
       } else {
         alert('AI did not return a suggestion.');
       }
@@ -605,12 +601,23 @@ const Workspace = ({ selectedGrantId }) => {
                 <div className="bg-white rounded-lg shadow-xl p-6 w-[400px] max-w-full">
                   <h3 className="text-lg font-bold mb-2">AI Edit</h3>
                   <p className="mb-4 text-gray-700">Selected: <span className="bg-gray-100 px-1 rounded">{selectedText}</span></p>
+                  <input
+                    className="w-full border rounded px-2 py-1 mb-4"
+                    type="text"
+                    placeholder="Describe what you want the AI to do (e.g., 'Make this more concise')"
+                    value={aiInstruction}
+                    onChange={e => setAIInstruction(e.target.value)}
+                  />
                   <div className="flex space-x-2 mb-4">
-                    <button className="px-3 py-1 bg-blue-600 text-white rounded" onClick={() => handleAIEdit('Correct spelling and grammar')}>Correct</button>
-                    <button className="px-3 py-1 bg-green-600 text-white rounded" onClick={() => handleAIEdit('Improve clarity and professionalism')}>Improve</button>
-                    <button className="px-3 py-1 bg-yellow-600 text-white rounded" onClick={() => handleAIEdit('Rewrite for conciseness and impact')}>Rewrite</button>
+                    <button
+                      className="px-3 py-1 bg-blue-600 text-white rounded"
+                      onClick={() => handleAIEdit()}
+                      disabled={!aiInstruction.trim()}
+                    >
+                      Submit
+                    </button>
                   </div>
-                  <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded" onClick={() => setShowAIModal(false)}>Cancel</button>
+                  <button className="mt-2 px-4 py-2 bg-gray-500 text-white rounded" onClick={() => { setShowAIModal(false); setAIInstruction(''); }}>Cancel</button>
                   {previousDocHtml && (
                     <button className="mt-2 ml-2 px-4 py-2 bg-red-500 text-white rounded" onClick={handleRevert}>Revert</button>
                   )}
