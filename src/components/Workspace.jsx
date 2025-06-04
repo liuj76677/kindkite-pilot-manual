@@ -400,6 +400,12 @@ const Workspace = ({ selectedGrantId }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fullText, selectedText, instruction })
       });
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('AI edit API error:', res.status, errorText);
+        alert('AI edit failed.');
+        return;
+      }
       const data = await res.json();
       if (data.newText) {
         const selectionObj = window.getSelection();
