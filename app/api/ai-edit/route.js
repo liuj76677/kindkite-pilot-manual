@@ -10,15 +10,16 @@ export async function POST(req) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
     }
 
-    const prompt = `You are an expert grant writer and editor. Here is a chunk of text from a grant application:
-
+    const prompt = `You are an expert grant writer and editor. Here is the full text of a grant application:
+\n"""
+${fullText}
 """
+\nThe user has selected the following text to edit:
+\n"""
 ${selectedText}
 """
-
-Instruction: ${instruction}
-
-Return ONLY the improved or corrected version of the selected text, with no extra commentary or formatting. Do not return the full document, only the revised selection.`;
+\nInstruction: ${instruction}
+\nReturn ONLY the improved or corrected version of the selected text, with no extra commentary or formatting. Do not return the full document, only the revised selection.`;
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4-turbo-preview',
