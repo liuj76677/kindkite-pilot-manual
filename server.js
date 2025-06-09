@@ -161,33 +161,6 @@ app.post('/api/save-clarifications', async (req, res) => {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-app.post('/api/ai-edit', async (req, res) => {
-  try {
-    const { fullText, selectedText, instruction } = req.body;
-    if (!fullText || !selectedText || !instruction) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    const prompt = `You are an expert grant writer and editor. Here is a chunk of text from a grant application:\n\n"""\n${selectedText}\n"""\n\nInstruction: ${instruction}\n\nReturn ONLY the improved or corrected version of the selected text, with no extra commentary or formatting. Do not return the full document, only the revised selection.`;
-
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
-      messages: [
-        { role: 'system', content: 'You are a helpful grant writing assistant.' },
-        { role: 'user', content: prompt }
-      ],
-      max_tokens: 512,
-      temperature: 0.7
-    });
-
-    const newText = completion.choices[0].message.content.trim();
-    return res.status(200).json({ newText });
-  } catch (error) {
-    console.error('OpenAI API error:', error);
-    return res.status(500).json({ error: 'Internal Server Error', details: error.message });
-  }
-});
-
 // Serve the static files from the dist directory (AFTER API routes)
 app.use(express.static(path.join(__dirname, 'dist')));
 
