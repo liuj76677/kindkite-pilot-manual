@@ -159,7 +159,6 @@ app.post('/api/save-clarifications', async (req, res) => {
   }
 });
 
-import OpenAI from 'openai';
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.post('/api/ai-edit', async (req, res) => {
